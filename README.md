@@ -1,43 +1,47 @@
-# Astro Starter Kit: Minimal
+# kuyacarlo-portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+Personal portfolio for John Carlo Santos — data engineer, hackathon builder, BS Computer Engineering @ BulSU.
+
+## Stack
+
+- **Astro 5** — static output, zero client JS by default
+- **Vanilla CSS** — no Tailwind, no frameworks
+- **Single page** — all content in `src/pages/index.astro`
+
+## Dev
+
+```bash
+npm install
+npm run dev -- --host 0.0.0.0 --port 4321
+# → http://localhost:4321
+# → http://idea:4321 (JetBrains IDE)
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Build
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run build
+# Output in dist/
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Deploy
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+# Vercel (recommended)
+npx vercel --prod
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Content
 
-## 🧞 Commands
+All content is in data arrays at the top of `src/pages/index.astro`:
+- `projects[]` — add screenshots by setting `img: "/screenshots/name.jpg"` and dropping the file in `public/screenshots/`
+- `hackathons[]`, `talks[]`, `writings[]`, `involvement[]`, `skills{}`
 
-All commands are run from the root of the project, from a terminal:
+## Docs
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- [`AGENTS.md`](./AGENTS.md) — guide for AI agents working on this codebase
+- [`HANDOFF.md`](./HANDOFF.md) — full project handoff with next steps
 
-## 👀 Want to learn more?
+## License
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT
