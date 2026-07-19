@@ -1,0 +1,108 @@
+---
+import '../styles/global.css';
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title       = "John Carlo Santos — Data Engineer & Builder",
+  description = "BS Computer Engineering student at BulSU. I build data pipelines, agentic AI systems, and DevOps tooling. Based in Bulacan, Philippines.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="John Carlo Santos" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kuyacarlo.dev" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0c0c'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='18' font-family='monospace' fill='%23ebebeb'%3Ejk%3C/text%3E%3C/svg%3E" />
+</head>
+
+<body>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="wrap nav-inner">
+      <a href="#hero" class="nav-logo">kuyacarlo<span>.</span></a>
+      <div class="nav-links" id="nav-links">
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#skills">Skills</a>
+        <a class="nav-link" href="#hackathons">Hackathons</a>
+        <a class="nav-link" href="#projects">Projects</a>
+        <a class="nav-link" href="#talks">Talks</a>
+        <a class="nav-cta"  href="#contact">Contact</a>
+      </div>
+      <button id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu">
+    <button id="close-menu" style="position:absolute;top:20px;right:24px;font-size:1.2rem;color:var(--text-3);background:none;border:none;cursor:pointer;">✕</button>
+    <a href="#about"      onclick="closeMob()">About</a>
+    <a href="#skills"     onclick="closeMob()">Skills</a>
+    <a href="#hackathons" onclick="closeMob()">Hackathons</a>
+    <a href="#projects"   onclick="closeMob()">Projects</a>
+    <a href="#talks"      onclick="closeMob()">Talks</a>
+    <a href="#contact"    onclick="closeMob()">Contact</a>
+  </div>
+
+  <slot />
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span>© 2026 John Carlo Santos</span>
+      <span>Built with Astro · Bulacan, PH</span>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav?.classList.toggle('scrolled', window.scrollY > 32);
+    }, { passive: true });
+
+    // Mobile menu
+    document.getElementById('hamburger')?.addEventListener('click', () =>
+      document.getElementById('mobile-menu')?.classList.add('open'));
+    document.getElementById('close-menu')?.addEventListener('click', () =>
+      document.getElementById('mobile-menu')?.classList.remove('open'));
+    (window as any).closeMob = () =>
+      document.getElementById('mobile-menu')?.classList.remove('open');
+
+    // Scroll reveal
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      }),
+      { threshold: 0.1, rootMargin: '0px 0px -32px 0px' }
+    );
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Typing effect
+    document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
+      const words = (el.dataset.type || '').split('|');
+      let wi = 0, ci = 0, del = false;
+      const tick = () => {
+        const w = words[wi];
+        el.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
+        let t = del ? 55 : 100;
+        if (!del && ci > w.length)    { t = 2000; del = true; }
+        if (del  && ci < 0)           { del = false; wi = (wi+1)%words.length; ci = 0; t = 400; }
+        setTimeout(tick, t);
+      };
+      setTimeout(tick, 600);
+    });
+  </script>
+</body>
+</html>

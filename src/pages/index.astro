@@ -1,0 +1,544 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// ── Content ─────────────────────────────────────────────────────────────────
+
+const skills = {
+  "Data Engineering": [
+    "Python","Pandas","NumPy","DuckDB","PostgreSQL","ETL","SQL","BeautifulSoup4","httpx","DuckDB"
+  ],
+  "Infra & DevOps": [
+    "Docker","Podman","GitHub Actions","Forgejo CI","Ansible","Linux","Bash","pre-commit","Fedora"
+  ],
+  "Cloud": [
+    "GCP Cloud Run","Cloud Functions","AWS Lambda","S3","Supabase","Authentik"
+  ],
+  "Backend & AI": [
+    "FastAPI","MCP (Model Context Protocol)","LangGraph","FastMCP","Agentic AI","REST APIs","Go","Next.js"
+  ],
+};
+
+const hackathons = [
+  {
+    placement: "Top 3 Finalist",
+    name: "BPI DataWave 2025",
+    track: "Workplace Productivity & Future of Work",
+    project: "WorkSight",
+    desc: "Architected an agentic engine to transform fragmented enterprise metadata into predictive burnout insights. Top 3 out of 100+ teams.",
+    tech: ["Next.js","Agentic AI","Python"],
+    win: true,
+  },
+  {
+    placement: "First Runner Up",
+    name: "LPU Innoverse 2025",
+    track: "Design & Business",
+    project: "BetterTranspo",
+    desc: "Decentralized platform for BEEP™ and card payments with LoraWAN — real-time routes, fare estimation, and a fullness meter.",
+    tech: ["Design","Business","LoraWAN"],
+    win: true,
+  },
+  {
+    placement: "Participant",
+    name: "MLH Notion MCP Challenge",
+    track: "Major League Hacking",
+    project: "SAGE",
+    desc: "Autonomous academic orchestrator bridging LLM reasoning with production APIs via MCP. Automates personalized Notion workspace construction from CHED curriculum.",
+    tech: ["LangGraph","FastMCP","Python","Notion"],
+    win: false,
+  },
+  {
+    placement: "Participant",
+    name: "UP PJDSC 2025",
+    track: "UP Data Science Society × Eskwelabs",
+    project: "KLIMA",
+    desc: "Bronze→Silver→Gold ETL pipeline transforming raw environmental data into localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan.",
+    tech: ["FastAPI","Flutter","Docker","ETL"],
+    win: false,
+  },
+  {
+    placement: "Participant",
+    name: "AMD Developer Hackathon 2026",
+    track: "DevSecOps & Compliance",
+    project: "ComplyAIgent",
+    desc: "Agentic DevSecOps compliance engine ingesting regulatory text (PDF/Markdown/scraped) and enforcing policies as pre-push guardrails. Three-tier comparator, LangGraph human-in-the-loop, Go CLI, Next.js dashboard.",
+    tech: ["Go","LangGraph","FastAPI","Next.js","PostgreSQL"],
+    win: false,
+  },
+];
+
+const projects = [
+  {
+    name: "tanggol-saka",
+    emoji: "🌾",
+    desc: "Decentralized land-ownership system for indigenous Filipino farmers. Proof via USSD logs, offline-first, digital land certificates. Tagalog-first UI.",
+    tech: ["TypeScript","Next.js","Decentralized"],
+    url: "https://github.com/kuyacarlo/tanggol-saka",
+    live: "https://tanggol-saka.vercel.app",
+    img: null,
+  },
+  {
+    name: "bantay",
+    emoji: "🛡️",
+    desc: "Pre-push hook that catches hardcoded secrets and high-entropy strings. Two-layer detection: regex + LLM. Auth0 CIBA human-in-the-loop for medium-risk pushes. Fail-closed.",
+    tech: ["TypeScript","LLM","Auth0","Git"],
+    url: "https://github.com/kuyacarlo/bantay",
+    live: null,
+    img: null,
+  },
+  {
+    name: "forgesure",
+    emoji: "🔧",
+    desc: "All-in-one dashboard for equipment cost and maintenance tracking. Built for teams tired of spreadsheets.",
+    tech: ["Python","FastAPI","Next.js"],
+    url: "https://github.com/kuyacarlo/forgesure",
+    live: "https://forgesure.vercel.app",
+    img: null,
+  },
+  {
+    name: "git-profile",
+    emoji: "↔️",
+    desc: "CLI tool to manage multiple Git identities and SSH URLs, switchable per repository. Companion to ssh-profiles.",
+    tech: ["Go","CLI","SSH"],
+    url: "https://github.com/kuyacarlo/git-profile",
+    live: null,
+    img: null,
+  },
+  {
+    name: "built",
+    emoji: "🏗️",
+    desc: "Asset management system for construction companies. Full-stack with Docker Compose for zero-friction setup.",
+    tech: ["Python","Next.js","Docker"],
+    url: "https://github.com/kuyacarlo/built",
+    live: null,
+    img: null,
+  },
+  {
+    name: "sulong",
+    emoji: "🛒",
+    desc: "Sulong Marketplace — a TypeScript marketplace application.",
+    tech: ["TypeScript","React","Vite"],
+    url: "https://github.com/kuyacarlo/sulong",
+    live: "https://sarai-sulong.vercel.app",
+    img: null,
+  },
+  {
+    name: "nutrition-api",
+    emoji: "🥗",
+    desc: "Production API serving nutritional facts from multiple sources to downstream devices.",
+    tech: ["FastAPI","Docker","SQLite"],
+    url: "https://github.com/kuyacarlo/nutrition-api",
+    live: null,
+    img: null,
+    star: true,
+  },
+  {
+    name: "pub-routes",
+    emoji: "🚌",
+    desc: "ETL pipeline transforming LTFRB transport routes into clean CSV. Open transport data for the Philippines.",
+    tech: ["Python","BeautifulSoup","Pandas"],
+    url: "https://github.com/kuyacarlo/pub-routes",
+    live: null,
+    img: null,
+  },
+  {
+    name: "sage-mcp",
+    emoji: "🎓",
+    desc: "Student Agent for Guided Education. Notion MCP-powered academic co-pilot — builds your semester workspace from CHED-verified curriculum.",
+    tech: ["Python","LangGraph","MCP","Notion"],
+    url: "https://github.com/kuyacarlo/sage-mcp",
+    live: null,
+    img: null,
+  },
+  {
+    name: "qc-for-devs-data-pros",
+    emoji: "✅",
+    desc: "Quality Checks for developers and data professionals. Curated pre-push safety net and checklist resource.",
+    tech: ["Reference","DevOps"],
+    url: "https://github.com/kuyacarlo/qc-for-devs-data-pros",
+    live: null,
+    img: null,
+    star: true,
+  },
+];
+
+const talks = [
+  {
+    title: "Git & GitHub Fundamentals",
+    org: "Computer Science Society BulSU",
+    type: "Workshop",
+    desc: "Hands-on session: version control fundamentals, branching workflows, and collaborative Git practices for student developers.",
+  },
+  {
+    title: "Web Development Basics — HTML & CSS",
+    org: "Seekers Guild",
+    type: "Workshop",
+    desc: "Foundational front-end concepts. Participants built and structured their first static web pages.",
+  },
+];
+
+const writings = [
+  {
+    title: "SAGE — A Notion MCP Academic Co-Pilot for Filipino University Students",
+    url: "https://dev.to/kuyacarlo/sage-a-notion-mcp-academic-co-pilot-for-filipino-university-students-3lmb",
+    date: "Mar 28, 2026",
+    platform: "dev.to",
+  },
+];
+
+const involvement = [
+  { role:"CTO",                      org:"Seekers Guild",                      period:"2025–Present" },
+  { role:"Cybersecurity Associate",  org:"Computer Science Society BulSU",      period:"2026–Present" },
+  { role:"External Officer",         org:"Computer Science Society BulSU",      period:"2025" },
+  { role:"Creatives Officer",        org:"BulSU Microsoft Student Community",   period:"2024" },
+  { role:"Member",                   org:"BulSU Microsoft Student Community",   period:"2025–Present" },
+  { role:"Google Cloud Innovator",   org:"Google Developer Program",            period:"Ongoing" },
+  { role:"NVIDIA Developer",         org:"NVIDIA Developer Community",          period:"Ongoing" },
+];
+
+const certs = [
+  { name:"Azure Data Fundamentals",         issuer:"Microsoft",          date:"May 2025" },
+  { name:"Azure AI Services Workshop",      issuer:"Microsoft",          date:"May 2025" },
+  { name:"Intro to Cybersecurity",          issuer:"Cisco NetAcad",      date:"2025" },
+  { name:"Cybersecurity Job Simulation",    issuer:"Mastercard/Forage",  date:"Apr 2025" },
+  { name:"BigLake Qwik Start Lab",          issuer:"Google CloudSkills", date:"Ongoing" },
+  { name:"Cloud Engineer Learning Path",    issuer:"Google CloudSkills", date:"Ongoing" },
+];
+---
+
+<Layout>
+
+<!-- ══════════════════════════════════════════════════════ HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-content">
+
+    <p class="eyebrow" style="color:var(--text-3);margin-bottom:20px;">
+      John Carlo Santos &nbsp;/&nbsp; kuyacarlo
+    </p>
+
+    <h1 style="font-size:clamp(2.8rem,8vw,5.5rem);font-weight:700;letter-spacing:-0.04em;line-height:1.02;color:var(--text);margin-bottom:20px;">
+      Iterate fast,<br/>think deep,<br/>
+      <span style="color:var(--text-2);">ship meaning.</span>
+    </h1>
+
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:24px;height:1.5rem;">
+      <span style="color:var(--text-3);font-size:0.9rem;">I build</span>
+      <span data-type="data pipelines.|agentic AI.|DevOps tools.|MCP servers.|systems that matter." style="color:var(--text-2);font-size:0.9rem;font-family:var(--mono);"></span>
+      <span class="cursor"></span>
+    </div>
+
+    <p style="font-size:0.95rem;color:var(--text-2);max-width:480px;line-height:1.75;margin-bottom:32px;">
+      BS Computer Engineering @ <strong style="color:var(--text);">Bulacan State University</strong> (2028).
+      Data engineer, DevOps tinkerer, and hackathon competitor from Bulacan, PH.
+      I build pipelines, MCP servers, agentic systems, and tools for Filipino farmers.
+    </p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <a href="#projects" class="btn btn-primary">View work</a>
+      <a href="https://linkedin.com/in/kuyacarlo" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn ↗</a>
+      <a href="https://github.com/kuyacarlo" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+
+    <div class="stat-grid">
+      {[
+        {v:"5+",  l:"Hackathons"},
+        {v:"10+", l:"Projects"},
+        {v:"2",   l:"Talks"},
+        {v:"2028",l:"Graduating"},
+      ].map(s => (
+        <div>
+          <div class="stat-value">{s.v}</div>
+          <div class="stat-label">{s.l}</div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;" class="two-col">
+
+      <div>
+        <span class="eyebrow reveal">About</span>
+        <h2 class="section-title reveal d1">Engineer who ships.</h2>
+        <div class="reveal d2" style="color:var(--text-2);font-size:0.92rem;line-height:1.8;">
+          <p style="margin-bottom:14px;">
+            I'm <strong style="color:var(--text);">Karlo</strong> — a generalist software engineer and student.
+            My work spans ETL pipelines, containerized microservices, FastAPI backends, and agentic AI systems.
+          </p>
+          <p style="margin-bottom:14px;">
+            I like tools that make other developers faster. Pre-push security hooks, MCP servers,
+            disaster-risk data pipelines for LGUs, land-ownership systems for Filipino farmers —
+            that's what I gravitate toward.
+          </p>
+          <p>
+            Currently CTO of <strong style="color:var(--text);">Seekers Guild</strong>, cybersecurity associate
+            at CS Society BulSU, and full-time student. Running Fedora, tinkering with homelab.
+          </p>
+        </div>
+
+        <div class="reveal d3" style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="https://linkedin.com/in/kuyacarlo" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem;padding:7px 14px;">LinkedIn ↗</a>
+          <a href="https://github.com/kuyacarlo"       target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem;padding:7px 14px;">GitHub ↗</a>
+          <a href="https://dev.to/kuyacarlo"           target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem;padding:7px 14px;">dev.to ↗</a>
+        </div>
+      </div>
+
+      <div>
+        <!-- Education -->
+        <div class="card reveal d2" style="padding:20px;margin-bottom:14px;">
+          <span class="eyebrow" style="margin-bottom:10px;">Education</span>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;">BS Computer Engineering</div>
+          <div style="font-size:0.82rem;color:var(--text-2);">Bulacan State University · Malolos, Bulacan</div>
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-3);margin-top:6px;">Expected 2028</div>
+        </div>
+
+        <!-- Certs -->
+        <div class="card reveal d3" style="padding:20px;">
+          <span class="eyebrow" style="margin-bottom:14px;">Certifications</span>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            {certs.map(c => (
+              <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+                <div>
+                  <div style="font-size:0.84rem;color:var(--text);font-weight:500;">{c.name}</div>
+                  <div style="font-size:0.75rem;color:var(--text-3);">{c.issuer}</div>
+                </div>
+                <span style="font-family:var(--mono);font-size:0.68rem;color:var(--text-3);white-space:nowrap;">{c.date}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Skills</span>
+        <h2 class="section-title reveal d1">What I work with</h2>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;">
+      {Object.entries(skills).map(([cat, techs], i) => (
+        <div class={`card reveal d${i+1}`} style="padding:18px;">
+          <span class="eyebrow" style="margin-bottom:12px;">{cat}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            {techs.map(t => <span class="tag">{t}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ HACKATHONS -->
+<section id="hackathons">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Hackathons & Competitions</span>
+        <h2 class="section-title reveal d1">Building under pressure</h2>
+      </div>
+    </div>
+
+    <div class="reveal d2">
+      {hackathons.map((h, i) => (
+        <div class="hack-row">
+          <span class="hack-placement">{h.placement}</span>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+              <span style="font-weight:600;color:var(--text);font-size:0.92rem;">{h.name}</span>
+              <span class={`badge ${h.win ? 'badge-win' : 'badge-part'}`}>{h.project}</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-2);line-height:1.6;">{h.desc}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;">
+              {h.tech.map(t => <span class="tag" style="font-size:0.68rem;padding:2px 8px;">{t}</span>)}
+            </div>
+          </div>
+          <span style="font-size:0.72rem;color:var(--text-3);font-family:var(--mono);white-space:nowrap;">{h.track}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Projects</span>
+        <h2 class="section-title reveal d1">Things I've shipped</h2>
+      </div>
+      <a href="https://github.com/kuyacarlo" target="_blank" rel="noopener"
+         class="btn btn-ghost reveal" style="font-size:0.8rem;padding:7px 14px;white-space:nowrap;">
+        All on GitHub ↗
+      </a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;">
+      {projects.map((p, i) => (
+        <a
+          href={p.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={`card reveal d${(i%4)+1}`}
+          style="display:flex;flex-direction:column;overflow:hidden;"
+        >
+          <!-- Image area -->
+          <div class="project-img">
+            {p.img
+              ? <img src={p.img} alt={p.name} />
+              : <>
+                  <div class="project-img-placeholder"></div>
+                  <span class="project-img-label">{p.emoji} {p.name}</span>
+                </>
+            }
+          </div>
+
+          <!-- Content -->
+          <div style="padding:16px;flex:1;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <span style="font-family:var(--mono);font-size:0.88rem;font-weight:600;color:var(--text);">{p.name}</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                {(p as any).star && <span style="font-size:0.65rem;color:var(--accent-2);">⭐</span>}
+                {p.live && <span style="font-size:0.65rem;color:var(--text-3);font-family:var(--mono);">live ↗</span>}
+              </div>
+            </div>
+
+            <p style="font-size:0.8rem;color:var(--text-2);line-height:1.6;flex:1;">{p.desc}</p>
+
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">
+              {p.tech.map(t => <span class="tag" style="font-size:0.68rem;padding:2px 8px;">{t}</span>)}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ TALKS -->
+<section id="talks">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Speaking & Writing</span>
+        <h2 class="section-title reveal d1">Talks & workshops</h2>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:32px;">
+      {talks.map((t, i) => (
+        <div class={`card reveal d${i+1}`} style="padding:20px;">
+          <span class="badge badge-part" style="margin-bottom:12px;display:inline-block;">{t.type}</span>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px;font-size:0.92rem;">{t.title}</div>
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-3);margin-bottom:10px;">{t.org}</div>
+          <p style="font-size:0.82rem;color:var(--text-2);line-height:1.65;">{t.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Writings -->
+    <span class="eyebrow reveal" style="margin-bottom:12px;">Writings</span>
+    {writings.map((w, i) => (
+      <a
+        href={w.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={`card reveal d${i+1}`}
+        style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;"
+      >
+        <div>
+          <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-3);margin-bottom:4px;">{w.platform} · {w.date}</div>
+          <div style="font-size:0.88rem;color:var(--text);font-weight:500;">{w.title}</div>
+        </div>
+        <span style="color:var(--text-3);flex-shrink:0;">↗</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ INVOLVEMENT -->
+<section id="involvement">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow reveal">Community & Leadership</span>
+        <h2 class="section-title reveal d1">Where I show up</h2>
+      </div>
+    </div>
+
+    <div class="timeline reveal d2">
+      {involvement.map(inv => (
+        <div class="tl-item">
+          <div class="tl-date">{inv.period}</div>
+          <div class="tl-role">{inv.role}</div>
+          <div class="tl-org">{inv.org}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════ CONTACT -->
+<section id="contact">
+  <div class="wrap-sm">
+    <span class="eyebrow reveal">Contact</span>
+    <h2 class="section-title reveal d1">Let's build something.</h2>
+    <p class="section-sub reveal d2" style="margin-bottom:32px;">
+      Open to collaboration, hackathon teams, freelance data work, and good conversations.
+    </p>
+
+    <div class="card reveal d3" style="padding:0;overflow:hidden;">
+      {[
+        { label:"Email",    val:"santos.karlo@outlook.com",    href:"mailto:santos.karlo@outlook.com" },
+        { label:"LinkedIn", val:"linkedin.com/in/kuyacarlo",  href:"https://linkedin.com/in/kuyacarlo" },
+        { label:"GitHub",   val:"github.com/kuyacarlo",       href:"https://github.com/kuyacarlo" },
+      ].map((row, i, arr) => (
+        <a
+          href={row.href}
+          target={row.label !== "Email" ? "_blank" : undefined}
+          rel={row.label !== "Email" ? "noopener" : undefined}
+          style={`display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;${i < arr.length-1 ? 'border-bottom:1px solid var(--border);' : ''}transition:background 0.15s;`}
+          onmouseover="this.style.background='var(--bg-3)'"
+          onmouseout="this.style.background=''"
+        >
+          <div>
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-3);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.1em;">{row.label}</div>
+            <div style="font-size:0.88rem;color:var(--text);font-weight:500;">{row.val}</div>
+          </div>
+          <span style="color:var(--text-3);">↗</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- Responsive two-col -->
+<style>
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .hack-row { border-top: 1px solid var(--border); padding-top: 20px; }
+    .hack-row > span:last-child { display: none; }
+  }
+</style>
+
+</Layout>
