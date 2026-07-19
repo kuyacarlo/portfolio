@@ -1,5 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import NoteLayout from '../../layouts/NoteLayout.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,7 +15,7 @@ const { Content } = await render(entry);
 const { title, date, tags } = entry.data;
 ---
 
-<Layout active="notes" title={`${title} — John Carlo Santos`} description={entry.data.desc}>
+<NoteLayout title={`${title} — John Carlo Santos`} description={entry.data.desc}>
 <div class="wrap">
 
   <article class="note-article" style="padding-top:120px;padding-bottom:96px;">
@@ -41,4 +41,4 @@ const { title, date, tags } = entry.data;
   </article>
 
 </div>
-</Layout>
+</NoteLayout>
