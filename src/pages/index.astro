@@ -1,270 +1,277 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPosts } from '../lib/cms';
+const posts = await getPosts();
+const latest = posts.slice(0, 3);
 
 const projects = [
-  { name:"tanggol-saka", emoji:"🌾", desc:"Decentralized land-ownership system for indigenous Filipino farmers. Proof via USSD logs, offline-first, digital land certificates. Tagalog-first UI.", tech:["TypeScript","Next.js","Decentralized"], url:"https://github.com/kuyacarlo/tanggol-saka", live:"https://tanggol-saka.vercel.app", img:null },
-  { name:"bantay",       emoji:"🛡️", desc:"Pre-push git hook catching secrets + high-entropy strings. Two-layer: regex + LLM. Auth0 CIBA for human-in-the-loop on medium-risk pushes. Fail-closed.", tech:["TypeScript","LLM","Auth0","Git"], url:"https://github.com/kuyacarlo/bantay", live:null, img:null },
-  { name:"forgesure",    emoji:"🔧", desc:"All-in-one dashboard for equipment cost and maintenance tracking. For teams tired of spreadsheets.", tech:["Python","FastAPI","Next.js"], url:"https://github.com/kuyacarlo/forgesure", live:"https://forgesure.vercel.app", img:null },
-  { name:"git-profile",  emoji:"↔️", desc:"CLI tool to manage multiple Git identities and SSH URLs, switchable per-repo. Companion to ssh-profiles.", tech:["Go","CLI","SSH"], url:"https://github.com/kuyacarlo/git-profile", live:null, img:null },
-  { name:"built",        emoji:"🏗️", desc:"Asset management for construction companies. Tracks equipment, costs, and supplies. Full-stack with Docker Compose.", tech:["Python","Next.js","Docker"], url:"https://github.com/kuyacarlo/built", live:null, img:null },
-  { name:"sage-mcp",     emoji:"🎓", desc:"Notion MCP-powered academic co-pilot for Filipino university students. Builds semester workspace from CHED-verified curriculum automatically.", tech:["Python","LangGraph","MCP","Notion"], url:"https://github.com/kuyacarlo/sage-mcp", live:null, img:null },
-  { name:"sulong",       emoji:"🛒", desc:"Sulong Marketplace — a TypeScript marketplace application.", tech:["TypeScript","React","Vite"], url:"https://github.com/kuyacarlo/sulong", live:"https://sarai-sulong.vercel.app", img:null },
-  { name:"pub-routes",   emoji:"🚌", desc:"ETL pipeline transforming LTFRB transport routes into clean CSV. Open transport data for the Philippines.", tech:["Python","BeautifulSoup","Pandas"], url:"https://github.com/kuyacarlo/pub-routes", live:null, img:null },
-  { name:"nutrition-api",emoji:"🥗", desc:"Production API serving nutritional facts from multiple sources to downstream devices.", tech:["FastAPI","Docker","SQLite"], url:"https://github.com/kuyacarlo/nutrition-api", live:null, img:null },
-  { name:"qc-for-devs-data-pros", emoji:"✅", desc:"Quality Checks for developers and data professionals. Curated pre-push safety net.", tech:["Reference","DevOps"], url:"https://github.com/kuyacarlo/qc-for-devs-data-pros", live:null, img:null },
+  { name:"tanggol-saka", emoji:"🌾", desc:"Decentralized land-ownership system for indigenous Filipino farmers. USSD proof-of-occupation, offline-first, Tagalog UI, digital land certificates.", tech:["TypeScript","Next.js","Decentralized"], url:"https://github.com/kuyacarlo/tanggol-saka", live:"https://tanggol-saka.vercel.app", img:null },
+  { name:"bantay",       emoji:"🛡️", desc:"Pre-push hook catching secrets + entropy anomalies. Regex + LLM two-layer detection. Auth0 CIBA human-in-the-loop for medium-risk pushes. Fail-closed.", tech:["TypeScript","LLM","Auth0","Git Hooks"], url:"https://github.com/kuyacarlo/bantay", live:null, img:null },
+  { name:"ComplyAIgent", emoji:"⚖️", desc:"Agentic DevSecOps compliance engine for AMD Hackathon. Ingests regulatory text, enforces pre-push policies. LangGraph HIL, Go CLI, Next.js dashboard.", tech:["Go","LangGraph","FastAPI","Next.js"], url:"https://github.com/kuyacarlo/bantay", live:null, img:null },
+  { name:"forgesure",    emoji:"🔧", desc:"All-in-one dashboard for equipment cost and maintenance tracking. For construction teams tired of spreadsheets.", tech:["Python","FastAPI","Next.js"], url:"https://github.com/kuyacarlo/forgesure", live:"https://forgesure.vercel.app", img:null },
+  { name:"sage-mcp",     emoji:"🎓", desc:"SAGE — Notion MCP-powered academic co-pilot for Filipino students. Builds semester workspace from CHED-verified curriculum via agentic orchestration.", tech:["Python","LangGraph","MCP","Notion"], url:"https://github.com/kuyacarlo/sage-mcp", live:null, img:null },
+  { name:"pub-routes",   emoji:"🚌", desc:"ETL pipeline transforming raw LTFRB transport data into clean, public CSV datasets. Open data for Filipino commuters.", tech:["Python","BeautifulSoup","Pandas","ETL"], url:"https://github.com/kuyacarlo/pub-routes", live:null, img:null },
 ];
 
 const hackathons = [
-  { place:"Top 3",        name:"BPI DataWave 2025",        proj:"WorkSight",      win:true,  desc:"Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams." },
-  { place:"1st Runner Up",name:"LPU Innoverse 2025",       proj:"BetterTranspo",  win:true,  desc:"Decentralized platform for BEEP™ payments with LoraWAN — real-time routes, fare estimation, fullness meter." },
-  { place:"Participant",  name:"MLH Notion MCP 2026",      proj:"SAGE",           win:false, desc:"Autonomous academic orchestrator bridging LLM reasoning with production APIs via MCP." },
-  { place:"Participant",  name:"UP PJDSC 2025",            proj:"KLIMA",          win:false, desc:"Bronze→Silver→Gold ETL pipeline for localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan." },
-  { place:"Participant",  name:"AMD Dev Hackathon 2026",   proj:"ComplyAIgent",   win:false, desc:"Agentic DevSecOps compliance engine. LangGraph human-in-the-loop, Go CLI, Next.js dashboard." },
+  { place:"Top 3 Finalist",  name:"BPI DataWave 2025",      proj:"WorkSight",    desc:"Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams." },
+  { place:"1st Runner Up",   name:"LPU Innoverse 2025",     proj:"BetterTranspo",desc:"Decentralized platform for BEEP™ payments with LoraWAN — real-time routes, fare estimation, fullness meter." },
+  { place:"MLH GHW 2026",    name:"Notion MCP Challenge",   proj:"SAGE",         desc:"Autonomous academic orchestrator. MCP bridges LLM reasoning to production Notion APIs." },
+  { place:"UP PJDSC 2025",   name:"Data Science Competition",proj:"KLIMA",       desc:"Bronze→Silver→Gold ETL pipeline for localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan." },
+  { place:"AMD Hackathon 2026",name:"Developer Challenge",  proj:"ComplyAIgent", desc:"Agentic DevSecOps compliance engine. Three-tier comparator, human-in-the-loop, Go CLI." },
 ];
-
-const talks = [
-  { title:"Git & GitHub Fundamentals",            org:"CS Society BulSU",  type:"Workshop" },
-  { title:"Web Development Basics — HTML & CSS",  org:"Seekers Guild",     type:"Workshop" },
-];
-
-const writings = [
-  { title:"QC for Devs & Data Pros — Your Pre-Push Safety Net", url:"https://dev.to/kuyacarlo/qc-for-devs-and-data-pros-your-pre-push-safety-net-5ha4", date:"Mar 2026", platform:"dev.to" },
-  { title:"SAGE — A Notion MCP Academic Co-Pilot",              url:"https://dev.to/kuyacarlo/sage-a-notion-mcp-academic-co-pilot-for-filipino-university-students-3lmb", date:"Mar 2026", platform:"dev.to" },
-];
-
-const involvement = [
-  { period:"2025–Now", role:"CTO",                    org:"Seekers Guild" },
-  { period:"2026–Now", role:"Cybersecurity Associate", org:"CS Society BulSU" },
-  { period:"2025",     role:"External Officer",        org:"CS Society BulSU" },
-  { period:"2024",     role:"Creatives Officer",       org:"BulSU Microsoft Student Community" },
-  { period:"Ongoing",  role:"Google Cloud Innovator",  org:"Google Developer Program" },
-  { period:"Ongoing",  role:"NVIDIA Developer",        org:"NVIDIA Developer Community" },
-];
-
-const skills = {
-  "Data Engineering":   ["Python","Pandas","NumPy","DuckDB","PostgreSQL","ETL","SQL","BeautifulSoup4"],
-  "Infra & DevOps":     ["Docker","Podman","GitHub Actions","Forgejo CI","Ansible","Linux","Bash","Fedora"],
-  "Cloud":              ["GCP Cloud Run","AWS Lambda","S3","Supabase","Cloud Functions"],
-  "Backend & AI":       ["FastAPI","MCP","LangGraph","FastMCP","Agentic AI","Go","Next.js"],
-};
 ---
 
-<Layout>
+<Layout active="home">
 
-<!-- HEADER -->
-<header class="site-header">
-  <div class="header-top">
-    <h1>John Carlo Santos <span style="color:var(--ink-3);font-weight:400;">/ kuyacarlo</span></h1>
-    <nav class="site-nav">
-      <a href="#projects">projects</a>
-      <a href="#hackathons">hackathons</a>
-      <a href="#talks">talks</a>
-      <a href="#about">about</a>
-      <a href="#contact">contact</a>
-    </nav>
-  </div>
-
-  <div class="prose">
-    <p>
-      BS Computer Engineering @ <strong style="color:var(--ink);">Bulacan State University</strong> (2028). I build
-      <span data-type="data pipelines.|agentic AI systems.|DevOps tooling.|MCP servers.|things that matter to Filipinos." style="color:var(--ink);font-family:var(--mono);font-size:0.88rem;"></span><span class="cursor"></span>
-    </p>
-    <p style="margin-top:8px;">
-      Currently CTO of <a href="https://seekersguild.dev" target="_blank" rel="noopener">Seekers Guild</a>.
-      Hackathon builder, Fedora Linux user, and an occasional workshop speaker.
-      Based in Bulacan, PH.
-    </p>
-  </div>
-
-  <div class="stat-row">
-    {[{v:"5+",l:"Hackathons"},{v:"10+",l:"Projects"},{v:"2",l:"Talks"},{v:"2028",l:"Graduating"}].map(s => (
-      <div>
-        <div class="stat-v">{s.v}</div>
-        <div class="stat-l">{s.l}</div>
+<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-name r">
+      <div class="line1">
+        <span>John Carlo</span>
+        <span class="hero-status">
+          <span class="hero-status-dot"></span>
+          available for collab
+        </span>
       </div>
-    ))}
-  </div>
+      <span class="line2">Santos.</span>
+    </div>
+    <div class="hero-rule r d1"></div>
+    <div class="hero-sub r d2">
+      <p class="hero-desc">
+        <strong>Data engineer</strong>, DevOps builder & hackathon competitor.<br/>
+        BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.<br/>
+        I build <span data-type="ETL pipelines.|agentic AI systems.|MCP servers.|tools for Filipino farmers.|things that ship."></span><span class="cursor"></span>
+      </p>
+      <div class="hero-actions">
+        <a href="#work"  class="btn btn-filled">Selected work</a>
+        <a href="/book"  class="btn btn-outline">Book a call →</a>
+      </div>
+    </div>
+  </section>
+</div>
 
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <a href="https://linkedin.com/in/kuyacarlo" target="_blank" rel="noopener" style="font-size:0.82rem;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;">LinkedIn ↗</a>
-    <a href="https://github.com/kuyacarlo"       target="_blank" rel="noopener" style="font-size:0.82rem;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;">GitHub ↗</a>
-    <a href="https://dev.to/kuyacarlo"           target="_blank" rel="noopener" style="font-size:0.82rem;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;">dev.to ↗</a>
-    <a href="mailto:santos.karlo@outlook.com"   style="font-size:0.82rem;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;">Email ↗</a>
-  </div>
-</header>
 
-
-<!-- PROJECTS -->
-<section class="section" id="projects">
-  <h2 class="section-title reveal">Projects</h2>
-  <div class="project-grid">
-    {projects.map((p, i) => (
-      <a href={p.url} target="_blank" rel="noopener noreferrer" class={`project-card reveal d${(i%4)+1}`}>
-        <div class="project-thumb">
-          {p.img
-            ? <img src={p.img} alt={p.name} loading="lazy" />
-            : <div class="project-thumb-placeholder"><span>{p.emoji}</span></div>
-          }
-        </div>
-        <div class="project-meta">
-          <div class="project-name">
-            {p.name}
-            {p.live && <span class="live-dot" title="Live site available"></span>}
-          </div>
-          <p class="project-desc">{p.desc}</p>
-          <div class="project-tags">
-            {p.tech.map(t => <span class="tag">{t}</span>)}
-          </div>
-        </div>
+<!-- ═══ SELECTED WORK ══════════════════════════════════════════════════════ -->
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="sec-label r">
+      <span class="sec-num">01</span>
+      <span class="sec-name">Selected Work</span>
+      <span class="sec-rule"></span>
+      <a href="https://github.com/kuyacarlo" target="_blank" rel="noopener"
+         style="font-size:0.75rem;color:var(--ink-3);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">
+        37 repos ↗
       </a>
-    ))}
+    </div>
+
+    <div class="project-grid">
+      {projects.map((p, i) => (
+        <a href={p.url} target="_blank" rel="noopener noreferrer" class={`project-card r d${(i%4)+1}`}>
+          <div class="proj-thumb">
+            {p.img
+              ? <img src={p.img} alt={p.name} loading="lazy" />
+              : <div class="proj-placeholder"><span>{p.emoji}</span></div>
+            }
+          </div>
+          <div class="proj-body">
+            <div class="proj-name">
+              {p.name}
+              {p.live && <span class="live-dot" title="Live"></span>}
+            </div>
+            <p class="proj-desc">{p.desc}</p>
+            <div class="proj-tags">
+              {p.tech.map(t => <span class="tag">{t}</span>)}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
   </div>
-  <p style="margin-top:14px;font-size:0.8rem;">
-    <a href="https://github.com/kuyacarlo" target="_blank" rel="noopener" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;">
-      → 37 public repos on GitHub
-    </a>
-  </p>
 </section>
 
-<hr />
 
-<!-- HACKATHONS -->
+<!-- ═══ HACKATHONS ═════════════════════════════════════════════════════════ -->
 <section class="section" id="hackathons">
-  <h2 class="section-title reveal">Hackathons & Competitions</h2>
-  <div class="hack-list reveal d1">
-    {hackathons.map(h => (
-      <div class="hack-item">
-        <span class="hack-place">{h.place}</span>
-        <div>
+  <div class="wrap">
+    <div class="sec-label r">
+      <span class="sec-num">02</span>
+      <span class="sec-name">Hackathons & Competitions</span>
+      <span class="sec-rule"></span>
+    </div>
+
+    <div class="hack-list r d1">
+      {hackathons.map(h => (
+        <div class="hack-item">
+          <div class="hack-place">{h.place}</div>
           <div class="hack-name">{h.name}</div>
           <span class="hack-proj">{h.proj}</span>
           <p class="hack-desc">{h.desc}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
-
-<hr />
-
-<!-- TALKS & WRITING -->
-<section class="section" id="talks">
-  <h2 class="section-title reveal">Talks & Writing</h2>
-
-  <p style="font-size:0.78rem;color:var(--ink-3);margin-bottom:12px;">Workshops</p>
-  <div class="reveal d1" style="margin-bottom:28px;">
-    {talks.map(t => (
-      <div class="talk-item">
-        <div class="talk-title">{t.title}</div>
-        <div class="talk-org">{t.type} · {t.org}</div>
-      </div>
-    ))}
-  </div>
-
-  <p style="font-size:0.78rem;color:var(--ink-3);margin-bottom:12px;">Writing</p>
-  <div class="reveal d2">
-    {writings.map(w => (
-      <a href={w.url} target="_blank" rel="noopener noreferrer" class="writing-item" style="display:flex;">
-        <span class="writing-title">{w.title}</span>
-        <span class="writing-date">{w.platform} · {w.date}</span>
-      </a>
-    ))}
-  </div>
-</section>
-
-<hr />
-
-<!-- ABOUT -->
-<section class="section" id="about">
-  <h2 class="section-title reveal">About</h2>
-
-  <div class="prose reveal d1">
-    <p>
-      I'm <strong style="color:var(--ink);">Karlo</strong> — a generalist engineer and student.
-      My work spans ETL pipelines, containerized microservices, FastAPI backends, and agentic AI systems.
-      I gravitate toward tools that make other developers faster, and projects that solve real problems
-      for real Filipinos.
-    </p>
-    <p>
-      Running <strong style="color:var(--ink);">Fedora Linux</strong> as my daily driver. Learning Go.
-      Tinkering with homelab. Curious about cybersecurity.
-    </p>
-  </div>
-
-  <!-- Skills -->
-  <div class="reveal d2" style="margin-top:28px;">
-    {Object.entries(skills).map(([cat, techs]) => (
-      <div class="skill-block">
-        <p class="skill-cat">{cat}</p>
-        <div class="skill-tags">
-          {techs.map(t => <span class="tag">{t}</span>)}
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <!-- Education + Certs -->
-  <div class="reveal d3" style="margin-top:28px;">
-    <p style="font-size:0.78rem;color:var(--ink-3);margin-bottom:10px;">Education</p>
-    <p style="font-size:0.88rem;color:var(--ink);">BS Computer Engineering — Bulacan State University</p>
-    <p style="font-size:0.78rem;color:var(--ink-3);">Malolos, Bulacan · Expected 2028</p>
-
-    <p style="font-size:0.78rem;color:var(--ink-3);margin-top:20px;margin-bottom:8px;">Certifications</p>
-    {[
-      ["Azure Data Fundamentals","Microsoft · May 2025"],
-      ["Azure AI Services Workshop","Microsoft · May 2025"],
-      ["Intro to Cybersecurity","Cisco NetAcad · 2025"],
-      ["Cybersecurity Job Simulation","Mastercard/Forage · Apr 2025"],
-    ].map(([name, info]) => (
-      <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:0.82rem;gap:12px;">
-        <span style="color:var(--ink);">{name}</span>
-        <span style="color:var(--ink-3);font-family:var(--mono);font-size:0.72rem;white-space:nowrap;">{info}</span>
-      </div>
-    ))}
-  </div>
-
-  <!-- Involvement -->
-  <div class="reveal d4" style="margin-top:28px;">
-    <p style="font-size:0.78rem;color:var(--ink-3);margin-bottom:10px;">Community & Leadership</p>
-    <div class="inv-list">
-      {involvement.map(inv => (
-        <div class="inv-item">
-          <span class="inv-period">{inv.period}</span>
-          <div>
-            <div class="inv-role">{inv.role}</div>
-            <div class="inv-org">{inv.org}</div>
-          </div>
         </div>
       ))}
     </div>
   </div>
 </section>
 
-<hr />
 
-<!-- CONTACT -->
-<section class="section" id="contact">
-  <h2 class="section-title reveal">Contact</h2>
-  <p class="reveal d1" style="margin-bottom:20px;">Open to collaboration, hackathon teams, freelance data work, and good conversations.</p>
-  <div class="reveal d2">
-    {[
-      {label:"email",    val:"santos.karlo@outlook.com",   href:"mailto:santos.karlo@outlook.com"},
-      {label:"linkedin", val:"linkedin.com/in/kuyacarlo",  href:"https://linkedin.com/in/kuyacarlo"},
-      {label:"github",   val:"github.com/kuyacarlo",       href:"https://github.com/kuyacarlo"},
-      {label:"dev.to",   val:"dev.to/kuyacarlo",           href:"https://dev.to/kuyacarlo"},
-    ].map(row => (
-      <a href={row.href} target={row.label !== "email" ? "_blank" : undefined} rel="noopener" class="contact-row">
-        <span class="contact-label">{row.label}</span>
-        <span class="contact-val">{row.val}</span>
-        <span style="color:var(--ink-3);font-size:0.78rem;">↗</span>
-      </a>
-    ))}
+<!-- ═══ ABOUT ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-label r">
+      <span class="sec-num">03</span>
+      <span class="sec-name">About</span>
+      <span class="sec-rule"></span>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <div class="prose r d1">
+          <p>
+            I'm <strong>Karlo</strong> — a generalist software engineer and student.
+            My work spans ETL pipelines, containerized microservices, FastAPI backends,
+            and agentic AI systems built with LangGraph + MCP.
+          </p>
+          <p>
+            I gravitate toward tools that make other developers faster and projects
+            that solve real problems for real Filipinos — pre-push security hooks,
+            land-ownership systems for indigenous farmers, disaster-risk pipelines for LGUs.
+          </p>
+          <p>
+            Currently CTO of <strong>Seekers Guild</strong> and Cybersecurity Associate at
+            CS Society BulSU. Running <strong>Fedora Linux</strong>, learning Go,
+            tinkering with a homelab. Check out <a href="/homelab">what's running →</a>
+          </p>
+          <p>
+            Talks: <em>Git & GitHub Fundamentals</em> (CS Society BulSU),
+            <em>Web Dev Basics</em> (Seekers Guild).
+            Writing on <a href="https://dev.to/kuyacarlo" target="_blank" rel="noopener">dev.to ↗</a>
+          </p>
+        </div>
+
+        <div class="r d2" style="margin-top:24px;">
+          <p style="font-size:0.72rem;color:var(--ink-3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Tech</p>
+          <div class="skill-row">
+            {["Python","Go","TypeScript","FastAPI","LangGraph","MCP","Docker","GitHub Actions","DuckDB","PostgreSQL","Supabase","GCP","AWS","Ansible","Linux","Bash"].map(t => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="about-aside r d2">
+        <!-- Education -->
+        <div class="aside-card">
+          <div class="aside-head">
+            <span class="aside-head-label">Education</span>
+          </div>
+          <div class="aside-row">
+            <div>
+              <div class="aside-val">BS Computer Engineering</div>
+              <div class="aside-sub">Bulacan State University · Malolos</div>
+            </div>
+            <span class="aside-date">2028</span>
+          </div>
+        </div>
+
+        <!-- Selected certs -->
+        <div class="aside-card">
+          <div class="aside-head">
+            <span class="aside-head-label">Certifications</span>
+          </div>
+          {[
+            ["Azure Data Fundamentals",      "Microsoft","May 2025"],
+            ["Azure AI Services Workshop",   "Microsoft","May 2025"],
+            ["Intro to Cybersecurity",       "Cisco","2025"],
+            ["Cybersecurity Simulation",     "Mastercard","Apr 2025"],
+          ].map(([name, issuer, date]) => (
+            <div class="aside-row">
+              <div>
+                <div class="aside-val" style="font-size:0.78rem;">{name}</div>
+                <div class="aside-sub">{issuer}</div>
+              </div>
+              <span class="aside-date">{date}</span>
+            </div>
+          ))}
+        </div>
+
+        <!-- Links -->
+        <div class="aside-card">
+          <div class="aside-head"><span class="aside-head-label">Find me</span></div>
+          {[
+            ["LinkedIn",  "linkedin.com/in/kuyacarlo", "https://linkedin.com/in/kuyacarlo"],
+            ["GitHub",    "github.com/kuyacarlo",      "https://github.com/kuyacarlo"],
+            ["dev.to",    "dev.to/kuyacarlo",          "https://dev.to/kuyacarlo"],
+            ["Email",     "santos.karlo@outlook.com",  "mailto:santos.karlo@outlook.com"],
+          ].map(([label, val, href]) => (
+            <a href={href} target={label !== "Email" ? "_blank" : undefined} rel="noopener" class="aside-row" style="transition:background 0.15s;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background=''">
+              <div>
+                <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;">{label}</div>
+                <div class="aside-val" style="font-size:0.8rem;">{val}</div>
+              </div>
+              <span style="font-size:0.72rem;color:var(--ink-3);">↗</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<footer class="site-footer">
-  <span>© 2026 John Carlo Santos</span>
-  <span style="font-family:var(--mono);">Iterate fast, think deep, ship meaning.</span>
-</footer>
+
+<!-- ═══ NOTES ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="notes">
+  <div class="wrap">
+    <div class="sec-label r">
+      <span class="sec-num">04</span>
+      <span class="sec-name">Notes</span>
+      <span class="sec-rule"></span>
+      <a href="/notes" style="font-size:0.75rem;color:var(--ink-3);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">all notes →</a>
+    </div>
+
+    <div class="r d1">
+      {latest.map(p => (
+        <a href={`/notes/${p.slug}`} class="note-row">
+          <span class="note-date">{p.date}</span>
+          <span class="note-title">{p.title}</span>
+          <span class="note-arrow">↗</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ HOMELAB TEASER ═════════════════════════════════════════════════════ -->
+<section class="section" id="homelab-teaser">
+  <div class="wrap">
+    <div class="sec-label r">
+      <span class="sec-num">05</span>
+      <span class="sec-name">Homelab</span>
+      <span class="sec-rule"></span>
+    </div>
+
+    <a href="/homelab" class="r d1" style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;border:1px solid var(--b1);border-radius:6px;padding:28px 32px;transition:background 0.15s,border-color 0.15s;" onmouseover="this.style.background='var(--s1)';this.style.borderColor='var(--b2)'" onmouseout="this.style.background='';this.style.borderColor='var(--b1)'">
+      <div>
+        <p style="font-size:0.92rem;font-weight:600;color:var(--ink);margin-bottom:6px;">Self-hosted services, hardware, and experiments</p>
+        <p style="font-size:0.82rem;color:var(--ink-3);">Forgejo, Authentik, Vaultwarden, Grafana, n8n, Portainer — and whatever breaks next.</p>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+          {["Proxmox","Docker","Fedora","Authentik","Forgejo","Traefik"].map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+      <span style="font-size:1.1rem;color:var(--ink-3);">→</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- ═══ FOOTER ══════════════════════════════════════════════════════════════ -->
+<div class="wrap">
+  <footer class="footer">
+    <span>© 2026 John Carlo Santos</span>
+    <span>Iterate fast, think deep, ship meaning.</span>
+    <span><a href="/book" style="color:inherit;text-decoration:underline;text-decoration-color:var(--b2);text-underline-offset:3px;">book a call →</a></span>
+  </footer>
+</div>
 
 </Layout>

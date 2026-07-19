@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('notes', (e: any) => !e.data.draft);
+  return entries.map((entry: any) => ({
+    params: { slug: entry.id.replace(/\.md$/, '') },
+    props:  { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, date, tags } = entry.data;
+---
+
+<Layout active="notes" title={`${title} — John Carlo Santos`} description={entry.data.desc}>
+<div class="wrap">
+
+  <article class="note-article" style="padding-top:120px;padding-bottom:96px;">
+    <div style="margin-bottom:28px;">
+      <a href="/notes" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);">← notes</a>
+    </div>
+
+    <div class="r" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      {tags.map((t: string) => <span class="tag">{t}</span>)}
+    </div>
+
+    <h1 class="r d1">{title}</h1>
+    <time class="r d2" datetime={date}>{date}</time>
+
+    <div class="body r d3">
+      <Content />
+    </div>
+
+    <div style="margin-top:48px;padding-top:28px;border-top:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <a href="/notes" style="font-size:0.82rem;color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← all notes</a>
+      <a href="/" style="font-size:0.82rem;color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">home →</a>
+    </div>
+  </article>
+
+</div>
+</Layout>

@@ -3,10 +3,12 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  active?: string;
 }
 const {
   title = "John Carlo Santos",
-  description = "BS Computer Engineering @ BulSU. Data engineer, DevOps tinkerer, hackathon builder. Bulacan, PH.",
+  description = "Data engineer, DevOps builder & hackathon competitor. BulSU Computer Engineering '28. Bulacan, PH.",
+  active = "",
 } = Astro.props;
 ---
 <!doctype html>
@@ -15,40 +17,75 @@ const {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta name="author" content="John Carlo Santos" />
-  <link rel="canonical" href="https://kuyacarlo.dev" />
-  <meta property="og:type"        content="website" />
-  <meta property="og:title"       content={title} />
+  <meta name="description"      content={description} />
+  <meta name="author"           content="John Carlo Santos" />
+  <meta property="og:type"      content="website" />
+  <meta property="og:title"     content={title} />
   <meta property="og:description" content={description} />
-  <meta name="robots" content="index, follow" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23111110'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-size='14' font-family='monospace' fill='%23e8e6e1'%3Ejk%3C/text%3E%3C/svg%3E" />
+  <meta name="robots"           content="index, follow" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230d0c0b'/%3E%3Ctext x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='13' font-family='monospace' fill='%23f0ede6'%3Ejk%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
-  <slot />
 
-  <script>
-    // Scroll reveal
-    const io = new IntersectionObserver(
-      es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }),
-      { threshold: 0.08, rootMargin: '0px 0px -24px 0px' }
-    );
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="nav-logo">kuyacarlo<em>.</em></a>
+    <div class="nav-links">
+      <a href="/"         class={`nav-link${active==='home'     ? ' active':''}`}>home</a>
+      <a href="/homelab"  class={`nav-link${active==='homelab'  ? ' active':''}`}>homelab</a>
+      <a href="/notes"    class={`nav-link${active==='notes'    ? ' active':''}`}>notes</a>
+      <a href="/book"     class="nav-book">book a call →</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    // Typing effect
-    document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
-      const words = (el.dataset.type || '').split('|');
-      let wi = 0, ci = 0, del = false;
-      const tick = () => {
-        const w = words[wi];
-        el.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
-        let t = del ? 50 : 95;
-        if (!del && ci > w.length)  { t = 1800; del = true; }
-        if (del  && ci < 0)         { del = false; wi = (wi+1)%words.length; ci = 0; t = 350; }
-        setTimeout(tick, t);
-      };
-      setTimeout(tick, 800);
-    });
-  </script>
+<!-- mobile drawer -->
+<div id="mobile-nav" style="display:none;position:fixed;inset:0;z-index:90;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px;">
+  <button id="nav-close" style="position:absolute;top:18px;right:24px;background:none;border:none;font-size:1.1rem;color:var(--ink-3);cursor:pointer;">✕</button>
+  <a href="/"        onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">home</a>
+  <a href="/homelab" onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">homelab</a>
+  <a href="/notes"   onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">notes</a>
+  <a href="/book"    onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">book a call</a>
+</div>
+
+<slot />
+
+<script>
+  // nav scroll
+  const nav = document.getElementById('nav')!;
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+  // mobile
+  const mob = document.getElementById('mobile-nav')!;
+  document.getElementById('nav-toggle')?.addEventListener('click', () => mob.style.display='flex');
+  document.getElementById('nav-close')?.addEventListener('click',  () => mob.style.display='none');
+  (window as any).closeMob = () => { mob.style.display='none'; };
+
+  // reveal
+  const io = new IntersectionObserver(
+    es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);} }),
+    {threshold:0.08, rootMargin:'0px 0px -20px 0px'}
+  );
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  // typing
+  document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
+    const words = (el.dataset.type||'').split('|');
+    let wi=0,ci=0,del=false;
+    const tick=()=>{
+      const w=words[wi];
+      el.textContent=del?w.slice(0,ci--):w.slice(0,ci++);
+      let t=del?50:90;
+      if(!del&&ci>w.length){t=1900;del=true;}
+      if(del&&ci<0){del=false;wi=(wi+1)%words.length;ci=0;t=380;}
+      setTimeout(tick,t);
+    };
+    setTimeout(tick,700);
+  });
+</script>
 </body>
 </html>
