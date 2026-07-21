@@ -1259,3 +1259,60 @@ a.now-val:hover { color: var(--ink); }
   .resume-actions { flex-direction: column; align-items: stretch; }
   .resume-actions .btn { justify-content: center; }
 }
+
+/* ─── Print Mode (Harvard-inspired minimal CV formatting) ────────────────── */
+@media print {
+  :root {
+    --bg: #ffffff !important;
+    --ink: #000000 !important;
+    --ink-2: #333333 !important;
+    --ink-3: #666666 !important;
+    --b1: #dddddd !important;
+    --s1: #ffffff !important;
+    --s2: #fcfcfc !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+  .nav, #mobile-nav, #cli-console, .hero-actions, .avail-badge, .sec-rule, .note-arrow, .status-dot, .status-text, #cli-close {
+    display: none !important;
+  }
+  .wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .section {
+    page-break-inside: avoid;
+    border-top: 1px solid #000000 !important;
+    padding-block: 20px !important;
+  }
+  .r {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* Harvard-style reference footnotes for external links */
+  a[href^="http"]:after {
+    content: " [Available at: " attr(href) "]" !important;
+    font-size: 85% !important;
+    color: #333333 !important;
+    font-family: var(--mono) !important;
+  }
+  /* Ensure project grid fits nicely on printed page */
+  .project-grid, .hack-list, .hw-grid {
+    grid-template-columns: 1fr !important;
+    background: none !important;
+    border: none !important;
+  }
+  .project-card, .hack-item, .hw-row {
+    border-bottom: 1px solid #eeeeee !important;
+    padding: 10px 0 !important;
+    background: none !important;
+  }
+  .proj-placeholder, .proj-thumb {
+    display: none !important;
+  }
+}

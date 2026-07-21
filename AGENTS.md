@@ -48,6 +48,7 @@ To add a project photo: put the file in `public/`, set `img: "/your-file.jpg"` o
 - Reveal animation: add class `reveal` + optionally `d1`–`d4` for stagger
 - Tags use class `tag` — monospace, bordered, no color fills
 - Live indicator is a `live-dot` class (small green dot) — only on projects with a `live` URL
+- **Agent Workflow:** Always create a feature branch (`feature/...`), implement changes, and prepare for a PR/merge back to `main`. Do not push directly to `main` without testing the build.
 
 ## What NOT to do
 
