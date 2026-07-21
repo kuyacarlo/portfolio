@@ -30,7 +30,7 @@ const hackathons = [
     <div class="hero-name r">
       <div class="line1">
         <span>John Carlo</span>
-        <span class="hero-status">
+        <span class="hero-status" id="collab-status" style="cursor:pointer;" title="Click for a surprise!">
           <span class="hero-status-dot"></span>
           available for collab
         </span>
@@ -44,9 +44,10 @@ const hackathons = [
         BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.<br/>
         I build <span data-type="ETL pipelines.|agentic AI systems.|MCP servers.|tools for Filipino farmers.|things that ship."></span><span class="cursor"></span>
       </p>
-      <div class="hero-actions">
+      <div class="hero-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <a href="#work"  class="btn btn-filled">Selected work</a>
         <a href="/book"  class="btn btn-outline">Book a call →</a>
+        <span style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);user-select:none;margin-left:8px;" class="hide-mobile">Press <kbd style="background:var(--s2);border:1px solid var(--b1);padding:2px 5px;border-radius:3px;color:var(--ink-2);">`</kbd> for console</span>
       </div>
     </div>
   </section>
