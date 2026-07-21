@@ -28,7 +28,11 @@ const { title, date, tags } = entry.data;
     </div>
 
     <h1 class="r d1">{title}</h1>
-    <time class="r d2" datetime={date}>{date}</time>
+    <div class="r d2" style="display:flex;align-items:center;gap:12px;margin-bottom:36px;font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);">
+      <time datetime={date}>{date}</time>
+      <span>·</span>
+      <span>{Math.max(1, Math.ceil((entry.body || '').split(/\s+/).length / 200))} min read</span>
+    </div>
 
     <div class="body r d3">
       <Content />

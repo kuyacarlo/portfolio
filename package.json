@@ -16,10 +16,12 @@
     "astro": "^7.1.1",
     "katex": "^0.18.1",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "rss": "^1.2.2"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
+    "@types/rss": "^0.0.32",
     "canvas-confetti": "^1.9.4"
   }
 }
