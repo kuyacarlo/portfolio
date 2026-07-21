@@ -56,9 +56,9 @@ const stack = [
       Everything self-hosted, everything Dockerised, everything monitored.
     </p>
     <a href="https://status.kuyacarlo.dev" target="_blank" rel="noopener"
-       class="avail-badge r d2">
+       class="avail-badge r d2" id="uptime-badge">
       <span class="hero-status-dot"></span>
-      status page → (uptime kuma)
+      <span id="uptime-text">status page → (uptime kuma)</span>
     </a>
   </section>
 
@@ -68,23 +68,95 @@ const stack = [
       <span class="sec-num">01</span>
       <span class="sec-name">Services running</span>
       <span class="sec-rule"></span>
-      <span style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);">
+      <span style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);" id="services-summary">
         {services.filter(s=>s.up).length}/{services.length} up
       </span>
     </div>
     <div class="homelab-grid r d1">
-      {services.map(s => (
-        <div class="service-card">
-          <div class="service-status">
-            <span class={`status-dot ${s.up ? 'status-up' : 'status-down'}`}></span>
-            <span style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">{s.up ? 'up' : 'down'}</span>
-          </div>
-          <div class="service-name">{s.name}</div>
-          <div class="service-desc">{s.desc}</div>
-        </div>
-      ))}
+      {services.map(s => {
+        // Map services to their public endpoints if applicable, or fallback to the status page link
+        const urlMap: Record<string, string> = {
+          "Forgejo": "https://git.kuyacarlo.dev",
+          "Uptime Kuma": "https://status.kuyacarlo.dev",
+          "Vaultwarden": "https://vault.kuyacarlo.dev"
+        };
+        const href = urlMap[s.name] || "https://status.kuyacarlo.dev";
+        return (
+          <a href={href} target="_blank" rel="noopener noreferrer" class="service-card" data-service-name={s.name.toLowerCase()}>
+            <div class="service-status">
+              <span class={`status-dot ${s.up ? 'status-up' : 'status-down'}`}></span>
+              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">{s.up ? 'up' : 'down'}</span>
+            </div>
+            <div class="service-name">{s.name}</div>
+            <div class="service-desc">{s.desc}</div>
+          </a>
+        );
+      })}
     </div>
   </section>
+
+  <script is:inline>
+    // Fetch live status from Uptime Kuma to dynamicize the status page indicators
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('https://status.kuyacarlo.dev/api/status-page/default/manifest.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // Try to read status data from preloadData or configuration
+        const payload = data.preloadData || window.preloadData;
+        if (!payload || !payload.publicGroupList) return;
+
+        const allMonitors = [];
+        payload.publicGroupList.forEach(group => {
+          if (group.monitorList) {
+            allMonitors.push(...group.monitorList);
+          }
+        });
+
+        if (allMonitors.length === 0) return;
+
+        // Count up services
+        let upCount = 0;
+        const cards = document.querySelectorAll('.service-card');
+
+        cards.forEach(card => {
+          const name = card.querySelector('.service-name')?.textContent?.trim().toLowerCase();
+          if (!name) return;
+
+          // Find matching monitor
+          const monitor = allMonitors.find(m => m.name.toLowerCase() === name || m.name.toLowerCase().includes(name));
+          if (monitor) {
+            const dot = card.querySelector('.status-dot');
+            const text = card.querySelector('.status-text');
+            
+            // 1 = UP, 0 = DOWN, 2 = PENDING/WARNING
+            const isUp = monitor.active !== false && (monitor.status === 1 || monitor.status === true);
+            
+            if (dot && text) {
+              dot.className = `status-dot ${isUp ? 'status-up' : 'status-down'}`;
+              text.textContent = isUp ? 'up' : 'down';
+            }
+            if (isUp) upCount++;
+          } else {
+            // Default match if no monitor is declared (assume up based on server config)
+            const dot = card.querySelector('.status-dot');
+            if (dot && dot.classList.contains('status-up')) {
+              upCount++;
+            }
+          }
+        });
+
+        // Update counts
+        const summary = document.getElementById('services-summary');
+        if (summary) {
+          summary.textContent = `${upCount}/${cards.length} up`;
+        }
+      } catch (e) {
+        console.warn('Could not update live status', e);
+      }
+    });
+  </script>
 
   <!-- Hardware -->
   <section class="section">

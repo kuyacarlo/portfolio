@@ -340,7 +340,7 @@ ul   { list-style: none; }
 
 /* ─── Homelab ────────────────────────────────────────────────────────────── */
 .homelab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--b1); border: 1px solid var(--b1); border-radius: var(--r); overflow: hidden; }
-.service-card { background: var(--bg); padding: 20px; }
+.service-card { background: var(--bg); padding: 20px; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: background 0.15s; }
 .service-card:hover { background: var(--s1); }
 .service-status { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
 .status-dot { width: 6px; height: 6px; border-radius: 50%; }
