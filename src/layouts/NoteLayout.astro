@@ -46,9 +46,10 @@ const { title, description } = Astro.props;
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const blocks = document.querySelectorAll('pre code.language-mermaid');
+      // Shiki might render as pre[data-language="mermaid"] or code.language-mermaid
+      const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
       for (const block of blocks) {
-        const pre = block.parentElement;
+        const pre = block.closest('pre');
         const code = block.textContent || '';
         const div = document.createElement('div');
         div.className = 'mermaid';

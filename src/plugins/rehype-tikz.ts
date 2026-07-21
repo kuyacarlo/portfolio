@@ -26,17 +26,32 @@ function walk(node: any, parent: any, index: number | null) {
   ) {
     const code = node.children[0];
     const classes: string[] = code.properties?.className ?? [];
-    if (classes.includes('language-tikz')) {
-      const src = code.children?.[0]?.value ?? '';
-      // replace the <pre><code> node in-place with <script type="text/tikz">
-      if (parent && index !== null) {
-        parent.children[index] = {
-          type: 'element',
-          tagName: 'script',
-          properties: { type: 'text/tikz' },
-          children: [{ type: 'text', value: src }],
-        };
-        return; // no need to recurse into replaced node
+    const dataLang = node.properties?.dataLanguage ?? code.properties?.dataLanguage ?? '';
+    const isTikz = classes.includes('language-tikz') || dataLang === 'tikz';
+    
+    // Check if it's plaintext but contains tikz environment (since Shiki might fallback to plaintext)
+    let src = '';
+    const extractText = (n: any): string => {
+      if (n.type === 'text') return n.value || '';
+      if (n.children) return n.children.map(extractText).join('');
+      return '';
+    };
+    
+    if (isTikz || classes.includes('language-plaintext') || dataLang === 'plaintext') {
+      src = extractText(code);
+      const hasTikzEnv = src.includes('\\begin{tikzpicture}');
+      
+      if (isTikz || hasTikzEnv) {
+        // replace the <pre> node in-place with <script type="text/tikz">
+        if (parent && index !== null) {
+          parent.children[index] = {
+            type: 'element',
+            tagName: 'script',
+            properties: { type: 'text/tikz' },
+            children: [{ type: 'text', value: src }],
+          };
+          return; // no need to recurse into replaced node
+        }
       }
     }
   }
