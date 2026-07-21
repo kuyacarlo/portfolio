@@ -1,0 +1,181 @@
+---
+import '../styles/global.css';
+interface Props {
+  title?: string;
+  description?: string;
+  active?: string;
+}
+const {
+  title = "John Carlo Santos",
+  description = "Data engineer, DevOps builder & hackathon competitor. BulSU Computer Engineering '28. Bulacan, PH.",
+  active = "",
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description"      content={description} />
+  <meta name="author"           content="John Carlo Santos" />
+  <meta property="og:type"      content="website" />
+  <meta property="og:title"     content={title} />
+  <meta property="og:description" content={description} />
+  <meta name="robots"           content="index, follow" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230d0c0b'/%3E%3Ctext x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='13' font-family='monospace' fill='%23f0ede6'%3Ejk%3C/text%3E%3C/svg%3E" />
+  <slot name="head" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="nav-logo">kuyacarlo<em>.</em></a>
+    <div class="nav-links">
+      <a href="/"         class={`nav-link${active==='home'     ? ' active':''}`}>home</a>
+      <a href="/homelab"  class={`nav-link${active==='homelab'  ? ' active':''}`}>homelab</a>
+      <a href="/notes"    class={`nav-link${active==='notes'    ? ' active':''}`}>notes</a>
+      <a href="/book"     class="nav-book">book a call →</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- mobile drawer -->
+<div id="mobile-nav" style="display:none;position:fixed;inset:0;z-index:90;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px;">
+  <button id="nav-close" style="position:absolute;top:18px;right:24px;background:none;border:none;font-size:1.1rem;color:var(--ink-3);cursor:pointer;">✕</button>
+  <a href="/"        onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">home</a>
+  <a href="/homelab" onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">homelab</a>
+  <a href="/notes"   onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">notes</a>
+  <a href="/book"    onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">book a call</a>
+</div>
+
+<slot />
+
+<script>
+  // nav scroll
+  const nav = document.getElementById('nav')!;
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+  // mobile
+  const mob = document.getElementById('mobile-nav')!;
+  document.getElementById('nav-toggle')?.addEventListener('click', () => mob.style.display='flex');
+  document.getElementById('nav-close')?.addEventListener('click',  () => mob.style.display='none');
+  (window as any).closeMob = () => { mob.style.display='none'; };
+
+  // reveal
+  const io = new IntersectionObserver(
+    es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);} }),
+    {threshold:0.08, rootMargin:'0px 0px -20px 0px'}
+  );
+  document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+  // typing
+  document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
+    const words = (el.dataset.type||'').split('|');
+    let wi=0,ci=0,del=false;
+    const tick=()=>{
+      const w=words[wi];
+      el.textContent=del?w.slice(0,ci--):w.slice(0,ci++);
+      let t=del?50:90;
+      if(!del&&ci>w.length){t=1900;del=true;}
+      if(del&&ci<0){del=false;wi=(wi+1)%words.length;ci=0;t=380;}
+      setTimeout(tick,t);
+    };
+    setTimeout(tick,700);
+  });
+
+  // Confetti trigger
+  document.getElementById('collab-status')?.addEventListener('click', async () => {
+    try {
+      const { default: confetti } = await import('canvas-confetti');
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.2 },
+        colors: ['#c4a882', '#f0ede6', '#888480']
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  // CLI Console Overlay
+  const consoleHTML = `
+    <div id="cli-console" style="display:none;position:fixed;inset:0;background:rgba(13,12,11,0.98);z-index:999;font-family:var(--mono);padding:clamp(16px, 4vw, 40px);color:var(--ink);flex-direction:column;font-size:0.82rem;line-height:1.6;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--b1);padding-bottom:12px;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <span style="color:var(--sand);">kuyacarlo-terminal v1.0.0</span>
+        <span style="color:var(--ink-2);cursor:pointer;background:var(--s2);border:1px solid var(--b1);padding:2px 8px;border-radius:4px;font-size:0.75rem;" id="cli-close">CLOSE [X]</span>
+      </div>
+      <div id="cli-output" style="flex:1;overflow-y:auto;margin-bottom:16px;white-space:pre-wrap;word-break:break-word;">Type <span style="color:var(--sand);">help</span> to see available commands.\n\n</div>
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:20px;">
+        <span style="color:var(--ink-3);">&gt;</span>
+        <input type="text" id="cli-input" autofocus style="flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:inherit;width:100%;" autocomplete="off" spellcheck="false" inputmode="text" />
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', consoleHTML);
+
+  const cli = document.getElementById('cli-console')!;
+  const cliInput = document.getElementById('cli-input') as HTMLInputElement;
+  const cliOutput = document.getElementById('cli-output')!;
+  const cliClose = document.getElementById('cli-close')!;
+
+  const showCLI = () => {
+    cli.style.display = 'flex';
+    setTimeout(() => cliInput.focus(), 50);
+  };
+  const hideCLI = () => {
+    cli.style.display = 'none';
+  };
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '`') {
+      e.preventDefault();
+      if (cli.style.display === 'flex') hideCLI(); else showCLI();
+    }
+    if (e.key === 'Escape' && cli.style.display === 'flex') {
+      hideCLI();
+    }
+  });
+
+  cliClose.addEventListener('click', hideCLI);
+
+  const writeOut = (text: string) => {
+    cliOutput.textContent += text + '\n';
+    cliOutput.scrollTop = cliOutput.scrollHeight;
+  };
+
+  cliInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const rawCmd = cliInput.value.trim();
+      cliInput.value = '';
+      if (!rawCmd) return;
+      writeOut(`> ${rawCmd}`);
+
+      const cmd = rawCmd.toLowerCase();
+      if (cmd === 'help') {
+        writeOut('Available commands:\n  help      - Show this help menu\n  projects  - List main open-source projects\n  skills    - List core tech specialties\n  contact   - How to reach kuyacarlo\n  homelab   - Overview of self-hosted setup\n  clear     - Clear terminal history\n  close     - Exit console overlay');
+      } else if (cmd === 'clear') {
+        cliOutput.textContent = '';
+      } else if (cmd === 'close' || cmd === 'exit') {
+        hideCLI();
+      } else if (cmd === 'projects') {
+        writeOut('Selected Projects:\n  - tanggol-saka: Decentralized land-ownership system for Filipino farmers.\n  - bantay: Pre-push git hook catching secrets & entropy anomalies.\n  - ComplyAIgent: DevSecOps agentic compliance engine.\n  - SAGE: Notion MCP-powered academic co-pilot.');
+      } else if (cmd === 'skills') {
+        writeOut('Core Skills:\n  - Languages: Python, Go, TypeScript, Shell\n  - Frameworks & Tools: FastAPI, LangGraph, MCP, Docker, Traefik, Ansible\n  - Data Infrastructure: DuckDB, PostgreSQL, Supabase, GCP, AWS');
+      } else if (cmd === 'contact') {
+        writeOut('Contact Info:\n  - Email: santos.karlo@outlook.com\n  - LinkedIn: linkedin.com/in/kuyacarlo\n  - GitHub: github.com/kuyacarlo');
+      } else if (cmd === 'homelab') {
+        writeOut('Homelab Host Setup:\n  - OS: Fedora Server 41\n  - Specs: i5-4590, 16 GB RAM, 2.5 TB Total storage\n  - Core services: Headscale, Traefik proxy, Vaultwarden, Authentik SSO, Grafana stack');
+      } else {
+        writeOut(`Command not found: ${rawCmd}. Type "help" for a list of commands.`);
+      }
+    }
+  });
+</script>
+</body>
+</html>

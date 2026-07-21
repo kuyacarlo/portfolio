@@ -1,0 +1,227 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const services = [
+  { name:"Forgejo",     desc:"Self-hosted Git. Mirrors to GitHub.", up:true  },
+  { name:"Authentik",   desc:"Identity provider — SSO for all services.", up:true  },
+  { name:"Vaultwarden", desc:"Bitwarden-compatible password server.", up:true  },
+  { name:"Traefik",     desc:"Reverse proxy + auto TLS via Let's Encrypt.", up:true  },
+  { name:"Portainer",   desc:"Docker management UI.", up:true  },
+  { name:"Grafana",     desc:"Monitoring dashboard — Prometheus + Loki.", up:true  },
+  { name:"Prometheus",  desc:"Metrics scraping from all containers.", up:true  },
+  { name:"Loki",        desc:"Log aggregation. Tailed by Promtail.", up:true  },
+  { name:"n8n",         desc:"Workflow automation — webhooks, notifications.", up:false },
+  { name:"Uptime Kuma", desc:"Public status page for hosted services.", up:true  },
+  { name:"Forgejo CI",  desc:"Self-hosted CI runner. Mostly linting + tests.", up:true  },
+  { name:"Headscale",   desc:"Self-hosted Tailscale control server for mesh VPN.", up:true  },
+];
+
+const hardware = [
+  ["Machine",  "Old Lenovo ThinkCentre M93p (i5-4590, 16 GB RAM)"],
+  ["Storage",  "500 GB SSD OS + 2 TB HDD data"],
+  ["OS",       "Fedora Server 41"],
+  ["Network",  "Unifi AP AC Lite · pfSense router"],
+  ["VPN",      "Headscale (Tailscale-compatible) mesh"],
+  ["Power",    "APC UPS 650VA"],
+  ["Uptime",   "~95% (reboots for kernel updates)"],
+  ["Domain",   "*.lab.kuyacarlo.dev (internal) via split DNS"],
+];
+
+const stack = [
+  ["Container runtime", "Docker + Compose"],
+  ["Orchestration",     "Portainer CE (no k8s — overkill for one box)"],
+  ["Secrets",           "Vaultwarden + env files, no hardcoded creds"],
+  ["Backups",           "rsync to external HDD nightly + Rclone to R2"],
+  ["DNS",               "Pi-hole for ad blocking + pfSense for split-DNS"],
+  ["Monitoring",        "Grafana + Prometheus + Loki + Uptime Kuma"],
+  ["CI/CD",             "Forgejo Actions — push triggers linting + deploy"],
+  ["Auth",              "Authentik SSO — OAuth2 proxy in front of services"],
+];
+---
+
+<Layout active="homelab" title="Homelab — John Carlo Santos">
+<div class="wrap">
+
+  <!-- header -->
+  <section style="padding-top:120px;padding-bottom:60px;">
+    <div class="sec-label r" style="margin-bottom:20px;">
+      <a href="/" style="font-size:0.72rem;color:var(--ink-3);">← back</a>
+      <span class="sec-rule"></span>
+    </div>
+    <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
+      Home<br/><span style="color:var(--ink-3);">lab.</span>
+    </h1>
+    <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
+      One machine. Twelve services. Constant tinkering.<br/>
+      Everything self-hosted, everything Dockerised, everything monitored.
+    </p>
+    <a href="https://status.kuyacarlo.dev" target="_blank" rel="noopener"
+       class="avail-badge r d2" id="uptime-badge">
+      <span class="hero-status-dot"></span>
+      <span id="uptime-text">status page → (uptime kuma)</span>
+    </a>
+  </section>
+
+  <!-- Services grid -->
+  <section class="section">
+    <div class="sec-label r">
+      <span class="sec-num">01</span>
+      <span class="sec-name">Services running</span>
+      <span class="sec-rule"></span>
+      <span style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);" id="services-summary">
+        {services.filter(s=>s.up).length}/{services.length} up
+      </span>
+    </div>
+    <div class="homelab-grid r d1">
+      {services.map(s => {
+        // Map services to their public endpoints if applicable, or fallback to the status page link
+        const urlMap: Record<string, string> = {
+          "Forgejo": "https://git.kuyacarlo.dev",
+          "Uptime Kuma": "https://status.kuyacarlo.dev",
+          "Vaultwarden": "https://vault.kuyacarlo.dev"
+        };
+        const href = urlMap[s.name] || "https://status.kuyacarlo.dev";
+        return (
+          <a href={href} target="_blank" rel="noopener noreferrer" class="service-card" data-service-name={s.name.toLowerCase()}>
+            <div class="service-status">
+              <span class={`status-dot ${s.up ? 'status-up' : 'status-down'}`}></span>
+              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">{s.up ? 'up' : 'down'}</span>
+            </div>
+            <div class="service-name">{s.name}</div>
+            <div class="service-desc">{s.desc}</div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <script is:inline>
+    // Fetch live status from Uptime Kuma to dynamicize the status page indicators
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('https://status.kuyacarlo.dev/api/status-page/default/manifest.json');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // Try to read status data from preloadData or configuration
+        const payload = data.preloadData || window.preloadData;
+        if (!payload || !payload.publicGroupList) return;
+
+        const allMonitors = [];
+        payload.publicGroupList.forEach(group => {
+          if (group.monitorList) {
+            allMonitors.push(...group.monitorList);
+          }
+        });
+
+        if (allMonitors.length === 0) return;
+
+        // Count up services
+        let upCount = 0;
+        const cards = document.querySelectorAll('.service-card');
+
+        cards.forEach(card => {
+          const name = card.querySelector('.service-name')?.textContent?.trim().toLowerCase();
+          if (!name) return;
+
+          // Find matching monitor
+          const monitor = allMonitors.find(m => m.name.toLowerCase() === name || m.name.toLowerCase().includes(name));
+          if (monitor) {
+            const dot = card.querySelector('.status-dot');
+            const text = card.querySelector('.status-text');
+            
+            // 1 = UP, 0 = DOWN, 2 = PENDING/WARNING
+            const isUp = monitor.active !== false && (monitor.status === 1 || monitor.status === true);
+            
+            if (dot && text) {
+              dot.className = `status-dot ${isUp ? 'status-up' : 'status-down'}`;
+              text.textContent = isUp ? 'up' : 'down';
+            }
+            if (isUp) upCount++;
+          } else {
+            // Default match if no monitor is declared (assume up based on server config)
+            const dot = card.querySelector('.status-dot');
+            if (dot && dot.classList.contains('status-up')) {
+              upCount++;
+            }
+          }
+        });
+
+        // Update counts
+        const summary = document.getElementById('services-summary');
+        if (summary) {
+          summary.textContent = `${upCount}/${cards.length} up`;
+        }
+      } catch (e) {
+        console.warn('Could not update live status', e);
+      }
+    });
+  </script>
+
+  <!-- Hardware -->
+  <section class="section">
+    <div class="sec-label r">
+      <span class="sec-num">02</span>
+      <span class="sec-name">Hardware</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="hw-grid r d1">
+      {hardware.map(([label, val]) => (
+        <div class="hw-row">
+          <span class="hw-label">{label}</span>
+          <span class="hw-val">{val}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Stack decisions -->
+  <section class="section">
+    <div class="sec-label r">
+      <span class="sec-num">03</span>
+      <span class="sec-name">Stack decisions</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="r d1" style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
+      {stack.map(([label, val], i) => (
+        <div style={`display:grid;grid-template-columns:180px 1fr;gap:16px;padding:14px 20px;border-bottom:${i < stack.length-1 ? '1px solid var(--b1)' : 'none'};font-size:0.83rem;`}>
+          <span style="font-family:var(--mono);color:var(--ink-3);font-size:0.72rem;padding-top:2px;">{label}</span>
+          <span style="color:var(--ink-2);">{val}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Notes/diagram -->
+  <section class="section">
+    <div class="sec-label r">
+      <span class="sec-num">04</span>
+      <span class="sec-name">Network topology</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="r d1" style="border:1px solid var(--b1);border-radius:6px;padding:28px;background:var(--s1);">
+      <pre style="font-family:var(--mono);font-size:0.75rem;color:var(--ink-2);line-height:1.8;overflow-x:auto;">{`internet
+    │
+    └── pfSense router (192.168.1.1)
+            ├── Unifi AP (WiFi clients)
+            ├── ThinkCentre M93p [homelab host]
+            │       ├── Traefik (443 → all services)
+            │       ├── Pi-hole  (DNS, 192.168.1.53)
+            │       └── Headscale (Tailscale mesh VPN)
+            │
+            └── dev workstation (Fedora)
+                    └── connected via Headscale from anywhere
+
+Subdomains:  *.lab.kuyacarlo.dev  → internal only (split DNS)
+             *.kuyacarlo.dev      → Cloudflare → Traefik (public)`}</pre>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>© 2026 John Carlo Santos</span>
+    <a href="/" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← back home</a>
+  </footer>
+
+</div>
+</Layout>

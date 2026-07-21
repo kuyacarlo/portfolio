@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Availability — hardcode this or wire to CMS/CF KV
+const available = true;
+const availText = available
+  ? "Open to short-term contracts, hackathon teams, and freelance data work."
+  : "Currently heads-down on a project. Check back in a few weeks.";
+---
+
+<Layout active="" title="Book a Call — John Carlo Santos">
+<div class="wrap">
+
+  <section class="book-hero">
+    <div class="r">
+      <a href="/" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-bottom:28px;display:inline-block;">← back</a>
+    </div>
+
+    <div class="avail-badge r">
+      <span class={`status-dot ${available ? 'status-up' : 'status-warn'}`}></span>
+      {available ? "currently available" : "limited availability"}
+    </div>
+
+    <h1 class="r d1" style="font-size:clamp(2.5rem,7vw,5.5rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
+      Let's talk.
+    </h1>
+
+    <p class="r d2" style="font-size:0.95rem;color:var(--ink-2);max-width:480px;line-height:1.75;margin-bottom:40px;">
+      {availText}
+    </p>
+
+    <!-- BOOKING EMBED ─────────────────────────────────────────────────────
+         Options:
+         1. Cal.com (free, self-host possible): replace the div below with
+            <div data-cal-link="kuyacarlo/30min" data-cal-theme="dark"></div>
+            <script async src="https://app.cal.com/embed.js"></script>
+
+         2. Calendly:
+            <div class="calendly-inline-widget" data-url="https://calendly.com/kuyacarlo/30min?background_color=0d0c0b&text_color=f0ede6&primary_color=c4a882"></div>
+            <script async src="https://assets.calendly.com/assets/external/widget.js"></script>
+
+         3. Savvycal, Lemonsqueezy Scheduling, etc — same pattern
+    ─────────────────────────────────────────────────────────────────────── -->
+    <div class="cal-embed r d3">
+      <span style="font-size:1.5rem;opacity:0.3;">📅</span>
+      <span>cal.com embed goes here</span>
+      <span style="font-size:0.72rem;color:var(--ink-3);">
+        → set up at cal.com/kuyacarlo, then drop the embed script above
+      </span>
+    </div>
+
+    <!-- Fallback contact methods -->
+    <div class="r d4" style="margin-top:32px;">
+      <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);margin-bottom:14px;">or reach out directly</p>
+      <div style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
+        {[
+          {label:"Email",    val:"santos.karlo@outlook.com",  href:"mailto:santos.karlo@outlook.com"},
+          {label:"LinkedIn", val:"linkedin.com/in/kuyacarlo", href:"https://linkedin.com/in/kuyacarlo"},
+        ].map((row, i, arr) => (
+          <a href={row.href} target={row.label!=="Email"?"_blank":undefined} rel="noopener"
+             style={`display:flex;align-items:center;justify-content:space-between;padding:16px 20px;font-size:0.85rem;gap:12px;transition:background 0.15s;${i<arr.length-1?'border-bottom:1px solid var(--b1);':''}`}
+             onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background=''">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">{row.label}</div>
+              <div style="color:var(--ink);">{row.val}</div>
+            </div>
+            <span style="color:var(--ink-3);">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- What I work on -->
+    <div class="r d4" style="margin-top:40px;padding-top:40px;border-top:1px solid var(--b1);">
+      <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;">Good fits</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
+        {[
+          ["Data Engineering",    "ETL pipelines, data cleaning, open datasets"],
+          ["Agentic AI / MCP",    "LangGraph workflows, MCP server builds"],
+          ["DevOps tooling",      "CI/CD setup, Docker, self-hosted infra"],
+          ["Hackathon teaming",   "Fast execution, full-stack, data track"],
+        ].map(([title, desc]) => (
+          <div style="background:var(--bg);padding:18px 20px;">
+            <div style="font-size:0.85rem;font-weight:500;color:var(--ink);margin-bottom:4px;">{title}</div>
+            <div style="font-size:0.78rem;color:var(--ink-3);">{desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="footer">
+    <span>© 2026 John Carlo Santos</span>
+    <a href="/" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← back home</a>
+  </footer>
+
+</div>
+</Layout>
