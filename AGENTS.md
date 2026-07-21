@@ -95,3 +95,4 @@ vercel deploy --prod
 | v0.1    | Initial scaffold — dark navy/cyan design, all content in place |
 | v0.2    | Redesign — greyscale/lean, fixed nav bug, project image slots added |
 | v0.3    | Final redesign — single-column editorial layout, stimmie/leerob/paco inspired |
+| v0.4    | Added RSS feed (`/rss.xml`), reading times, click-to-confetti status, and `~` CLI Console overlay |
