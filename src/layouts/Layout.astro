@@ -105,15 +105,15 @@ const {
 
   // CLI Console Overlay
   const consoleHTML = `
-    <div id="cli-console" style="display:none;position:fixed;inset:0;background:rgba(13,12,11,0.96);z-index:999;font-family:var(--mono);padding:40px;color:var(--ink);flex-direction:column;font-size:0.85rem;line-height:1.6;overflow-y:auto;">
-      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--b1);padding-bottom:12px;margin-bottom:16px;">
+    <div id="cli-console" style="display:none;position:fixed;inset:0;background:rgba(13,12,11,0.98);z-index:999;font-family:var(--mono);padding:clamp(16px, 4vw, 40px);color:var(--ink);flex-direction:column;font-size:0.82rem;line-height:1.6;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--b1);padding-bottom:12px;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
         <span style="color:var(--sand);">kuyacarlo-terminal v1.0.0</span>
-        <span style="color:var(--ink-3);cursor:pointer;" id="cli-close">ESC / CLICK TO CLOSE</span>
+        <span style="color:var(--ink-2);cursor:pointer;background:var(--s2);border:1px solid var(--b1);padding:2px 8px;border-radius:4px;font-size:0.75rem;" id="cli-close">CLOSE [X]</span>
       </div>
-      <div id="cli-output" style="flex:1;overflow-y:auto;margin-bottom:16px;white-space:pre-wrap;">Type <span style="color:var(--sand);">help</span> to see available commands.\n\n</div>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div id="cli-output" style="flex:1;overflow-y:auto;margin-bottom:16px;white-space:pre-wrap;word-break:break-word;">Type <span style="color:var(--sand);">help</span> to see available commands.\n\n</div>
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:20px;">
         <span style="color:var(--ink-3);">&gt;</span>
-        <input type="text" id="cli-input" autofocus style="flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:inherit;" autocomplete="off" spellcheck="false" />
+        <input type="text" id="cli-input" autofocus style="flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:inherit;width:100%;" autocomplete="off" spellcheck="false" inputmode="text" />
       </div>
     </div>
   `;
