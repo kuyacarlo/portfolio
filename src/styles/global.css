@@ -423,4 +423,5 @@ ul   { list-style: none; }
   .nav-toggle { display: flex; }
   .note-row { grid-template-columns: 1fr; gap: 4px; }
   .note-date { display: none; }
+  .hide-mobile { display: none !important; }
 }

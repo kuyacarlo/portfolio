@@ -87,6 +87,95 @@ const {
     };
     setTimeout(tick,700);
   });
+
+  // Confetti trigger
+  document.getElementById('collab-status')?.addEventListener('click', async () => {
+    try {
+      const { default: confetti } = await import('canvas-confetti');
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.2 },
+        colors: ['#c4a882', '#f0ede6', '#888480']
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  // CLI Console Overlay
+  const consoleHTML = `
+    <div id="cli-console" style="display:none;position:fixed;inset:0;background:rgba(13,12,11,0.96);z-index:999;font-family:var(--mono);padding:40px;color:var(--ink);flex-direction:column;font-size:0.85rem;line-height:1.6;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--b1);padding-bottom:12px;margin-bottom:16px;">
+        <span style="color:var(--sand);">kuyacarlo-terminal v1.0.0</span>
+        <span style="color:var(--ink-3);cursor:pointer;" id="cli-close">ESC / CLICK TO CLOSE</span>
+      </div>
+      <div id="cli-output" style="flex:1;overflow-y:auto;margin-bottom:16px;white-space:pre-wrap;">Type <span style="color:var(--sand);">help</span> to see available commands.\n\n</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="color:var(--ink-3);">&gt;</span>
+        <input type="text" id="cli-input" autofocus style="flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:inherit;font-size:inherit;" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', consoleHTML);
+
+  const cli = document.getElementById('cli-console')!;
+  const cliInput = document.getElementById('cli-input') as HTMLInputElement;
+  const cliOutput = document.getElementById('cli-output')!;
+  const cliClose = document.getElementById('cli-close')!;
+
+  const showCLI = () => {
+    cli.style.display = 'flex';
+    setTimeout(() => cliInput.focus(), 50);
+  };
+  const hideCLI = () => {
+    cli.style.display = 'none';
+  };
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '`') {
+      e.preventDefault();
+      if (cli.style.display === 'flex') hideCLI(); else showCLI();
+    }
+    if (e.key === 'Escape' && cli.style.display === 'flex') {
+      hideCLI();
+    }
+  });
+
+  cliClose.addEventListener('click', hideCLI);
+
+  const writeOut = (text: string) => {
+    cliOutput.textContent += text + '\n';
+    cliOutput.scrollTop = cliOutput.scrollHeight;
+  };
+
+  cliInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const rawCmd = cliInput.value.trim();
+      cliInput.value = '';
+      if (!rawCmd) return;
+      writeOut(`> ${rawCmd}`);
+
+      const cmd = rawCmd.toLowerCase();
+      if (cmd === 'help') {
+        writeOut('Available commands:\n  help      - Show this help menu\n  projects  - List main open-source projects\n  skills    - List core tech specialties\n  contact   - How to reach kuyacarlo\n  homelab   - Overview of self-hosted setup\n  clear     - Clear terminal history\n  close     - Exit console overlay');
+      } else if (cmd === 'clear') {
+        cliOutput.textContent = '';
+      } else if (cmd === 'close' || cmd === 'exit') {
+        hideCLI();
+      } else if (cmd === 'projects') {
+        writeOut('Selected Projects:\n  - tanggol-saka: Decentralized land-ownership system for Filipino farmers.\n  - bantay: Pre-push git hook catching secrets & entropy anomalies.\n  - ComplyAIgent: DevSecOps agentic compliance engine.\n  - SAGE: Notion MCP-powered academic co-pilot.');
+      } else if (cmd === 'skills') {
+        writeOut('Core Skills:\n  - Languages: Python, Go, TypeScript, Shell\n  - Frameworks & Tools: FastAPI, LangGraph, MCP, Docker, Traefik, Ansible\n  - Data Infrastructure: DuckDB, PostgreSQL, Supabase, GCP, AWS');
+      } else if (cmd === 'contact') {
+        writeOut('Contact Info:\n  - Email: santos.karlo@outlook.com\n  - LinkedIn: linkedin.com/in/kuyacarlo\n  - GitHub: github.com/kuyacarlo');
+      } else if (cmd === 'homelab') {
+        writeOut('Homelab Host Setup:\n  - OS: Fedora Server 41\n  - Specs: i5-4590, 16 GB RAM, 2.5 TB Total storage\n  - Core services: Headscale, Traefik proxy, Vaultwarden, Authentik SSO, Grafana stack');
+      } else {
+        writeOut(`Command not found: ${rawCmd}. Type "help" for a list of commands.`);
+      }
+    }
+  });
 </script>
 </body>
 </html>
