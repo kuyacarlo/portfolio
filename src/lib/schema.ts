@@ -3,7 +3,6 @@
 
 export interface Project {
   name: string;
-  emoji: string;
   desc: string;
   tech: string[];
   url: string;
@@ -16,6 +15,7 @@ export interface Hackathon {
   name: string;
   proj: string;
   desc: string;
+  url?: string;
 }
 
 export interface HomelabService {
