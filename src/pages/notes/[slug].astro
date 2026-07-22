@@ -13,9 +13,20 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const { title, date, tags } = entry.data;
+
+const bodyText = entry.body || '';
+const hasMath = bodyText.includes('$');
+const hasTikz = bodyText.includes('\\begin{tikzpicture}') || bodyText.includes('```tikz');
+const hasMermaid = bodyText.includes('```mermaid');
 ---
 
-<NoteLayout title={`${title} — John Carlo Santos`} description={entry.data.desc}>
+<NoteLayout 
+  title={`${title} — John Carlo Santos`} 
+  description={entry.data.desc}
+  hasMath={hasMath}
+  hasTikz={hasTikz}
+  hasMermaid={hasMermaid}
+>
 <div class="wrap">
 
   <article class="note-article" style="padding-top:120px;padding-bottom:96px;">

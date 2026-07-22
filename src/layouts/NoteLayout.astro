@@ -7,70 +7,75 @@ import Layout from './Layout.astro';
 interface Props {
   title?: string;
   description?: string;
+  hasMath?: boolean;
+  hasTikz?: boolean;
+  hasMermaid?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, hasMath = false, hasTikz = false, hasMermaid = false } = Astro.props;
 ---
 
 <Layout title={title} description={description} active="notes">
-  <!-- KaTeX styles (served from CDN — math renders server-side, just needs CSS) -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
-    integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5"
-    crossorigin="anonymous"
-    slot="head"
-  />
-  <!-- TikZJax fonts (only matters when page has tikz blocks) -->
-  <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css" slot="head" />
+  {hasMath && (
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5"
+      crossorigin="anonymous"
+      slot="head"
+    />
+  )}
+  {hasTikz && (
+    <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css" slot="head" />
+  )}
 
   <slot />
 
-  <!-- Mermaid — converts ```mermaid code blocks after DOM load -->
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  {hasMermaid && (
+    <script type="module" is:inline>
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'dark',
-      darkMode: true,
-      fontFamily: 'JetBrains Mono, monospace',
-      themeVariables: {
-        background:    '#141312',
-        primaryColor:  '#252320',
-        primaryBorderColor: '#363430',
-        primaryTextColor:   '#f0ede6',
-        lineColor:     '#4a4844',
-        edgeLabelBackground: '#141312',
-        clusterBkg:    '#1d1c1a',
-      },
-    });
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        darkMode: true,
+        fontFamily: 'JetBrains Mono, monospace',
+        themeVariables: {
+          background:    '#141312',
+          primaryColor:  '#252320',
+          primaryBorderColor: '#363430',
+          primaryTextColor:   '#f0ede6',
+          lineColor:     '#4a4844',
+          edgeLabelBackground: '#141312',
+          clusterBkg:    '#1d1c1a',
+        },
+      });
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Shiki might render as pre[data-language="mermaid"] or code.language-mermaid
-      const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
-      for (const block of blocks) {
-        const pre = block.closest('pre');
-        const code = block.textContent || '';
-        const div = document.createElement('div');
-        div.className = 'mermaid';
-        div.textContent = code;
-        pre?.replaceWith(div);
+      document.addEventListener('DOMContentLoaded', async () => {
+        const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
+        for (const block of blocks) {
+          const pre = block.closest('pre');
+          const code = block.textContent || '';
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = code;
+          pre?.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: '.mermaid' });
+      });
+    </script>
+  )}
+
+  {hasTikz && (
+    <script is:inline>
+      // Lazy-load TikZJax only when the page actually has tikz scripts
+      if (document.querySelector('script[type="text/tikz"]')) {
+        const s = document.createElement('script');
+        s.src = 'https://tikzjax.com/v1/tikzjax.js';
+        s.async = true;
+        document.head.appendChild(s);
       }
-      await mermaid.run({ querySelector: '.mermaid' });
-    });
-  </script>
-
-  <!-- TikZJax — renders <script type="text/tikz"> blocks (produced by rehype-tikz plugin) -->
-  <!-- Only loads if page contains tikz blocks — controlled by the rehype plugin -->
-  <script is:inline>
-    // Lazy-load TikZJax only when the page actually has tikz scripts
-    if (document.querySelector('script[type="text/tikz"]')) {
-      const s = document.createElement('script');
-      s.src = 'https://tikzjax.com/v1/tikzjax.js';
-      s.async = true;
-      document.head.appendChild(s);
-    }
-  </script>
+    </script>
+  )}
 </Layout>
 
 <style is:global>
