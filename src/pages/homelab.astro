@@ -1,42 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const services = [
-  { name:"Forgejo",     desc:"Self-hosted Git. Mirrors to GitHub.", up:true  },
-  { name:"Authentik",   desc:"Identity provider — SSO for all services.", up:true  },
-  { name:"Vaultwarden", desc:"Bitwarden-compatible password server.", up:true  },
-  { name:"Traefik",     desc:"Reverse proxy + auto TLS via Let's Encrypt.", up:true  },
-  { name:"Portainer",   desc:"Docker management UI.", up:true  },
-  { name:"Grafana",     desc:"Monitoring dashboard — Prometheus + Loki.", up:true  },
-  { name:"Prometheus",  desc:"Metrics scraping from all containers.", up:true  },
-  { name:"Loki",        desc:"Log aggregation. Tailed by Promtail.", up:true  },
-  { name:"n8n",         desc:"Workflow automation — webhooks, notifications.", up:false },
-  { name:"Uptime Kuma", desc:"Public status page for hosted services.", up:true  },
-  { name:"Forgejo CI",  desc:"Self-hosted CI runner. Mostly linting + tests.", up:true  },
-  { name:"Headscale",   desc:"Self-hosted Tailscale control server for mesh VPN.", up:true  },
-];
-
-const hardware = [
-  ["Machine",  "Old Lenovo ThinkCentre M93p (i5-4590, 16 GB RAM)"],
-  ["Storage",  "500 GB SSD OS + 2 TB HDD data"],
-  ["OS",       "Fedora Server 41"],
-  ["Network",  "Unifi AP AC Lite · pfSense router"],
-  ["VPN",      "Headscale (Tailscale-compatible) mesh"],
-  ["Power",    "APC UPS 650VA"],
-  ["Uptime",   "~95% (reboots for kernel updates)"],
-  ["Domain",   "*.lab.kuyacarlo.dev (internal) via split DNS"],
-];
-
-const stack = [
-  ["Container runtime", "Docker + Compose"],
-  ["Orchestration",     "Portainer CE (no k8s — overkill for one box)"],
-  ["Secrets",           "Vaultwarden + env files, no hardcoded creds"],
-  ["Backups",           "rsync to external HDD nightly + Rclone to R2"],
-  ["DNS",               "Pi-hole for ad blocking + pfSense for split-DNS"],
-  ["Monitoring",        "Grafana + Prometheus + Loki + Uptime Kuma"],
-  ["CI/CD",             "Forgejo Actions — push triggers linting + deploy"],
-  ["Auth",              "Authentik SSO — OAuth2 proxy in front of services"],
-];
+import { services, hardware, stack } from '../lib/data';
 ---
 
 <Layout active="homelab" title="Homelab — John Carlo Santos">
