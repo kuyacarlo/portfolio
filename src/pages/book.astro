@@ -1,11 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { displayHost, site } from '../lib/site';
 
 // Availability — hardcode this or wire to CMS/CF KV
 const available = true;
 const availText = available
   ? "Open to short-term contracts, hackathon teams, and freelance data work."
   : "Currently heads-down on a project. Check back in a few weeks.";
+
+const emailMailto = `mailto:${site.email}`;
 ---
 
 <Layout active="" title="Book a Call — John Carlo Santos">
@@ -29,33 +32,25 @@ const availText = available
       {availText}
     </p>
 
-    <!-- BOOKING EMBED ─────────────────────────────────────────────────────
-         Options:
-         1. Cal.com (free, self-host possible): replace the div below with
-            <div data-cal-link="kuyacarlo/30min" data-cal-theme="dark"></div>
-            <script async src="https://app.cal.com/embed.js"></script>
-
-         2. Calendly:
-            <div class="calendly-inline-widget" data-url="https://calendly.com/kuyacarlo/30min?background_color=0d0c0b&text_color=f0ede6&primary_color=c4a882"></div>
-            <script async src="https://assets.calendly.com/assets/external/widget.js"></script>
-
-         3. Savvycal, Lemonsqueezy Scheduling, etc — same pattern
-    ─────────────────────────────────────────────────────────────────────── -->
-    <div class="cal-embed r d3">
-      <span style="font-size:1.5rem;opacity:0.3;">📅</span>
-      <span>cal.com embed goes here</span>
-      <span style="font-size:0.72rem;color:var(--ink-3);">
-        → set up at cal.com/kuyacarlo, then drop the embed script above
-      </span>
+    <div class="cal-embed r d3" style="padding:0;min-height:720px;align-items:stretch;overflow:hidden;">
+      <iframe
+        src={site.bookingUrl}
+        title="Book a call"
+        loading="lazy"
+        style="width:100%;min-height:720px;border:0;border-radius:6px;background:var(--bg);"
+      ></iframe>
     </div>
+    <p class="r" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-top:12px;">
+      Opens in a new tab: <a href={site.bookingUrl} target="_blank" rel="noopener" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;">{displayHost(site.bookingUrl)} ↗</a>
+    </p>
 
     <!-- Fallback contact methods -->
     <div class="r d4" style="margin-top:32px;">
       <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);margin-bottom:14px;">or reach out directly</p>
       <div style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
         {[
-          {label:"Email",    val:"santos.karlo@outlook.com",  href:"mailto:santos.karlo@outlook.com"},
-          {label:"LinkedIn", val:"linkedin.com/in/kuyacarlo", href:"https://linkedin.com/in/kuyacarlo"},
+          {label:"Email",    val:site.email,                    href:emailMailto},
+          {label:"LinkedIn", val:displayHost(site.linkedinUrl), href:site.linkedinUrl},
         ].map((row, i, arr) => (
           <a href={row.href} target={row.label!=="Email"?"_blank":undefined} rel="noopener"
              style={`display:flex;align-items:center;justify-content:space-between;padding:16px 20px;font-size:0.85rem;gap:12px;transition:background 0.15s;${i<arr.length-1?'border-bottom:1px solid var(--b1);':''}`}
@@ -77,7 +72,7 @@ const availText = available
         {[
           ["Data Engineering",    "ETL pipelines, data cleaning, open datasets"],
           ["Agentic AI / MCP",    "LangGraph workflows, MCP server builds"],
-          ["DevOps tooling",      "CI/CD setup, Docker, self-hosted infra"],
+          ["DevOps tooling",      "CI/CD setup, Podman, self-hosted infra"],
           ["Hackathon teaming",   "Fast execution, full-stack, data track"],
         ].map(([title, desc]) => (
           <div style="background:var(--bg);padding:18px 20px;">

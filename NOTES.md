@@ -24,7 +24,8 @@ title: "Your Note Title"
 date: "2026-07-19"          # YYYY-MM-DD
 tags: ["tag1", "tag2"]      # optional, shows as pills
 desc: "Short blurb."        # optional, shows in listings and SEO
-draft: true                 # set to true to hide from listings
+hide: true                  # hide from listings (+ prod routes)
+# draft: true               # alias of hide — either works
 ---
 ```
 
@@ -91,27 +92,37 @@ See [mermaid.js docs](https://mermaid.js.org/intro/).
 
 ## CircuiTikZ (TikZ circuits)
 
-Fenced with ` ```tikz `. Uses standard LaTeX CircuiTikZ syntax, rendered client-side via TikZJax (WebAssembly).
+Rendered **at build time** with `node-tikzjax` (no browser WASM).
+
+This is intentional for photosensitivity: client TikZJax (e.g. live preview
+that recompiles on every keystroke) can strobe white/black frames and has
+triggered seizure-like reactions. Here the SVG is baked once per save; prod
+pages are static. Dev HMR can still remount the figure — look away while it
+reloads if you’re sensitive.
+
+Fenced with ` ```tikz ` or ` ```circuitikz `:
 
 ````
 ```tikz
-\begin{tikzpicture}
-  \draw (0,0) to[V, v=$V_s$] (0,3)
-              to[R, l=$R_1$] (3,3)
-              to[C, l=$C_1$] (3,0) -- (0,0);
-  \draw (3,0) node[ground]{};
-\end{tikzpicture}
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}[american]
+\draw (0,0) to[V, v=$V_s$] (0,3)
+to[R, l=$R_1$] (3,3)
+to[C, l=$C_1$] (3,0) -- (0,0);
+\draw (0,0) node[ground]{};
+\end{circuitikz}
+\end{document}
 ```
 ````
 
-**Note:** TikZJax loads ~4MB of WASM — only happens when the page actually has a `tikz` block. Pages without TikZ are unaffected.
+Prefer ` ```circuitikz ` / ` ```tikz ` for the full-width figure chrome.
+`![label](/tikz/name.svg)` embeds work too, but they render at the SVG’s intrinsic size.
 
-TikZJax supports: TikZ core, CircuiTikZ, PGF math, most standard packages.
-Does **not** support: external image includes, custom fonts, full LaTeX environments beyond TikZ.
+## Hiding notes
 
-## Drafts
-
-Set `draft: true` in frontmatter — it won't appear in listings or the homepage. Still accessible at its URL in dev mode.
+Set `hide: true` (or `draft: true`) in frontmatter — excluded from `/notes` listings and
+production builds. In `astro dev`, the URL still works so you can preview.
 
 ## Connecting a real CMS (Supabase / Neon / Cloudflare)
 

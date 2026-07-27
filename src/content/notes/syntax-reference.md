@@ -2,7 +2,7 @@
 title: "Notes Syntax Reference"
 date: "2026-07-19"
 tags: ["meta", "reference"]
-desc: "How to write notes — markdown, math, mermaid diagrams, and CircuiTikZ circuits."
+desc: "How to write notes — markdown, math, mermaid diagrams, and CircuiTikZ circuits. (tikz ssr)"
 ---
 
 This page is a live reference for everything you can use in a note. All of it is plain markdown — no HTML needed.
@@ -110,32 +110,38 @@ erDiagram
 
 ## CircuiTikZ diagrams
 
-Fenced code with language `tikz`. Uses CircuiTikZ syntax (LaTeX package, rendered client-side via TikZJax):
+Circuits are rendered at build time with `node-tikzjax` (no client WASM — no live-compile strobe).
+Fence with `tikz` / `circuitikz` for a full-width figure:
 
-```tikz
-\begin{tikzpicture}
-  \draw (0,0) to[V, v=$V_s$] (0,3)
-              to[R, l=$R_1$] (3,3)
-              to[C, l=$C_1$] (3,0) -- (0,0);
-  \draw (3,3) to[R, l=$R_2$] (6,3)
-              to[short, -o] (6,2) node[right]{$V_{out}$};
-  \draw (6,0) to[short, o-] (0,0) node[ground]{};
-\end{tikzpicture}
+```circuitikz
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}[american, voltage shift=0.5]
+\draw (0,0)
+to[isource, l=$I_0$, v=$V_0$] (0,3)
+to[short, -*, i=$I_0$] (2,3)
+to[R=$R_1$, i>_=$i_1$] (2,0) -- (0,0);
+\draw (2,3) -- (4,3)
+to[R=$R_2$, i>_=$i_2$]
+(4,0) to[short, -*] (2,0);
+\end{circuitikz}
+\end{document}
 ```
 
-A full-wave rectifier:
+A series RC divider:
 
-```tikz
-\begin{tikzpicture}
-  \draw (0,2) to[sV, v=$V_{ac}$] (0,0);
-  \draw (0,2) to[D, l=$D_1$] (2,3)
-              to[short] (4,3)
-              to[R, l=$R_L$, v=$V_{out}$] (4,0)
-              to[short] (0,0);
-  \draw (0,2) to[D, l=$D_3$] (2,1)
-              to[D, l=$D_4$] (4,3);
-  \draw (2,3) to[D, l=$D_2$] (4,3);
-\end{tikzpicture}
+```circuitikz
+\usepackage{circuitikz}
+\begin{document}
+\begin{circuitikz}[american]
+\draw (0,0) to[V, v=$V_s$] (0,3)
+to[R, l=$R_1$] (3,3)
+to[C, l=$C_1$] (3,0) -- (0,0);
+\draw (3,3) to[short, -o] (4,3) node[right]{$V_{out}$};
+\draw (3,0) to[short, -o] (4,0);
+\draw (0,0) node[ground]{};
+\end{circuitikz}
+\end{document}
 ```
 
 ## Lists and tables
@@ -157,6 +163,5 @@ Tables:
 |---|---|---|
 | `remark-math` | Parses `$...$` and `$$...$$` | Build |
 | `rehype-katex` | Renders math → HTML | Build |
-| `rehype-tikz` | Converts tikz blocks → script tags | Build |
+| `rehype-tikz` + `node-tikzjax` | Renders ```tikz / ```circuitikz → SVG | Build |
 | Mermaid.js | Renders diagram code | Client |
-| TikZJax | Renders TikZ/CircuiTikZ (WASM) | Client, lazy |
