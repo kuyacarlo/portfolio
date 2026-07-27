@@ -2,17 +2,18 @@
 // NoteLayout — extends Layout.astro with:
 //   • KaTeX CSS     (server-rendered math from rehype-katex)
 //   • Mermaid.js    (client-side, converts ```mermaid blocks)
-//   • TikZJax       (client-side WASM, renders ```tikz / CircuiTikZ blocks)
+//   • CircuiTikZ    (server-rendered SVG via node-tikzjax / rehype-tikz)
 import Layout from './Layout.astro';
 interface Props {
   title?: string;
   description?: string;
+  /** Short title shown in the sticky note nav after scroll */
+  noteTitle?: string;
 }
-const { title, description } = Astro.props;
+const { title, description, noteTitle = "" } = Astro.props;
 ---
 
-<Layout title={title} description={description} active="notes">
-  <!-- KaTeX styles (served from CDN — math renders server-side, just needs CSS) -->
+<Layout title={title} description={description} active="notes" noteTitle={noteTitle}>
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
@@ -20,12 +21,9 @@ const { title, description } = Astro.props;
     crossorigin="anonymous"
     slot="head"
   />
-  <!-- TikZJax fonts (only matters when page has tikz blocks) -->
-  <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css" slot="head" />
 
   <slot />
 
-  <!-- Mermaid — converts ```mermaid code blocks after DOM load -->
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
@@ -46,7 +44,6 @@ const { title, description } = Astro.props;
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Shiki might render as pre[data-language="mermaid"] or code.language-mermaid
       const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
       for (const block of blocks) {
         const pre = block.closest('pre');
@@ -59,26 +56,12 @@ const { title, description } = Astro.props;
       await mermaid.run({ querySelector: '.mermaid' });
     });
   </script>
-
-  <!-- TikZJax — renders <script type="text/tikz"> blocks (produced by rehype-tikz plugin) -->
-  <!-- Only loads if page contains tikz blocks — controlled by the rehype plugin -->
-  <script is:inline>
-    // Lazy-load TikZJax only when the page actually has tikz scripts
-    if (document.querySelector('script[type="text/tikz"]')) {
-      const s = document.createElement('script');
-      s.src = 'https://tikzjax.com/v1/tikzjax.js';
-      s.async = true;
-      document.head.appendChild(s);
-    }
-  </script>
 </Layout>
 
 <style is:global>
-  /* ── KaTeX display math centering ────────────────────────────────────────── */
   .math-display { overflow-x: auto; padding: 16px 0; }
   .katex-display { margin: 0; }
 
-  /* ── Mermaid diagram container ────────────────────────────────────────────── */
   .mermaid {
     background: var(--s1);
     border: 1px solid var(--b1);
@@ -90,17 +73,42 @@ const { title, description } = Astro.props;
   }
   .mermaid svg { max-width: 100%; height: auto; }
 
-  /* ── TikZJax output ──────────────────────────────────────────────────────── */
-  svg[id^="tikzjax"] {
-    display: block;
-    margin: 24px auto;
-    background: #fff;           /* TikZ renders on white */
+  /* Circuit figures: muted paper, not pure white — avoids high-contrast
+     flashes when Astro HMR remounts the note body during edits. */
+  .tikz-figure {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+    padding: 20px;
+    background: #e8e4dc;
     border-radius: 6px;
-    padding: 16px;
+    border: 1px solid var(--b1);
+    overflow-x: auto;
+    contain: paint;
+  }
+  .tikz-figure img,
+  .tikz-figure svg {
+    display: block;
     max-width: 100%;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tikz-figure {
+      transition: none;
+    }
+  }
+  .tikz-error {
+    background: var(--s1);
+    border: 1px solid var(--b1);
+    border-radius: 6px;
+    padding: 14px 16px;
+    color: var(--ink-3);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    margin-bottom: 18px;
+    white-space: pre-wrap;
   }
 
-  /* ── Shiki code block overrides ───────────────────────────────────────────── */
   .note-article .body pre.astro-code {
     border: 1px solid var(--b1);
     border-radius: 6px;

@@ -1,0 +1,180 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Layout from '../layouts/Layout.astro';
+import { site } from '../lib/site';
+import {
+  TAGLINE,
+  experience,
+  talks,
+  certifications,
+  skillGroups,
+  resumeWork,
+  aboutBlurb,
+  NOW_UPDATED,
+} from '../lib/portfolio-data';
+
+const pdfPath = '/resume/john-carlo-santos.pdf';
+const hasStaticPdf = fs.existsSync(
+  path.join(process.cwd(), 'public/resume/john-carlo-santos.pdf'),
+);
+---
+
+<Layout
+  active="resume"
+  title="Resume — John Carlo Santos"
+  description={`Resume for John Carlo Santos. ${TAGLINE}`}
+>
+  <div class="wrap">
+    <article class="resume-page">
+      <!-- Screen chrome -->
+      <a href="/" class="sec-link resume-screen-only r" style="display:inline-block;margin-bottom:20px;">← back</a>
+
+      <!-- Harvard header (print-primary; also works on screen) -->
+      <header class="resume-harvard-header r">
+        <h1 class="resume-h1">John Carlo Santos</h1>
+        <p class="resume-harvard-contact">
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <span aria-hidden="true"> · </span>
+          <a href={site.linkedinUrl} target="_blank" rel="noopener">linkedin.com/in/kuyacarlo</a>
+          <span aria-hidden="true"> · </span>
+          <a href={site.githubUrl} target="_blank" rel="noopener">github.com/kuyacarlo</a>
+          <span aria-hidden="true"> · </span>
+          <span>Bulacan, PH</span>
+        </p>
+        <p class="resume-sub resume-screen-only">
+          Data engineer, DevOps builder & hackathon competitor.<br/>
+          BS Computer Engineering @ Bulacan State University · 2028.<br/>
+          <span class="resume-tagline">{TAGLINE}</span>
+        </p>
+      </header>
+
+      <div class="resume-actions resume-screen-only r d2">
+        <a href="/book" class="btn btn-filled">Book a call →</a>
+        <button type="button" class="btn btn-outline" id="resume-print">Download PDF</button>
+        {hasStaticPdf && (
+          <a href={pdfPath} class="btn btn-outline" download>Static PDF</a>
+        )}
+      </div>
+      <p class="resume-hint resume-screen-only r d2">
+        Download PDF opens print → Save as PDF in Harvard one-pager layout.
+      </p>
+
+      <section class="resume-section r d1">
+        <h2>Education</h2>
+        <div class="resume-item">
+          <div class="resume-item-head">
+            <span class="resume-item-title">Bulacan State University</span>
+            <span class="resume-item-meta">Expected 2028</span>
+          </div>
+          <div class="resume-role">
+            <div class="resume-role-title">BS Computer Engineering · Malolos, Bulacan</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="resume-section r d1">
+        <h2>About</h2>
+        {aboutBlurb.map((p) => (
+          <p class="resume-about-p">{p}</p>
+        ))}
+      </section>
+
+      <section class="resume-section r d1">
+        <h2>Experience</h2>
+        {experience.map((org) => (
+          <div class="resume-item">
+            <div class="resume-item-head">
+              <span class="resume-item-title">{org.org}</span>
+              <span class="resume-item-meta">
+                {org.roles.length > 1
+                  ? `${org.roles[org.roles.length - 1]?.dates.split('—')[0]?.trim()} — ${org.roles[0]?.dates.split('—')[1]?.trim() ?? 'present'}`
+                  : org.roles[0]?.dates}
+              </span>
+            </div>
+            {org.roles.map((role) => (
+              <div class="resume-role">
+                <div class="resume-role-title">{role.title}{org.roles.length > 1 ? ` · ${role.dates}` : ''}</div>
+                {role.bullets && (
+                  <ul>
+                    {role.bullets.map((b) => <li>{b}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        ))}
+      </section>
+
+      <section class="resume-section r d2">
+        <h2>Selected Projects</h2>
+        {resumeWork.map((p) => (
+          <div class="resume-item">
+            <div class="resume-item-head">
+              <span class="resume-item-title">{p.name}</span>
+              <span class="resume-item-meta">{p.category}</span>
+            </div>
+            <p>{p.desc}</p>
+            {p.meta && <p class="resume-item-meta resume-item-submeta">{p.meta}</p>}
+          </div>
+        ))}
+      </section>
+
+      <section class="resume-section r d2">
+        <h2>Leadership & Talks</h2>
+        <ul class="resume-talk-list">
+          {talks.map((t) => (
+            <li><em>{t.title}</em> — {t.org}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="resume-section r d2">
+        <h2>Skills</h2>
+        <div class="resume-skills-grid resume-screen-only">
+          {skillGroups.map((g) => (
+            <div class="resume-skill-col">
+              <div class="resume-item-title">{g.label}</div>
+              <div class="skill-row">
+                {g.items.map((t) => <span class="tag">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="resume-skills-harvard">
+          {skillGroups.map((g) => (
+            <p class="resume-skill-line">
+              <strong>{g.label}:</strong> {g.items.join(", ")}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section class="resume-section r d3">
+        <h2>Certifications</h2>
+        <ul class="resume-cert-list">
+          {certifications.map((c) => (
+            <li>
+              <span class="resume-cert-name">{c.name}</span>
+              <span class="resume-cert-meta">{c.issuer} · {c.date}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <p class="resume-pdf-note resume-screen-only r">
+        Optional static file: drop at <code>public/resume/john-carlo-santos.pdf</code> · updated {NOW_UPDATED}
+      </p>
+    </article>
+
+    <footer class="footer resume-screen-only">
+      <span>© 2026 John Carlo Santos</span>
+      <span>{TAGLINE}</span>
+      <span><a href="/book" class="footer-link">book a call →</a></span>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('resume-print')?.addEventListener('click', () => window.print());
+  </script>
+</Layout>
