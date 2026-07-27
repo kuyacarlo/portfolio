@@ -1,15 +1,47 @@
 ---
 import '../styles/global.css';
+import { displayHost, site } from '../lib/site';
 interface Props {
   title?: string;
   description?: string;
   active?: string;
+  /** Hide nav "book a call" (homepage — CTA lives in hero/contact) */
+  hideBookCta?: boolean;
+  /**
+   * Element id that reveals the fixed nav on scroll (hero stays clean).
+   * Used on home (`work`). Notes use noteTitle instead.
+   */
+  navRevealId?: string;
+  /**
+   * Element id that turns on the sticky/scrolled nav chrome.
+   * Homelab uses `services` (section 01) so the bar stays clear over the hero.
+   */
+  navStickyId?: string;
+  /**
+   * Note article mode: no kuyacarlo logo; notes/home stay in the bar.
+   * After scrolling past #note-title, the note title fades into the left slot.
+   */
+  noteTitle?: string;
 }
 const {
   title = "John Carlo Santos",
   description = "Data engineer, DevOps builder & hackathon competitor. BulSU Computer Engineering '28. Bulacan, PH.",
   active = "",
+  hideBookCta = false,
+  navRevealId = "",
+  navStickyId = "",
+  noteTitle = "",
 } = Astro.props;
+
+const contactEmail = site.email;
+const contactLinkedin = displayHost(site.linkedinUrl);
+const contactGithub = displayHost(site.githubUrl);
+const isHome = active === "home";
+const isNote = Boolean(noteTitle);
+// Home hides the bar until a section; notes keep the bar, only the title fades in.
+const hideNavUntilReveal = Boolean(navRevealId);
+const revealId = navRevealId || (isNote ? "note-title" : "");
+const stickyId = navStickyId;
 ---
 <!doctype html>
 <html lang="en">
@@ -23,72 +55,139 @@ const {
   <meta property="og:title"     content={title} />
   <meta property="og:description" content={description} />
   <meta name="robots"           content="index, follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230d0c0b'/%3E%3Ctext x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='13' font-family='monospace' fill='%23f0ede6'%3Ejk%3C/text%3E%3C/svg%3E" />
   <slot name="head" />
 </head>
-<body>
+<body class={isHome ? "page-home" : isNote ? "page-note" : undefined}>
 
 <!-- NAV -->
-<nav class="nav" id="nav">
+<nav class={`nav${hideNavUntilReveal ? " nav-home" : ""}${isNote ? " nav-note" : ""}`} id="nav">
   <div class="wrap nav-inner">
-    <a href="/" class="nav-logo">kuyacarlo<em>.</em></a>
-    <div class="nav-links">
-      <a href="/"         class={`nav-link${active==='home'     ? ' active':''}`}>home</a>
-      <a href="/homelab"  class={`nav-link${active==='homelab'  ? ' active':''}`}>homelab</a>
-      <a href="/notes"    class={`nav-link${active==='notes'    ? ' active':''}`}>notes</a>
-      <a href="/book"     class="nav-book">book a call →</a>
-    </div>
-    <button class="nav-toggle" id="nav-toggle" aria-label="menu">
-      <span></span><span></span><span></span>
-    </button>
+    {isNote ? (
+      <span class="nav-note-title">{noteTitle}</span>
+    ) : (
+      <a href="/" class="nav-logo">kuyacarlo</a>
+    )}
+    {isNote ? (
+      <div class="nav-links nav-note-links">
+        <a href="/notes" class="nav-link">notes</a>
+        <a href="/" class="nav-link">home</a>
+      </div>
+    ) : (
+      <>
+        <div class="nav-links">
+          <a href="/homelab"  class={`nav-link${active==='homelab'  ? ' active':''}`}>homelab</a>
+          <a href="/notes"    class={`nav-link${active==='notes'    ? ' active':''}`}>notes</a>
+          <a href="/resume"   class={`nav-link${active==='resume'   ? ' active':''}`}>resume</a>
+          {!hideBookCta && <a href="/book" class="nav-book">book a call →</a>}
+        </div>
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="menu" aria-expanded="false" aria-controls="mobile-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </>
+    )}
   </div>
 </nav>
 
 <!-- mobile drawer -->
-<div id="mobile-nav" style="display:none;position:fixed;inset:0;z-index:90;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px;">
-  <button id="nav-close" style="position:absolute;top:18px;right:24px;background:none;border:none;font-size:1.1rem;color:var(--ink-3);cursor:pointer;">✕</button>
-  <a href="/"        onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">home</a>
-  <a href="/homelab" onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">homelab</a>
-  <a href="/notes"   onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">notes</a>
-  <a href="/book"    onclick="closeMob()" style="font-size:1.5rem;font-weight:600;color:var(--ink-2);">book a call</a>
+{!isNote && (
+<div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+  <button type="button" id="nav-close" class="mobile-nav-close" aria-label="Close menu">✕</button>
+  <a href="/homelab" class="mobile-nav-link" data-close-nav>homelab</a>
+  <a href="/notes"   class="mobile-nav-link" data-close-nav>notes</a>
+  <a href="/resume"  class="mobile-nav-link" data-close-nav>resume</a>
+  {!hideBookCta && <a href="/book" class="mobile-nav-link" data-close-nav>book a call</a>}
 </div>
+)}
 
 <slot />
 
-<script>
-  // nav scroll
-  const nav = document.getElementById('nav')!;
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+<script define:vars={{ contactEmail, contactLinkedin, contactGithub, hideNavUntilReveal, navRevealId: revealId, navStickyId: stickyId, isNote }}>
+  // Plain JS only — define:vars scripts are inlined without TS stripping.
+  const nav = document.getElementById('nav');
+  const revealEl = navRevealId ? document.getElementById(navRevealId) : null;
+  const stickyEl = navStickyId ? document.getElementById(navStickyId) : null;
+  const updateNav = () => {
+    if (!nav) return;
+    let scrolled = window.scrollY > 40;
+    if (stickyEl) {
+      // Sticky chrome only after the target section (e.g. homelab 01 Services)
+      scrolled = window.scrollY + 72 >= stickyEl.offsetTop;
+    }
+    if (isNote && revealEl) {
+      // Title enters the bar once the article h1 has left the top
+      const past = revealEl.getBoundingClientRect().bottom < 8;
+      nav.classList.toggle('nav-note-past', past);
+      scrolled = past;
+    }
+    nav.classList.toggle('scrolled', scrolled);
+    if (hideNavUntilReveal && revealEl) {
+      // Home: reveal when the target section reaches the top
+      const past = window.scrollY + 72 >= revealEl.offsetTop;
+      nav.classList.toggle('nav-visible', past);
+      if (past) nav.classList.add('scrolled');
+    }
+  };
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
 
-  // mobile
-  const mob = document.getElementById('mobile-nav')!;
-  document.getElementById('nav-toggle')?.addEventListener('click', () => mob.style.display='flex');
-  document.getElementById('nav-close')?.addEventListener('click',  () => mob.style.display='none');
-  (window as any).closeMob = () => { mob.style.display='none'; };
-
-  // reveal
-  const io = new IntersectionObserver(
-    es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);} }),
-    {threshold:0.08, rootMargin:'0px 0px -20px 0px'}
-  );
-  document.querySelectorAll('.r').forEach(el => io.observe(el));
-
-  // typing
-  document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
-    const words = (el.dataset.type||'').split('|');
-    let wi=0,ci=0,del=false;
-    const tick=()=>{
-      const w=words[wi];
-      el.textContent=del?w.slice(0,ci--):w.slice(0,ci++);
-      let t=del?50:90;
-      if(!del&&ci>w.length){t=1900;del=true;}
-      if(del&&ci<0){del=false;wi=(wi+1)%words.length;ci=0;t=380;}
-      setTimeout(tick,t);
-    };
-    setTimeout(tick,700);
+  const mob = document.getElementById('mobile-nav');
+  const toggle = document.getElementById('nav-toggle');
+  const openMob = () => {
+    if (!mob) return;
+    mob.classList.add('open');
+    mob.setAttribute('aria-hidden', 'false');
+    toggle?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
+  const closeMob = () => {
+    if (!mob) return;
+    mob.classList.remove('open');
+    mob.setAttribute('aria-hidden', 'true');
+    toggle?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+  toggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mob?.classList.contains('open')) closeMob(); else openMob();
+  });
+  document.getElementById('nav-close')?.addEventListener('click', closeMob);
+  mob?.querySelectorAll('[data-close-nav]').forEach((el) => {
+    el.addEventListener('click', () => closeMob());
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mob?.classList.contains('open')) closeMob();
   });
 
-  // Confetti trigger
+  const revealAll = () => document.querySelectorAll('.r:not(.on)').forEach((el) => el.classList.add('on'));
+  try {
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }),
+      { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }
+    );
+    document.querySelectorAll('.r').forEach((el) => io.observe(el));
+  } catch {
+    revealAll();
+  }
+  setTimeout(revealAll, 800);
+
+  document.querySelectorAll('[data-type]').forEach((el) => {
+    const words = (el.getAttribute('data-type') || '').split('|');
+    let wi = 0, ci = 0, del = false;
+    const tick = () => {
+      const w = words[wi];
+      el.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
+      let t = del ? 50 : 90;
+      if (!del && ci > w.length) { t = 1900; del = true; }
+      if (del && ci < 0) { del = false; wi = (wi + 1) % words.length; ci = 0; t = 380; }
+      setTimeout(tick, t);
+    };
+    setTimeout(tick, 700);
+  });
+
   document.getElementById('collab-status')?.addEventListener('click', async () => {
     try {
       const { default: confetti } = await import('canvas-confetti');
@@ -103,7 +202,6 @@ const {
     }
   });
 
-  // CLI Console Overlay
   const consoleHTML = `
     <div id="cli-console" style="display:none;position:fixed;inset:0;background:rgba(13,12,11,0.98);z-index:999;font-family:var(--mono);padding:clamp(16px, 4vw, 40px);color:var(--ink);flex-direction:column;font-size:0.82rem;line-height:1.6;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--b1);padding-bottom:12px;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
@@ -119,61 +217,65 @@ const {
   `;
   document.body.insertAdjacentHTML('beforeend', consoleHTML);
 
-  const cli = document.getElementById('cli-console')!;
-  const cliInput = document.getElementById('cli-input') as HTMLInputElement;
-  const cliOutput = document.getElementById('cli-output')!;
-  const cliClose = document.getElementById('cli-close')!;
+  const cli = document.getElementById('cli-console');
+  const cliInput = document.getElementById('cli-input');
+  const cliOutput = document.getElementById('cli-output');
+  const cliClose = document.getElementById('cli-close');
 
   const showCLI = () => {
+    if (!cli || !cliInput) return;
     cli.style.display = 'flex';
     setTimeout(() => cliInput.focus(), 50);
   };
   const hideCLI = () => {
+    if (!cli) return;
     cli.style.display = 'none';
   };
 
   window.addEventListener('keydown', (e) => {
     if (e.key === '`') {
       e.preventDefault();
-      if (cli.style.display === 'flex') hideCLI(); else showCLI();
+      if (cli && cli.style.display === 'flex') hideCLI(); else showCLI();
     }
-    if (e.key === 'Escape' && cli.style.display === 'flex') {
+    if (e.key === 'Escape' && cli && cli.style.display === 'flex') {
       hideCLI();
     }
   });
 
-  cliClose.addEventListener('click', hideCLI);
+  cliClose?.addEventListener('click', hideCLI);
 
-  const writeOut = (text: string) => {
+  const writeOut = (text) => {
+    if (!cliOutput) return;
     cliOutput.textContent += text + '\n';
     cliOutput.scrollTop = cliOutput.scrollHeight;
   };
 
-  cliInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      const rawCmd = cliInput.value.trim();
-      cliInput.value = '';
-      if (!rawCmd) return;
-      writeOut(`> ${rawCmd}`);
+  cliInput?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || !cliInput) return;
+    const rawCmd = cliInput.value.trim();
+    cliInput.value = '';
+    if (!rawCmd) return;
+    writeOut(`> ${rawCmd}`);
 
-      const cmd = rawCmd.toLowerCase();
-      if (cmd === 'help') {
-        writeOut('Available commands:\n  help      - Show this help menu\n  projects  - List main open-source projects\n  skills    - List core tech specialties\n  contact   - How to reach kuyacarlo\n  homelab   - Overview of self-hosted setup\n  clear     - Clear terminal history\n  close     - Exit console overlay');
-      } else if (cmd === 'clear') {
-        cliOutput.textContent = '';
-      } else if (cmd === 'close' || cmd === 'exit') {
-        hideCLI();
-      } else if (cmd === 'projects') {
-        writeOut('Selected Projects:\n  - tanggol-saka: Decentralized land-ownership system for Filipino farmers.\n  - bantay: Pre-push git hook catching secrets & entropy anomalies.\n  - ComplyAIgent: DevSecOps agentic compliance engine.\n  - SAGE: Notion MCP-powered academic co-pilot.');
-      } else if (cmd === 'skills') {
-        writeOut('Core Skills:\n  - Languages: Python, Go, TypeScript, Shell\n  - Frameworks & Tools: FastAPI, LangGraph, MCP, Docker, Traefik, Ansible\n  - Data Infrastructure: DuckDB, PostgreSQL, Supabase, GCP, AWS');
-      } else if (cmd === 'contact') {
-        writeOut('Contact Info:\n  - Email: santos.karlo@outlook.com\n  - LinkedIn: linkedin.com/in/kuyacarlo\n  - GitHub: github.com/kuyacarlo');
-      } else if (cmd === 'homelab') {
-        writeOut('Homelab Host Setup:\n  - OS: Fedora Server 41\n  - Specs: i5-4590, 16 GB RAM, 2.5 TB Total storage\n  - Core services: Headscale, Traefik proxy, Vaultwarden, Authentik SSO, Grafana stack');
-      } else {
-        writeOut(`Command not found: ${rawCmd}. Type "help" for a list of commands.`);
-      }
+    const cmd = rawCmd.toLowerCase();
+    if (cmd === 'help') {
+      writeOut('Available commands:\n  help      - Show this help menu\n  projects  - List main open-source projects\n  skills    - List core tech specialties\n  now       - What I am building / learning\n  contact   - How to reach kuyacarlo\n  homelab   - Overview of self-hosted setup\n  clear     - Clear terminal history\n  close     - Exit console overlay');
+    } else if (cmd === 'clear') {
+      if (cliOutput) cliOutput.textContent = '';
+    } else if (cmd === 'close' || cmd === 'exit') {
+      hideCLI();
+    } else if (cmd === 'projects') {
+      writeOut('Selected Projects:\n  - ComplyAIgent: DevSecOps agentic compliance engine (github.com/liitkud/complyaigent)\n  - tanggol-saka: Decentralized land-ownership for Filipino farmers\n  - bantay: Pre-push secrets + entropy hook\n  - sage-mcp: Notion MCP academic co-pilot\n  - forgesure: Construction ops cost dashboard\n  - pub-routes: LTFRB open-data ETL');
+    } else if (cmd === 'skills') {
+      writeOut('Core Skills:\n  - Data & Backend: Python, Go, FastAPI, DuckDB, PostgreSQL, Supabase\n  - DevOps & Infra: Podman, GitHub Actions, Ansible, Linux, GCP, AWS, Bash\n  - AI / Agents: LangGraph, MCP\n  - Frontend: TypeScript, Next.js');
+    } else if (cmd === 'now') {
+      writeOut('Now (2026-07):\n  building:  homelab services + portfolio polish → /homelab\n  learning:  Go\n  exploring: agentic DevSecOps + MCP tooling\n  open for:  hackathon teams · data/DevOps roles · collabs → /book');
+    } else if (cmd === 'contact') {
+      writeOut(`Contact Info:\n  - Email: ${contactEmail}\n  - LinkedIn: ${contactLinkedin}\n  - GitHub: ${contactGithub}\n  - Resume: /resume`);
+    } else if (cmd === 'homelab') {
+      writeOut('Homelab Host Setup:\n  - Machine: ThinkCentre M710q-N000\n  - OS: Fedora Server · Podman rootless · Netbird mesh\n  - Core services: Traefik, Vaultwarden, Authentik SSO, Grafana stack, Forgejo');
+    } else {
+      writeOut(`Command not found: ${rawCmd}. Type "help" for a list of commands.`);
     }
   });
 </script>

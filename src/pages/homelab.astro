@@ -1,159 +1,161 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { site } from '../lib/site';
 
+/** Catalog of what's hosted. Live up/down comes from Uptime Kuma only. */
 const services = [
-  { name:"Forgejo",     desc:"Self-hosted Git. Mirrors to GitHub.", up:true  },
-  { name:"Authentik",   desc:"Identity provider — SSO for all services.", up:true  },
-  { name:"Vaultwarden", desc:"Bitwarden-compatible password server.", up:true  },
-  { name:"Traefik",     desc:"Reverse proxy + auto TLS via Let's Encrypt.", up:true  },
-  { name:"Portainer",   desc:"Docker management UI.", up:true  },
-  { name:"Grafana",     desc:"Monitoring dashboard — Prometheus + Loki.", up:true  },
-  { name:"Prometheus",  desc:"Metrics scraping from all containers.", up:true  },
-  { name:"Loki",        desc:"Log aggregation. Tailed by Promtail.", up:true  },
-  { name:"n8n",         desc:"Workflow automation — webhooks, notifications.", up:false },
-  { name:"Uptime Kuma", desc:"Public status page for hosted services.", up:true  },
-  { name:"Forgejo CI",  desc:"Self-hosted CI runner. Mostly linting + tests.", up:true  },
-  { name:"Headscale",   desc:"Self-hosted Tailscale control server for mesh VPN.", up:true  },
+  { name: "Forgejo",     desc: "Self-hosted Git. Mirrors to GitHub.", url: "https://forge.kuyacarlo.dev" },
+  { name: "Authentik",   desc: "Identity provider — SSO for all services." },
+  { name: "Vaultwarden", desc: "Bitwarden-compatible password server.", url: "https://vault.kuyacarlo.dev" },
+  { name: "Traefik",     desc: "Reverse proxy + auto TLS via Let's Encrypt." },
+  { name: "Portainer",   desc: "Container management UI." },
+  { name: "Grafana",     desc: "Monitoring dashboard — Prometheus + Loki." },
+  { name: "Prometheus",  desc: "Metrics scraping from all containers." },
+  { name: "Loki",        desc: "Log aggregation. Tailed by Promtail." },
+  { name: "n8n",         desc: "Workflow automation — webhooks, notifications." },
+  { name: "Uptime Kuma", desc: "Public status page for hosted services.", url: site.statusUrl },
+  { name: "Forgejo CI",  desc: "Self-hosted CI runner. Mostly linting + tests." },
+  { name: "Netbird",     desc: "Mesh VPN — connect lab hosts from anywhere." },
 ];
 
 const hardware = [
-  ["Machine",  "Old Lenovo ThinkCentre M93p (i5-4590, 16 GB RAM)"],
-  ["Storage",  "500 GB SSD OS + 2 TB HDD data"],
-  ["OS",       "Fedora Server 41"],
-  ["Network",  "Unifi AP AC Lite · pfSense router"],
-  ["VPN",      "Headscale (Tailscale-compatible) mesh"],
-  ["Power",    "APC UPS 650VA"],
-  ["Uptime",   "~95% (reboots for kernel updates)"],
-  ["Domain",   "*.lab.kuyacarlo.dev (internal) via split DNS"],
+  ["Machine",  "ThinkCentre M710q-N000"],
+  ["Storage",  "512 GB SSD OS · 2 TB HDD data (1×1 TB + 2×500 GB)"],
+  ["OS",       "Fedora Server"],
+  ["VPN",      "Netbird"],
 ];
 
 const stack = [
-  ["Container runtime", "Docker + Compose"],
-  ["Orchestration",     "Portainer CE (no k8s — overkill for one box)"],
-  ["Secrets",           "Vaultwarden + env files, no hardcoded creds"],
-  ["Backups",           "rsync to external HDD nightly + Rclone to R2"],
-  ["DNS",               "Pi-hole for ad blocking + pfSense for split-DNS"],
+  ["Container runtime", "Podman (rootless)"],
+  ["Secrets",           "Vaultwarden + env files"],
+  ["DNS",               "Pi-hole for ad blocking"],
   ["Monitoring",        "Grafana + Prometheus + Loki + Uptime Kuma"],
-  ["CI/CD",             "Forgejo Actions — push triggers linting + deploy"],
+  ["CI/CD",             "Forgejo Actions"],
   ["Auth",              "Authentik SSO — OAuth2 proxy in front of services"],
 ];
+
+const statusApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/default`;
+const heartbeatApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/heartbeat/default`;
 ---
 
-<Layout active="homelab" title="Homelab — John Carlo Santos">
+<Layout active="homelab" title="Homelab — John Carlo Santos" navStickyId="services">
 <div class="wrap">
 
   <!-- header -->
   <section style="padding-top:120px;padding-bottom:60px;">
-    <div class="sec-label r" style="margin-bottom:20px;">
-      <a href="/" style="font-size:0.72rem;color:var(--ink-3);">← back</a>
-      <span class="sec-rule"></span>
-    </div>
     <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
       Home<br/><span style="color:var(--ink-3);">lab.</span>
     </h1>
     <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
       One machine. Twelve services. Constant tinkering.<br/>
-      Everything self-hosted, everything Dockerised, everything monitored.
+      Everything self-hosted, everything on Podman, everything monitored.
     </p>
-    <a href="https://status.kuyacarlo.dev" target="_blank" rel="noopener"
+    <a href={site.statusUrl} target="_blank" rel="noopener"
        class="avail-badge r d2" id="uptime-badge">
       <span class="hero-status-dot"></span>
-      <span id="uptime-text">status page → (uptime kuma)</span>
+      <span id="uptime-text">live status → Uptime Kuma</span>
     </a>
   </section>
 
   <!-- Services grid -->
-  <section class="section">
+  <section class="section" id="services">
     <div class="sec-label r">
       <span class="sec-num">01</span>
-      <span class="sec-name">Services running</span>
+      <span class="sec-name">Services</span>
       <span class="sec-rule"></span>
-      <span style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);" id="services-summary">
-        {services.filter(s=>s.up).length}/{services.length} up
-      </span>
+      <a href={site.statusUrl} target="_blank" rel="noopener" class="sec-link" id="services-summary">
+        via Uptime Kuma ↗
+      </a>
     </div>
     <div class="homelab-grid r d1">
-      {services.map(s => {
-        // Map services to their public endpoints if applicable, or fallback to the status page link
-        const urlMap: Record<string, string> = {
-          "Forgejo": "https://git.kuyacarlo.dev",
-          "Uptime Kuma": "https://status.kuyacarlo.dev",
-          "Vaultwarden": "https://vault.kuyacarlo.dev"
-        };
-        const href = urlMap[s.name] || "https://status.kuyacarlo.dev";
-        return (
-          <a href={href} target="_blank" rel="noopener noreferrer" class="service-card" data-service-name={s.name.toLowerCase()}>
+      {services.map(s => (
+        s.url ? (
+          <a href={s.url} target="_blank" rel="noopener noreferrer" class="service-card" data-service-name={s.name.toLowerCase()}>
             <div class="service-status">
-              <span class={`status-dot ${s.up ? 'status-up' : 'status-down'}`}></span>
-              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">{s.up ? 'up' : 'down'}</span>
+              <span class="status-dot status-unknown"></span>
+              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">—</span>
             </div>
             <div class="service-name">{s.name}</div>
             <div class="service-desc">{s.desc}</div>
           </a>
-        );
-      })}
+        ) : (
+          <div class="service-card" data-service-name={s.name.toLowerCase()}>
+            <div class="service-status">
+              <span class="status-dot status-unknown"></span>
+              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">—</span>
+            </div>
+            <div class="service-name">{s.name}</div>
+            <div class="service-desc">{s.desc}</div>
+          </div>
+        )
+      ))}
     </div>
+    <p class="sec-count r" style="margin-top:16px;">
+      Dots sync from <a href={site.statusUrl} target="_blank" rel="noopener" class="footer-link">Uptime Kuma</a> when a monitor exists. Unmonitored services stay as —.
+    </p>
   </section>
 
-  <script is:inline>
-    // Fetch live status from Uptime Kuma to dynamicize the status page indicators
+  <script define:vars={{ statusApi, heartbeatApi, statusUrl: site.statusUrl }}>
     document.addEventListener('DOMContentLoaded', async () => {
+      const cards = document.querySelectorAll('.service-card');
+      const summary = document.getElementById('services-summary');
+      const setCard = (card, state, label) => {
+        const dot = card.querySelector('.status-dot');
+        const text = card.querySelector('.status-text');
+        if (dot) dot.className = `status-dot status-${state}`;
+        if (text) text.textContent = label;
+      };
+
       try {
-        const res = await fetch('https://status.kuyacarlo.dev/api/status-page/default/manifest.json');
-        if (!res.ok) return;
-        const data = await res.json();
-        
-        // Try to read status data from preloadData or configuration
-        const payload = data.preloadData || window.preloadData;
-        if (!payload || !payload.publicGroupList) return;
+        const [pageRes, hbRes] = await Promise.all([
+          fetch(statusApi),
+          fetch(heartbeatApi),
+        ]);
+        if (!pageRes.ok || !hbRes.ok) throw new Error('status api unavailable');
 
-        const allMonitors = [];
-        payload.publicGroupList.forEach(group => {
-          if (group.monitorList) {
-            allMonitors.push(...group.monitorList);
-          }
+        const page = await pageRes.json();
+        const hb = await hbRes.json();
+        const heartbeats = hb.heartbeatList || {};
+
+        const monitors = [];
+        (page.publicGroupList || []).forEach((group) => {
+          (group.monitorList || []).forEach((m) => monitors.push(m));
         });
 
-        if (allMonitors.length === 0) return;
+        let up = 0;
+        let tracked = 0;
 
-        // Count up services
-        let upCount = 0;
-        const cards = document.querySelectorAll('.service-card');
+        cards.forEach((card) => {
+          const name = (card.getAttribute('data-service-name') || '').toLowerCase();
+          // Skip matching the status page itself as a generic catch-all
+          const monitor = monitors.find((m) => {
+            const mn = (m.name || '').toLowerCase();
+            return mn === name;
+          });
 
-        cards.forEach(card => {
-          const name = card.querySelector('.service-name')?.textContent?.trim().toLowerCase();
-          if (!name) return;
-
-          // Find matching monitor
-          const monitor = allMonitors.find(m => m.name.toLowerCase() === name || m.name.toLowerCase().includes(name));
-          if (monitor) {
-            const dot = card.querySelector('.status-dot');
-            const text = card.querySelector('.status-text');
-            
-            // 1 = UP, 0 = DOWN, 2 = PENDING/WARNING
-            const isUp = monitor.active !== false && (monitor.status === 1 || monitor.status === true);
-            
-            if (dot && text) {
-              dot.className = `status-dot ${isUp ? 'status-up' : 'status-down'}`;
-              text.textContent = isUp ? 'up' : 'down';
-            }
-            if (isUp) upCount++;
-          } else {
-            // Default match if no monitor is declared (assume up based on server config)
-            const dot = card.querySelector('.status-dot');
-            if (dot && dot.classList.contains('status-up')) {
-              upCount++;
-            }
+          if (!monitor) {
+            setCard(card, 'unknown', '—');
+            return;
           }
+
+          tracked++;
+          const beats = heartbeats[String(monitor.id)] || [];
+          const latest = beats.length ? beats[beats.length - 1] : null;
+          // Uptime Kuma: 1 = up, 0 = down, 2 = pending, 3 = maintenance
+          const isUp = latest ? latest.status === 1 : false;
+          if (isUp) up++;
+          setCard(card, isUp ? 'up' : 'down', isUp ? 'up' : 'down');
         });
 
-        // Update counts
-        const summary = document.getElementById('services-summary');
         if (summary) {
-          summary.textContent = `${upCount}/${cards.length} up`;
+          summary.textContent = tracked
+            ? `${up}/${tracked} monitored ↗`
+            : 'via Uptime Kuma ↗';
+          summary.setAttribute('href', statusUrl);
         }
       } catch (e) {
         console.warn('Could not update live status', e);
+        if (summary) summary.textContent = 'status page ↗';
       }
     });
   </script>
@@ -192,35 +194,9 @@ const stack = [
     </div>
   </section>
 
-  <!-- Notes/diagram -->
-  <section class="section">
-    <div class="sec-label r">
-      <span class="sec-num">04</span>
-      <span class="sec-name">Network topology</span>
-      <span class="sec-rule"></span>
-    </div>
-    <div class="r d1" style="border:1px solid var(--b1);border-radius:6px;padding:28px;background:var(--s1);">
-      <pre style="font-family:var(--mono);font-size:0.75rem;color:var(--ink-2);line-height:1.8;overflow-x:auto;">{`internet
-    │
-    └── pfSense router (192.168.1.1)
-            ├── Unifi AP (WiFi clients)
-            ├── ThinkCentre M93p [homelab host]
-            │       ├── Traefik (443 → all services)
-            │       ├── Pi-hole  (DNS, 192.168.1.53)
-            │       └── Headscale (Tailscale mesh VPN)
-            │
-            └── dev workstation (Fedora)
-                    └── connected via Headscale from anywhere
-
-Subdomains:  *.lab.kuyacarlo.dev  → internal only (split DNS)
-             *.kuyacarlo.dev      → Cloudflare → Traefik (public)`}</pre>
-    </div>
-  </section>
-
   <!-- Footer -->
   <footer class="footer">
     <span>© 2026 John Carlo Santos</span>
-    <a href="/" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← back home</a>
   </footer>
 
 </div>
