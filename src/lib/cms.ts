@@ -12,6 +12,7 @@
 //   desc    TEXT            (short blurb for listings)
 //   body    TEXT            (markdown body — omit in listing queries)
 //   draft   BOOLEAN DEFAULT false
+//   hide    BOOLEAN DEFAULT false  (same effect as draft — prefer hide)
 // ────────────────────────────────────────────────────────────────────────────
 
 export interface Post {
@@ -22,11 +23,15 @@ export interface Post {
   desc?: string;
 }
 
+function isPublicNote(e: { data: { draft?: boolean; hide?: boolean } }) {
+  return !e.data.draft && !e.data.hide;
+}
+
 // ── SOURCE: Astro Content Collections (default — local markdown) ─────────────
 import { getCollection } from 'astro:content';
 
 export async function getPosts(): Promise<Post[]> {
-  const entries = await getCollection('notes', (e: any) => !e.data.draft);
+  const entries = await getCollection('notes', isPublicNote);
   return entries
     .map((e: any) => ({
       slug:  e.id.replace(/\.md$/, ''),

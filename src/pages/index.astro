@@ -1,75 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getPosts } from '../lib/cms';
-const posts = await getPosts();
-const latest = posts.slice(0, 3);
+import {
+  TAGLINE,
+  PROOF_OF_WORK_URL,
+  counts,
+  hackathons,
+  nowItems,
+  projects,
+  socialProof,
+} from '../lib/portfolio-data';
+import { site } from '../lib/site';
 
-const projects = [
-  { name:"tanggol-saka", emoji:"🌾", desc:"Decentralized land-ownership system for indigenous Filipino farmers. USSD proof-of-occupation, offline-first, Tagalog UI, digital land certificates.", tech:["TypeScript","Next.js","Decentralized"], url:"https://github.com/kuyacarlo/tanggol-saka", live:"https://tanggol-saka.vercel.app", img:null },
-  { name:"bantay",       emoji:"🛡️", desc:"Pre-push hook catching secrets + entropy anomalies. Regex + LLM two-layer detection. Auth0 CIBA human-in-the-loop for medium-risk pushes. Fail-closed.", tech:["TypeScript","LLM","Auth0","Git Hooks"], url:"https://github.com/kuyacarlo/bantay", live:null, img:null },
-  { name:"ComplyAIgent", emoji:"⚖️", desc:"Agentic DevSecOps compliance engine for AMD Hackathon. Ingests regulatory text, enforces pre-push policies. LangGraph HIL, Go CLI, Next.js dashboard.", tech:["Go","LangGraph","FastAPI","Next.js"], url:"https://github.com/kuyacarlo/bantay", live:null, img:null },
-  { name:"forgesure",    emoji:"🔧", desc:"All-in-one dashboard for equipment cost and maintenance tracking. For construction teams tired of spreadsheets.", tech:["Python","FastAPI","Next.js"], url:"https://github.com/kuyacarlo/forgesure", live:"https://forgesure.vercel.app", img:null },
-  { name:"sage-mcp",     emoji:"🎓", desc:"SAGE — Notion MCP-powered academic co-pilot for Filipino students. Builds semester workspace from CHED-verified curriculum via agentic orchestration.", tech:["Python","LangGraph","MCP","Notion"], url:"https://github.com/kuyacarlo/sage-mcp", live:null, img:null },
-  { name:"pub-routes",   emoji:"🚌", desc:"ETL pipeline transforming raw LTFRB transport data into clean, public CSV datasets. Open data for Filipino commuters.", tech:["Python","BeautifulSoup","Pandas","ETL"], url:"https://github.com/kuyacarlo/pub-routes", live:null, img:null },
-];
-
-const hackathons = [
-  { place:"Top 3 Finalist",  name:"BPI DataWave 2025",      proj:"WorkSight",    desc:"Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams." },
-  { place:"1st Runner Up",   name:"LPU Innoverse 2025",     proj:"BetterTranspo",desc:"Decentralized platform for BEEP™ payments with LoraWAN — real-time routes, fare estimation, fullness meter." },
-  { place:"MLH GHW 2026",    name:"Notion MCP Challenge",   proj:"SAGE",         desc:"Autonomous academic orchestrator. MCP bridges LLM reasoning to production Notion APIs." },
-  { place:"UP PJDSC 2025",   name:"Data Science Competition",proj:"KLIMA",       desc:"Bronze→Silver→Gold ETL pipeline for localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan." },
-  { place:"AMD Hackathon 2026",name:"Developer Challenge",  proj:"ComplyAIgent", desc:"Agentic DevSecOps compliance engine. Three-tier comparator, human-in-the-loop, Go CLI." },
-];
+const emailMailto = `mailto:${site.email}`;
+/** Show on mobile (3–4 cards). Full list stays on desktop. */
+const mobileFeatured = new Set(["WorkSight", "ComplyAIgent", "SAGE", "ForgeSure"]);
 ---
 
-<Layout active="home">
+<Layout active="home" hideBookCta navRevealId="work">
 
 <!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
 <div class="wrap">
   <section class="hero">
     <div class="hero-name r">
-      <div class="line1">
-        <span>John Carlo</span>
+      <div class="line1"><span>John Carlo</span></div>
+      <span class="line2">Santos.</span>
+      <div class="hero-meta">
         <span class="hero-status" id="collab-status" style="cursor:pointer;" title="Click for a surprise!">
           <span class="hero-status-dot"></span>
           available for collab
         </span>
+        <a href="/book" class="btn btn-filled hero-cta">Let's talk <span aria-hidden="true">→</span></a>
       </div>
-      <span class="line2">Santos.</span>
     </div>
     <div class="hero-rule r d1"></div>
     <div class="hero-sub r d2">
       <p class="hero-desc">
-        <strong>Data engineer</strong>, DevOps builder & hackathon competitor.<br/>
-        BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.<br/>
-        I build <span data-type="ETL pipelines.|agentic AI systems.|MCP servers.|tools for Filipino farmers.|things that ship."></span><span class="cursor"></span>
+        <strong>Data engineer</strong>, DevOps builder &amp; hackathon competitor.
+        BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.
+        I build ETL pipelines, agentic AI systems, MCP servers, and tools for Filipino farmers — things that ship.
       </p>
-      <div class="hero-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <a href="#work"  class="btn btn-filled">Selected work</a>
-        <a href="/book"  class="btn btn-outline">Book a call →</a>
-        <span style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);user-select:none;margin-left:8px;" class="hide-mobile">Press <kbd style="background:var(--s2);border:1px solid var(--b1);padding:2px 5px;border-radius:3px;color:var(--ink-2);">`</kbd> for console</span>
-      </div>
+      <p class="hero-tagline">{TAGLINE}</p>
     </div>
   </section>
 </div>
 
 
-<!-- ═══ SELECTED WORK ══════════════════════════════════════════════════════ -->
+<!-- PROJECTS -->
 <section class="section" id="work">
   <div class="wrap">
     <div class="sec-label r">
       <span class="sec-num">01</span>
       <span class="sec-name">Selected Work</span>
       <span class="sec-rule"></span>
-      <a href="https://github.com/kuyacarlo" target="_blank" rel="noopener"
-         style="font-size:0.75rem;color:var(--ink-3);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">
-        37 repos ↗
+      <a href={PROOF_OF_WORK_URL} target="_blank" rel="noopener" class="sec-link">
+        proof of work ↗
       </a>
     </div>
 
     <div class="project-grid">
       {projects.map((p, i) => (
-        <a href={p.url} target="_blank" rel="noopener noreferrer" class={`project-card r d${(i%4)+1}`}>
+        <div class={`project-card r d${(i % 4) + 1}${mobileFeatured.has(p.name) ? " proj-mobile" : " proj-desktop-only"}`}>
           <div class="proj-thumb">
             {p.img
               ? <img src={p.img} alt={p.name} loading="lazy" />
@@ -77,23 +67,49 @@ const hackathons = [
             }
           </div>
           <div class="proj-body">
+            <div class="proj-cat">{p.category}</div>
             <div class="proj-name">
               {p.name}
               {p.live && <span class="live-dot" title="Live"></span>}
+              {p.private && <span class="proj-private">private</span>}
             </div>
+            {(p.role || p.team || p.award) && (
+              <div class="proj-meta">
+                {p.role && <span>{p.role}</span>}
+                {p.team && <span>{p.team}</span>}
+                {p.award && <span class="proj-award">{p.award}</span>}
+              </div>
+            )}
             <p class="proj-desc">{p.desc}</p>
             <div class="proj-tags">
               {p.tech.map(t => <span class="tag">{t}</span>)}
             </div>
+            <div class="proj-links">
+              {p.private && !p.url
+                ? <span class="proj-private-note">Source private</span>
+                : p.url && (
+                  <a href={p.url} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                )
+              }
+              {p.live && (
+                <a href={p.live} target="_blank" rel="noopener noreferrer">Live ↗</a>
+              )}
+              {p.writeup && (
+                <a href={p.writeup} target="_blank" rel="noopener noreferrer">Writeup ↗</a>
+              )}
+              {p.demo && (
+                <a href={p.demo} target="_blank" rel="noopener noreferrer">Demo ↗</a>
+              )}
+            </div>
           </div>
-        </a>
+        </div>
       ))}
     </div>
   </div>
 </section>
 
 
-<!-- ═══ HACKATHONS ═════════════════════════════════════════════════════════ -->
+<!-- HACKATHONS -->
 <section class="section" id="hackathons">
   <div class="wrap">
     <div class="sec-label r">
@@ -112,166 +128,102 @@ const hackathons = [
         </div>
       ))}
     </div>
+    <p class="sec-count r">{counts.comps} comps · {counts.podiums} podiums</p>
   </div>
 </section>
 
 
-<!-- ═══ ABOUT ══════════════════════════════════════════════════════════════ -->
-<section class="section" id="about">
+{socialProof.enabled && socialProof.photos.length > 0 && (
+  <section class="section" id="photos">
+    <div class="wrap">
+      <div class="sec-label r">
+        <span class="sec-num">··</span>
+        <span class="sec-name">Photos</span>
+        <span class="sec-rule"></span>
+      </div>
+      <div class="proof-strip r d1">
+        {socialProof.photos.map(ph => (
+          <figure class="proof-item">
+            <img src={ph.src} alt={ph.caption} loading="lazy" />
+            <figcaption>{ph.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+
+<!-- NOW -->
+<section class="section" id="now">
   <div class="wrap">
     <div class="sec-label r">
       <span class="sec-num">03</span>
-      <span class="sec-name">About</span>
+      <span class="sec-name">Now</span>
       <span class="sec-rule"></span>
     </div>
 
-    <div class="about-grid">
-      <div>
-        <div class="prose r d1">
-          <p>
-            I'm <strong>Karlo</strong> — a generalist software engineer and student.
-            My work spans ETL pipelines, containerized microservices, FastAPI backends,
-            and agentic AI systems built with LangGraph + MCP.
-          </p>
-          <p>
-            I gravitate toward tools that make other developers faster and projects
-            that solve real problems for real Filipinos — pre-push security hooks,
-            land-ownership systems for indigenous farmers, disaster-risk pipelines for LGUs.
-          </p>
-          <p>
-            Currently CTO of <strong>Seekers Guild</strong> and Cybersecurity Associate at
-            CS Society BulSU. Running <strong>Fedora Linux</strong>, learning Go,
-            tinkering with a homelab. Check out <a href="/homelab">what's running →</a>
-          </p>
-          <p>
-            Talks: <em>Git & GitHub Fundamentals</em> (CS Society BulSU),
-            <em>Web Dev Basics</em> (Seekers Guild).
-            Writing on <a href="https://dev.to/kuyacarlo" target="_blank" rel="noopener">dev.to ↗</a>
-          </p>
+    <div class="now-block r d1">
+      {nowItems.map(item => (
+        <div class="now-row">
+          <span class="now-key">{item.label}:</span>
+          {item.href
+            ? <a href={item.href} class="now-val">{item.text}</a>
+            : <span class="now-val">{item.text}</span>
+          }
         </div>
-
-        <div class="r d2" style="margin-top:24px;">
-          <p style="font-size:0.72rem;color:var(--ink-3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Tech</p>
-          <div class="skill-row">
-            {["Python","Go","TypeScript","FastAPI","LangGraph","MCP","Docker","GitHub Actions","DuckDB","PostgreSQL","Supabase","GCP","AWS","Ansible","Linux","Bash"].map(t => (
-              <span class="tag">{t}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div class="about-aside r d2">
-        <!-- Education -->
-        <div class="aside-card">
-          <div class="aside-head">
-            <span class="aside-head-label">Education</span>
-          </div>
-          <div class="aside-row">
-            <div>
-              <div class="aside-val">BS Computer Engineering</div>
-              <div class="aside-sub">Bulacan State University · Malolos</div>
-            </div>
-            <span class="aside-date">2028</span>
-          </div>
-        </div>
-
-        <!-- Selected certs -->
-        <div class="aside-card">
-          <div class="aside-head">
-            <span class="aside-head-label">Certifications</span>
-          </div>
-          {[
-            ["Azure Data Fundamentals",      "Microsoft","May 2025"],
-            ["Azure AI Services Workshop",   "Microsoft","May 2025"],
-            ["Intro to Cybersecurity",       "Cisco","2025"],
-            ["Cybersecurity Simulation",     "Mastercard","Apr 2025"],
-          ].map(([name, issuer, date]) => (
-            <div class="aside-row">
-              <div>
-                <div class="aside-val" style="font-size:0.78rem;">{name}</div>
-                <div class="aside-sub">{issuer}</div>
-              </div>
-              <span class="aside-date">{date}</span>
-            </div>
-          ))}
-        </div>
-
-        <!-- Links -->
-        <div class="aside-card">
-          <div class="aside-head"><span class="aside-head-label">Find me</span></div>
-          {[
-            ["LinkedIn",  "linkedin.com/in/kuyacarlo", "https://linkedin.com/in/kuyacarlo"],
-            ["GitHub",    "github.com/kuyacarlo",      "https://github.com/kuyacarlo"],
-            ["dev.to",    "dev.to/kuyacarlo",          "https://dev.to/kuyacarlo"],
-            ["Email",     "santos.karlo@outlook.com",  "mailto:santos.karlo@outlook.com"],
-          ].map(([label, val, href]) => (
-            <a href={href} target={label !== "Email" ? "_blank" : undefined} rel="noopener" class="aside-row" style="transition:background 0.15s;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background=''">
-              <div>
-                <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;">{label}</div>
-                <div class="aside-val" style="font-size:0.8rem;">{val}</div>
-              </div>
-              <span style="font-size:0.72rem;color:var(--ink-3);">↗</span>
-            </a>
-          ))}
-        </div>
+      ))}
+      <div class="now-row">
+        <span class="now-key">open for:</span>
+        <span class="now-val">hackathon teams · data/DevOps roles · collabs</span>
       </div>
     </div>
   </div>
 </section>
 
 
-<!-- ═══ NOTES ══════════════════════════════════════════════════════════════ -->
-<section class="section" id="notes">
+<!-- CONTACT -->
+<section class="section" id="contact">
   <div class="wrap">
     <div class="sec-label r">
       <span class="sec-num">04</span>
-      <span class="sec-name">Notes</span>
-      <span class="sec-rule"></span>
-      <a href="/notes" style="font-size:0.75rem;color:var(--ink-3);white-space:nowrap;text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">all notes →</a>
-    </div>
-
-    <div class="r d1">
-      {latest.map(p => (
-        <a href={`/notes/${p.slug}`} class="note-row">
-          <span class="note-date">{p.date}</span>
-          <span class="note-title">{p.title}</span>
-          <span class="note-arrow">↗</span>
-        </a>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══ HOMELAB TEASER ═════════════════════════════════════════════════════ -->
-<section class="section" id="homelab-teaser">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">05</span>
-      <span class="sec-name">Homelab</span>
+      <span class="sec-name">Contact</span>
       <span class="sec-rule"></span>
     </div>
 
-    <a href="/homelab" class="r d1" style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;border:1px solid var(--b1);border-radius:6px;padding:28px 32px;transition:background 0.15s,border-color 0.15s;" onmouseover="this.style.background='var(--s1)';this.style.borderColor='var(--b2)'" onmouseout="this.style.background='';this.style.borderColor='var(--b1)'">
-      <div>
-        <p style="font-size:0.92rem;font-weight:600;color:var(--ink);margin-bottom:6px;">Self-hosted services, hardware, and experiments</p>
-        <p style="font-size:0.82rem;color:var(--ink-3);">Forgejo, Authentik, Vaultwarden, Grafana, n8n, Portainer — and whatever breaks next.</p>
-        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
-          {["Proxmox","Docker","Fedora","Authentik","Forgejo","Traefik"].map(t => <span class="tag">{t}</span>)}
-        </div>
+    <div class="contact-block r d1">
+      <p class="contact-lead">
+        Open for hackathon teams, data / DevOps roles, and collabs.
+      </p>
+      <p class="contact-tagline">{TAGLINE}</p>
+      <div class="contact-actions">
+        <a href="/book" class="btn btn-filled">Book a call</a>
+        <a href={emailMailto} class="btn btn-outline">Send an email</a>
       </div>
-      <span style="font-size:1.1rem;color:var(--ink-3);">→</span>
-    </a>
+      <div class="social-icons">
+        <a href={site.githubUrl} target="_blank" rel="noopener" class="social-icon" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2 0-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.1 2.8.1 3.1.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+          <span>kuyacarlo</span>
+        </a>
+        <a href={site.linkedinUrl} target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.23 0z"/></svg>
+          <span>in/kuyacarlo</span>
+        </a>
+        <a href={site.devtoUrl} target="_blank" rel="noopener" class="social-icon" aria-label="dev.to">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.42 10.05c-.17-.23-.36-.3-.56-.3H5.8v4.5h1.06c.2 0 .39-.07.56-.3.18-.22.27-.55.27-1 .01-.45-.09-.77-.27-1zM22.67.5H1.33C.6.5 0 1.1 0 1.83v20.34c0 .73.6 1.33 1.33 1.33h21.34c.73 0 1.33-.6 1.33-1.33V1.83c0-.73-.6-1.33-1.33-1.33zM8.9 14.48c-.36.66-1.06 1.01-1.97 1.01H4.75c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7c0 .53-.09.97-.27 1.31zm5.3-4.05h-2.4c0-.65.02-1.18.04-1.58.02-.4.05-.66.09-.8.08-.25.2-.37.37-.37.17 0 .29.12.37.37.04.14.07.4.09.8.02.4.04.93.04 1.58zm0 2.25h-2.4v1.52c0 .41-.02.7-.05.87-.05.25-.17.37-.37.37-.17 0-.29-.12-.36-.37a5.1 5.1 0 0 1-.09-.87v-4.9c.09-.8.4-1.2.94-1.2.3 0 .53.12.68.35.07.11.12.26.15.46.03.2.05.5.05.88v2.89zm6.75-1.58c0 .53-.09.97-.27 1.31-.36.66-1.06 1.01-1.97 1.01h-2.18c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7z"/></svg>
+          <span>dev.to/kuyacarlo</span>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
 
-<!-- ═══ FOOTER ══════════════════════════════════════════════════════════════ -->
 <div class="wrap">
   <footer class="footer">
     <span>© 2026 John Carlo Santos</span>
-    <span>Iterate fast, think deep, ship meaning.</span>
-    <span><a href="/book" style="color:inherit;text-decoration:underline;text-decoration-color:var(--b2);text-underline-offset:3px;">book a call →</a></span>
+    <span>{TAGLINE}</span>
+    <span><a href="/resume" class="footer-link">resume →</a></span>
   </footer>
 </div>
 
