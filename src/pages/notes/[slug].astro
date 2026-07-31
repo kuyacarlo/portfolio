@@ -19,6 +19,10 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const { title, date, tags } = entry.data;
 const minutes = Math.max(1, Math.ceil((entry.body || '').split(/\s+/).length / 200));
+const body = entry.body || '';
+const hasMath = /\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\begin\{/.test(body);
+const hasTikz = /```(?:tikz|circuitikz)/i.test(body);
+const hasMermaid = /```mermaid/i.test(body);
 
 const slug = entry.id.replace(/\.md$/, '');
 const posts = await getPosts(); // newest → oldest
@@ -31,6 +35,9 @@ const older = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null;
   title={`${title} — John Carlo Santos`}
   description={entry.data.desc}
   noteTitle={title}
+  hasMath={hasMath}
+  hasTikz={hasTikz}
+  hasMermaid={hasMermaid}
 >
 <div class="wrap">
 

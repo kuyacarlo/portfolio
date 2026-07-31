@@ -65,7 +65,7 @@ const mobileFeatured = new Set(["WorkSight", "ComplyAIgent", "SAGE", "ForgeSure"
           <div class="proj-thumb">
             {p.img
               ? <img src={p.img} alt={p.name} loading="lazy" />
-              : <div class="proj-placeholder"><span>{p.emoji}</span></div>
+              : <div class="proj-placeholder"><span style="font-family:var(--mono);font-size:1.4rem;font-weight:600;opacity:0.85;">{p.name.slice(0, 2).toUpperCase()}</span></div>
             }
           </div>
           <div class="proj-body">
@@ -121,14 +121,25 @@ const mobileFeatured = new Set(["WorkSight", "ComplyAIgent", "SAGE", "ForgeSure"
     </div>
 
     <div class="hack-list r d1">
-      {hackathons.map(h => (
-        <div class="hack-item">
-          <div class="hack-place">{h.place}</div>
-          <div class="hack-name">{h.name}</div>
-          <span class="hack-proj">{h.proj}</span>
-          <p class="hack-desc">{h.desc}</p>
-        </div>
-      ))}
+      {hackathons.map(h => {
+        const CardContent = (
+          <>
+            <div class="hack-place">{h.place}</div>
+            <div class="hack-name">{h.name}</div>
+            <span class="hack-proj">{h.proj}</span>
+            <p class="hack-desc">{h.desc}</p>
+          </>
+        );
+        return h.url ? (
+          <a href={h.url} target="_blank" rel="noopener noreferrer" class="hack-item" style="display:block;text-decoration:none;color:inherit;">
+            {CardContent}
+          </a>
+        ) : (
+          <div class="hack-item">
+            {CardContent}
+          </div>
+        );
+      })}
     </div>
     <p class="sec-count r">{counts.comps} comps · {counts.podiums} podiums</p>
   </div>
