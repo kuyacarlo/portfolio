@@ -81,6 +81,7 @@ const stickyId = navStickyId;
         <div class="nav-links">
           <a href="/homelab"  class={`nav-link${active==='homelab'  ? ' active':''}`}>homelab</a>
           <a href="/notes"    class={`nav-link${active==='notes'    ? ' active':''}`}>notes</a>
+          <a href="/certs"    class={`nav-link${active==='certs'    ? ' active':''}`}>certs</a>
           <a href="/resume"   class={`nav-link${active==='resume'   ? ' active':''}`}>resume</a>
           {!hideBookCta && <a href="/book" class="nav-book">book a call →</a>}
         </div>
@@ -98,6 +99,7 @@ const stickyId = navStickyId;
   <button type="button" id="nav-close" class="mobile-nav-close" aria-label="Close menu">✕</button>
   <a href="/homelab" class="mobile-nav-link" data-close-nav>homelab</a>
   <a href="/notes"   class="mobile-nav-link" data-close-nav>notes</a>
+  <a href="/certs"   class="mobile-nav-link" data-close-nav>certs</a>
   <a href="/resume"  class="mobile-nav-link" data-close-nav>resume</a>
   {!hideBookCta && <a href="/book" class="mobile-nav-link" data-close-nav>book a call</a>}
 </div>
