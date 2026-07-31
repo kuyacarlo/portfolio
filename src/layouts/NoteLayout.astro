@@ -9,53 +9,70 @@ interface Props {
   description?: string;
   /** Short title shown in the sticky note nav after scroll */
   noteTitle?: string;
+  hasMath?: boolean;
+  hasTikz?: boolean;
+  hasMermaid?: boolean;
 }
-const { title, description, noteTitle = "" } = Astro.props;
+const {
+  title,
+  description,
+  noteTitle = "",
+  hasMath = false,
+  hasTikz = false,
+  hasMermaid = false,
+} = Astro.props;
 ---
 
 <Layout title={title} description={description} active="notes" noteTitle={noteTitle}>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
-    integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5"
-    crossorigin="anonymous"
-    slot="head"
-  />
+  {hasMath && (
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5"
+      crossorigin="anonymous"
+      slot="head"
+    />
+  )}
+  {hasTikz && (
+    <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css" slot="head" />
+  )}
 
   <slot />
 
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  {hasMermaid && (
+    <script type="module" is:inline>
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'dark',
-      darkMode: true,
-      fontFamily: 'JetBrains Mono, monospace',
-      themeVariables: {
-        background:    '#141312',
-        primaryColor:  '#252320',
-        primaryBorderColor: '#363430',
-        primaryTextColor:   '#f0ede6',
-        lineColor:     '#4a4844',
-        edgeLabelBackground: '#141312',
-        clusterBkg:    '#1d1c1a',
-      },
-    });
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        darkMode: true,
+        fontFamily: 'JetBrains Mono, monospace',
+        themeVariables: {
+          background:    '#141312',
+          primaryColor:  '#252320',
+          primaryBorderColor: '#363430',
+          primaryTextColor:   '#f0ede6',
+          lineColor:     '#4a4844',
+          edgeLabelBackground: '#141312',
+          clusterBkg:    '#1d1c1a',
+        },
+      });
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
-      for (const block of blocks) {
-        const pre = block.closest('pre');
-        const code = block.textContent || '';
-        const div = document.createElement('div');
-        div.className = 'mermaid';
-        div.textContent = code;
-        pre?.replaceWith(div);
-      }
-      await mermaid.run({ querySelector: '.mermaid' });
-    });
-  </script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const blocks = document.querySelectorAll('pre[data-language="mermaid"] code, pre code.language-mermaid');
+        for (const block of blocks) {
+          const pre = block.closest('pre');
+          const code = block.textContent || '';
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = code;
+          pre?.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: '.mermaid' });
+      });
+    </script>
+  )}
 </Layout>
 
 <style is:global>

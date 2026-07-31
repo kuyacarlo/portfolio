@@ -145,6 +145,7 @@ export const hackathons = [
     proj: "WorkSight",
     desc: "Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams.",
     podium: true,
+    url: "https://github.com/kuyacarlo/WorkSight",
   },
   {
     place: "1st Runner Up",
@@ -152,6 +153,7 @@ export const hackathons = [
     proj: "BetterTranspo",
     desc: "Decentralized platform for BEEP™ payments with LoraWAN — real-time routes, fare estimation, fullness meter.",
     podium: true,
+    url: "https://github.com/kuyacarlo/BetterTranspo",
   },
   {
     place: "MLH GHW 2026",
@@ -159,6 +161,7 @@ export const hackathons = [
     proj: "SAGE",
     desc: "Autonomous academic orchestrator. MCP bridges LLM reasoning to production Notion APIs.",
     podium: false,
+    url: "https://github.com/kuyacarlo/sage-mcp",
   },
   {
     place: "UP PJDSC 2025",
@@ -166,6 +169,7 @@ export const hackathons = [
     proj: "KLIMA",
     desc: "Bronze→Silver→Gold ETL pipeline for localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan.",
     podium: true,
+    url: "https://github.com/Signal-No-5/klima",
   },
   {
     place: "AMD Hackathon 2026",
@@ -173,6 +177,7 @@ export const hackathons = [
     proj: "ComplyAIgent",
     desc: "Agentic DevSecOps compliance engine. Three-tier comparator, human-in-the-loop, Go CLI.",
     podium: false,
+    url: "https://github.com/liitkud/complyaigent",
   },
 ];
 
