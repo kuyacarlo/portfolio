@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { TAGLINE, certifications, counts } from '../lib/portfolio-data';
+---
+
+<Layout
+  active="certs"
+  title="Certifications — John Carlo Santos"
+  description={`Certifications for John Carlo Santos. ${TAGLINE}`}
+>
+  <div class="wrap">
+    <section class="section" id="certs" style="padding-top: 48px;">
+      <div class="sec-label r">
+        <span class="sec-num">01</span>
+        <span class="sec-name">Certifications</span>
+        <span class="sec-rule"></span>
+      </div>
+
+      <p class="r d1" style="max-width: 36rem; color: var(--ink-2); font-size: 0.92rem; margin-bottom: 28px; line-height: 1.6;">
+        Credentials outside the homepage — issuer and date, scannable.
+        Full one-pager still lives on <a href="/resume" class="sec-link">resume</a>.
+      </p>
+
+      <div class="cert-list r d2">
+        {certifications.map((c) => (
+          <div class="cert-row">
+            <div>
+              <div class="cert-name">{c.name}</div>
+              <div class="cert-issuer">{c.issuer}</div>
+            </div>
+            <div class="cert-date">{c.date}</div>
+          </div>
+        ))}
+      </div>
+      <p class="sec-count r d3">{counts.certs} credentials</p>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <footer class="footer">
+      <span>© 2026 John Carlo Santos</span>
+      <span>{TAGLINE}</span>
+      <span><a href="/resume" class="footer-link">resume →</a></span>
+    </footer>
+  </div>
+</Layout>
