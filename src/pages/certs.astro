@@ -8,18 +8,24 @@ import { TAGLINE, certifications, counts } from '../lib/portfolio-data';
   title="Certifications — John Carlo Santos"
   description={`Certifications for John Carlo Santos. ${TAGLINE}`}
 >
-  <div class="wrap">
-    <section class="section" id="certs" style="padding-top: 48px;">
+  <div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
+    <!-- header -->
+    <section style="padding-top:120px;padding-bottom:60px;">
+      <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
+        Certifi-<br/><span style="color:var(--ink-3);">cations.</span>
+      </h1>
+      <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
+        Credentials outside the homepage — issuer and date, scannable.
+        Full one-pager still lives on <a href="/resume" class="sec-link">resume</a>.
+      </p>
+    </section>
+
+    <section class="section" id="certs" style="flex:1;">
       <div class="sec-label r">
         <span class="sec-num">01</span>
         <span class="sec-name">Certifications</span>
         <span class="sec-rule"></span>
       </div>
-
-      <p class="r d1" style="max-width: 36rem; color: var(--ink-2); font-size: 0.92rem; margin-bottom: 28px; line-height: 1.6;">
-        Credentials outside the homepage — issuer and date, scannable.
-        Full one-pager still lives on <a href="/resume" class="sec-link">resume</a>.
-      </p>
 
       <div class="cert-list r d2">
         {certifications.map((c) => (
@@ -34,9 +40,7 @@ import { TAGLINE, certifications, counts } from '../lib/portfolio-data';
       </div>
       <p class="sec-count r d3">{counts.certs} credentials</p>
     </section>
-  </div>
 
-  <div class="wrap">
     <footer class="footer">
       <span>© 2026 John Carlo Santos</span>
       <span>{TAGLINE}</span>
