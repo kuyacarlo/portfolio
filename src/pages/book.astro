@@ -11,62 +11,24 @@ const availText = available
 const emailMailto = `mailto:${site.email}`;
 ---
 
-<Layout active="" title="Book a Call — John Carlo Santos">
-<div class="wrap">
+<Layout active="" title="Let's Talk — John Carlo Santos">
+<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
 
-  <section class="book-hero">
+  <section class="book-hero" style="flex:1;">
     <div class="r">
       <a href="/" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-bottom:28px;display:inline-block;">← back</a>
     </div>
 
-    <div class="avail-badge r">
-      <span class={`status-dot ${available ? 'status-up' : 'status-warn'}`}></span>
-      {available ? "currently available" : "limited availability"}
-    </div>
-
     <h1 class="r d1" style="font-size:clamp(2.5rem,7vw,5.5rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
-      Let's talk.
+      Let's talk<span style="color:var(--ink-3);">.</span>
     </h1>
 
     <p class="r d2" style="font-size:0.95rem;color:var(--ink-2);max-width:480px;line-height:1.75;margin-bottom:40px;">
       {availText}
     </p>
 
-    <div class="cal-embed r d3" style="padding:0;min-height:720px;align-items:stretch;overflow:hidden;">
-      <iframe
-        src={site.bookingUrl}
-        title="Book a call"
-        loading="lazy"
-        style="width:100%;min-height:720px;border:0;border-radius:6px;background:var(--bg);"
-      ></iframe>
-    </div>
-    <p class="r" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-top:12px;">
-      Opens in a new tab: <a href={site.bookingUrl} target="_blank" rel="noopener" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;">{displayHost(site.bookingUrl)} ↗</a>
-    </p>
-
-    <!-- Fallback contact methods -->
-    <div class="r d4" style="margin-top:32px;">
-      <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);margin-bottom:14px;">or reach out directly</p>
-      <div style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
-        {[
-          {label:"Email",    val:site.email,                    href:emailMailto},
-          {label:"LinkedIn", val:displayHost(site.linkedinUrl), href:site.linkedinUrl},
-        ].map((row, i, arr) => (
-          <a href={row.href} target={row.label!=="Email"?"_blank":undefined} rel="noopener"
-             style={`display:flex;align-items:center;justify-content:space-between;padding:16px 20px;font-size:0.85rem;gap:12px;transition:background 0.15s;${i<arr.length-1?'border-bottom:1px solid var(--b1);':''}`}
-             onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background=''">
-            <div>
-              <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">{row.label}</div>
-              <div style="color:var(--ink);">{row.val}</div>
-            </div>
-            <span style="color:var(--ink-3);">↗</span>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <!-- What I work on -->
-    <div class="r d4" style="margin-top:40px;padding-top:40px;border-top:1px solid var(--b1);">
+    <!-- Good fits -->
+    <div class="r d3" style="margin-bottom:40px;">
       <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;">Good fits</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
         {[
@@ -83,12 +45,61 @@ const emailMailto = `mailto:${site.email}`;
       </div>
     </div>
 
+    <!-- Cal embed + reach out side by side on desktop, stacked on mobile -->
+    <div class="book-grid r d4">
+      <div class="book-cal">
+        <iframe
+          src={site.bookingUrl}
+          title="Let's talk"
+          loading="lazy"
+          style="width:100%;min-height:720px;border:0;border-radius:6px;background:var(--bg);"
+        ></iframe>
+        <p style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-top:12px;">
+          Opens in a new tab: <a href={site.bookingUrl} target="_blank" rel="noopener" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;">{displayHost(site.bookingUrl)} ↗</a>
+        </p>
+      </div>
+
+      <div class="book-contact">
+        <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);margin-bottom:14px;">or reach out directly</p>
+        <div style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
+          {[
+            {label:"Email",    val:site.email,                    href:emailMailto},
+            {label:"LinkedIn", val:displayHost(site.linkedinUrl), href:site.linkedinUrl},
+          ].map((row, i, arr) => (
+            <a href={row.href} target={row.label!=="Email"?"_blank":undefined} rel="noopener"
+               style={`display:flex;align-items:center;justify-content:space-between;padding:16px 20px;font-size:0.85rem;gap:12px;transition:background 0.15s;${i<arr.length-1?'border-bottom:1px solid var(--b1);':''}`}
+               onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background=''">
+              <div>
+                <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">{row.label}</div>
+                <div style="color:var(--ink);">{row.val}</div>
+              </div>
+              <span style="color:var(--ink-3);">↗</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
   </section>
 
-  <footer class="footer">
+  <footer class="footer" style="margin-top:auto;">
     <span>© 2026 John Carlo Santos</span>
     <a href="/" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← back home</a>
   </footer>
 
 </div>
 </Layout>
+
+<style>
+  .book-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .book-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

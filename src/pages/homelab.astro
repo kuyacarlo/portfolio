@@ -39,12 +39,12 @@ const heartbeatApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/heart
 ---
 
 <Layout active="homelab" title="Homelab — John Carlo Santos" navStickyId="services">
-<div class="wrap">
+<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
 
   <!-- header -->
   <section style="padding-top:120px;padding-bottom:60px;">
     <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
-      Home<br/><span style="color:var(--ink-3);">lab.</span>
+      Homelab<span style="color:var(--ink-3);">.</span>
     </h1>
     <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
       One machine. Twelve services. Constant tinkering.<br/>
@@ -195,7 +195,7 @@ const heartbeatApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/heart
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" style="margin-top:auto;">
     <span>© 2026 John Carlo Santos</span>
   </footer>
 
