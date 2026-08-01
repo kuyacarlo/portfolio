@@ -5,7 +5,7 @@ const posts = await getPosts();
 ---
 
 <Layout active="notes" title="Notes — John Carlo Santos">
-<div class="wrap">
+<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
 
   <section style="padding-top:120px;padding-bottom:48px;">
     <h1 class="r" style="font-size:clamp(2.2rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.04em;margin-bottom:10px;">Notes.</h1>
@@ -14,7 +14,7 @@ const posts = await getPosts();
     </p>
   </section>
 
-  <div class="r d2" style="padding-bottom:80px;">
+  <div class="r d2" style="padding-bottom:80px;flex:1;">
     {posts.length === 0 && (
       <p style="font-size:0.88rem;color:var(--ink-3);padding:24px 0;border-top:1px solid var(--b1);">No notes yet.</p>
     )}
@@ -27,7 +27,7 @@ const posts = await getPosts();
     ))}
   </div>
 
-  <footer class="footer">
+  <footer class="footer" style="margin-top:auto;">
     <span>© 2026 John Carlo Santos</span>
   </footer>
 
