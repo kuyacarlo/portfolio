@@ -11,7 +11,6 @@ import {
   skillGroups,
   resumeWork,
   aboutBlurb,
-  NOW_UPDATED,
 } from '../lib/portfolio-data';
 
 const pdfPath = '/resume/john-carlo-santos.pdf';
@@ -27,13 +26,14 @@ const hasStaticPdf = fs.existsSync(
 >
   <div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
     <article class="resume-page" style="flex:1;">
-      <!-- Screen chrome -->
-      <a href="/" class="sec-link resume-screen-only r" style="display:inline-block;margin-bottom:20px;">← back</a>
 
-      <!-- Harvard header (print-primary; also works on screen) -->
-      <header class="resume-harvard-header r">
-        <h1 class="resume-h1">John Carlo Santos</h1>
-        <p class="resume-harvard-contact">
+      <!-- Header -->
+      <header class="resume-header r">
+        <h1 class="resume-name">John Carlo Santos</h1>
+        <p class="resume-tagline-line">
+          <em class="resume-tagline-em">{TAGLINE}</em>
+        </p>
+        <p class="resume-contact">
           <a href={`mailto:${site.email}`}>{site.email}</a>
           <span aria-hidden="true"> · </span>
           <a href={site.linkedinUrl} target="_blank" rel="noopener">linkedin.com/in/kuyacarlo</a>
@@ -42,37 +42,15 @@ const hasStaticPdf = fs.existsSync(
           <span aria-hidden="true"> · </span>
           <span>Bulacan, PH</span>
         </p>
-        <p class="resume-sub resume-screen-only">
-          Data engineer, DevOps builder & hackathon competitor.<br/>
-          BS Computer Engineering @ Bulacan State University · 2028.<br/>
-          <span class="resume-tagline">{TAGLINE}</span>
-        </p>
+        <div class="resume-actions resume-screen-only r d1">
+          <button type="button" class="btn btn-outline" id="resume-print">⬇ Download PDF</button>
+          {hasStaticPdf && (
+            <a href={pdfPath} class="btn btn-outline" download>Static PDF</a>
+          )}
+        </div>
       </header>
 
-      <div class="resume-actions resume-screen-only r d2">
-        <a href="/book" class="btn btn-filled">Book a call →</a>
-        <button type="button" class="btn btn-outline" id="resume-print">Download PDF</button>
-        {hasStaticPdf && (
-          <a href={pdfPath} class="btn btn-outline" download>Static PDF</a>
-        )}
-      </div>
-      <p class="resume-hint resume-screen-only r d2">
-        Download PDF opens print → Save as PDF in Harvard one-pager layout.
-      </p>
-
-      <section class="resume-section r d1">
-        <h2>Education</h2>
-        <div class="resume-item">
-          <div class="resume-item-head">
-            <span class="resume-item-title">Bulacan State University</span>
-            <span class="resume-item-meta">Expected 2028</span>
-          </div>
-          <div class="resume-role">
-            <div class="resume-role-title">BS Computer Engineering · Malolos, Bulacan</div>
-          </div>
-        </div>
-      </section>
-
+      <!-- About -->
       <section class="resume-section r d1">
         <h2>About</h2>
         {aboutBlurb.map((p) => (
@@ -80,7 +58,45 @@ const hasStaticPdf = fs.existsSync(
         ))}
       </section>
 
+      <!-- Skills -->
       <section class="resume-section r d1">
+        <h2>Skills</h2>
+        <div class="resume-skills-grid resume-screen-only">
+          {skillGroups.map((g) => (
+            <div class="resume-skill-col">
+              <div class="resume-item-title">{g.label}</div>
+              <div class="skill-row">
+                {g.items.map((t) => <span class="tag">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="resume-skills-harvard">
+          {skillGroups.map((g) => (
+            <p class="resume-skill-line">
+              <strong>{g.label}:</strong> {g.items.join(", ")}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <!-- Selected Projects -->
+      <section class="resume-section r d2">
+        <h2>Projects</h2>
+        {resumeWork.map((p) => (
+          <div class="resume-item">
+            <div class="resume-item-head">
+              <span class="resume-item-title">{p.name}</span>
+              <span class="resume-item-meta">{p.category}</span>
+            </div>
+            <p>{p.desc}</p>
+            {p.meta && <p class="resume-item-meta resume-item-submeta">{p.meta}</p>}
+          </div>
+        ))}
+      </section>
+
+      <!-- Experience -->
+      <section class="resume-section r d2">
         <h2>Experience</h2>
         {experience.map((org) => (
           <div class="resume-item">
@@ -106,20 +122,7 @@ const hasStaticPdf = fs.existsSync(
         ))}
       </section>
 
-      <section class="resume-section r d2">
-        <h2>Selected Projects</h2>
-        {resumeWork.map((p) => (
-          <div class="resume-item">
-            <div class="resume-item-head">
-              <span class="resume-item-title">{p.name}</span>
-              <span class="resume-item-meta">{p.category}</span>
-            </div>
-            <p>{p.desc}</p>
-            {p.meta && <p class="resume-item-meta resume-item-submeta">{p.meta}</p>}
-          </div>
-        ))}
-      </section>
-
+      <!-- Leadership & Talks -->
       <section class="resume-section r d2">
         <h2>Leadership & Talks</h2>
         <ul class="resume-talk-list">
@@ -129,45 +132,9 @@ const hasStaticPdf = fs.existsSync(
         </ul>
       </section>
 
-      <section class="resume-section r d2">
-        <h2>Skills</h2>
-        <div class="resume-skills-grid resume-screen-only">
-          {skillGroups.map((g) => (
-            <div class="resume-skill-col">
-              <div class="resume-item-title">{g.label}</div>
-              <div class="skill-row">
-                {g.items.map((t) => <span class="tag">{t}</span>)}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div class="resume-skills-harvard">
-          {skillGroups.map((g) => (
-            <p class="resume-skill-line">
-              <strong>{g.label}:</strong> {g.items.join(", ")}
-            </p>
-          ))}
-        </div>
-      </section>
-
-      <section class="resume-section r d3">
-        <h2>Certifications</h2>
-        <ul class="resume-cert-list">
-          {certifications.map((c) => (
-            <li>
-              <span class="resume-cert-name">{c.name}</span>
-              <span class="resume-cert-meta">{c.issuer} · {c.date}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <p class="resume-pdf-note resume-screen-only r">
-        Optional static file: drop at <code>public/resume/john-carlo-santos.pdf</code> · updated {NOW_UPDATED}
-      </p>
     </article>
 
-    <footer class="footer resume-screen-only">
+    <footer class="footer resume-screen-only" style="margin-top:auto;">
       <span>© 2026 John Carlo Santos</span>
       <span>{TAGLINE}</span>
       <span><a href="/book" class="footer-link">let's talk →</a></span>
@@ -178,3 +145,66 @@ const hasStaticPdf = fs.existsSync(
     document.getElementById('resume-print')?.addEventListener('click', () => window.print());
   </script>
 </Layout>
+
+<style>
+  .resume-header {
+    padding-top: 120px;
+    padding-bottom: 40px;
+    text-align: center;
+  }
+  .resume-name {
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin-bottom: 12px;
+  }
+  .resume-tagline-line {
+    font-size: 1.05rem;
+    color: var(--ink-2);
+    margin-bottom: 16px;
+  }
+  .resume-tagline-em {
+    font-style: italic;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .resume-contact {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+  }
+  .resume-contact a {
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--b2);
+  }
+  .resume-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Centered content on desktop */
+  .resume-page {
+    padding-top: 0;
+    padding-bottom: 80px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  @media (max-width: 768px) {
+    .resume-header {
+      text-align: left;
+      padding-top: 80px;
+    }
+    .resume-actions {
+      justify-content: flex-start;
+    }
+    .resume-page {
+      max-width: 100%;
+    }
+  }
+</style>

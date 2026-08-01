@@ -183,6 +183,18 @@ export const hackathons = [
 
 export const experience = [
   {
+    org: "Millia Labs",
+    roles: [
+      {
+        title: "Software Engineering Intern",
+        dates: "Jun 2026 — present",
+        bullets: [
+          "GCP infrastructure, CI/CD pipeline maintenance, and MCP backend integrations.",
+        ],
+      },
+    ],
+  },
+  {
     org: "Seekers Guild",
     roles: [
       {

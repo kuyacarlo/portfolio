@@ -703,7 +703,7 @@ a.now-val:hover { color: var(--ink); }
 }
 
 /* ─── Resume page ────────────────────────────────────────────────────────── */
-.resume-page { padding-top: 120px; padding-bottom: 80px; }
+.resume-page { padding-bottom: 80px; }
 .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 12px; }
 .resume-hint {
   font-family: var(--mono);
