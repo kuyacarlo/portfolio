@@ -126,11 +126,10 @@ pnpm dev -- --host 0.0.0.0 --port 4321
 
 ## Deploying
 
-Deploys to **Cloudflare Workers (static assets)** via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` then `wrangler deploy` (serves `dist/` via `[assets]` in `wrangler.toml`). Manual/local:
+Deploys to **Cloudflare Workers (static assets)** via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` then `wrangler deploy` (serves `dist/` via `[assets]` in `wrangler.toml`). **Do not deploy manually** (`pnpm wrangler deploy`) — merge to `main` and let CI ship it.
 
-```bash
-pnpm wrangler deploy --profile magallanes   # uses wrangler.toml → ./dist
-```
+> Emergency fallback only (never for routine changes):
+> `pnpm wrangler deploy --profile magallanes   # uses wrangler.toml → ./dist`
 
 Prerequisites (one-time):
 - GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (**`magallanes-main` — `04a311dd63265e896ca15a8e8124f144`**; wrong account = wrong namespace)
