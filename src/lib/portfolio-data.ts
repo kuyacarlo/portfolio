@@ -27,7 +27,7 @@ export type Project = {
   architecture?: string;
 };
 
-/** Featured homepage order: ComplyAIgent → WorkSight → nutrition-api → pub-routes → v4l2loopback-fedora → awesome-freestack */
+/** Featured homepage order: ComplyAIgent → WorkSight → awesome-freestack → nutrition-api → pub-routes → v4l2loopback-fedora */
 export const projects: Project[] = [
   {
     name: "ComplyAIgent",
@@ -67,6 +67,21 @@ export const projects: Project[] = [
     award: "Top 3 Finalist",
   },
   {
+    name: "awesome-freestack",
+    emoji: "🎒",
+    category: "Community",
+    desc: "Curated assortment of free resources for students, hobbyists, and startup builders.",
+    tech: [],
+    url: "https://github.com/kuyacarlo/awesome-freestack",
+    live: null,
+    demo: null,
+    writeup: null,
+    img: "/screenshots/awesome-freestack.png",
+    screenshots: [],
+    private: false,
+    type: "Solo",
+  },
+  {
     name: "nutrition-api",
     emoji: "🥗",
     category: "Side Project",
@@ -103,21 +118,6 @@ export const projects: Project[] = [
     desc: "Fedora package script for Video4Linux loopback devices (OBS Virtual Camera).",
     tech: ["dkms", "GitHub Actions"],
     url: "https://github.com/kuyacarlo/v4l2loopback-fedora",
-    live: null,
-    demo: null,
-    writeup: null,
-    img: null,
-    screenshots: [],
-    private: false,
-    type: "Solo",
-  },
-  {
-    name: "awesome-freestack",
-    emoji: "🎒",
-    category: "Community",
-    desc: "Curated assortment of free resources for students, hobbyists, and startup builders.",
-    tech: [],
-    url: "https://github.com/kuyacarlo/awesome-freestack",
     live: null,
     demo: null,
     writeup: null,
@@ -178,13 +178,13 @@ export const experience = [
     org: "Millia Labs Pte. Ltd.",
     roles: [
       {
-        title: "Junior Developer (Independent Contractor)",
+        title: "Junior Developer",
         dates: "Jul 2026 — present",
         bullets: [
           "Build and maintain features across a property-operations web dashboard and companion Flutter mobile app — task management, turnover scheduling, inspections, and guest communications.",
           "Develop backend services and agent orchestration workflows in Python / FastAPI against a PostgreSQL database.",
           "Improve CI/CD reliability and developer tooling through self-hosted runner infrastructure, automated lint and type-check gates, and test-suite isolation.",
-          "Operate an AI-agent-assisted development workflow across parallel workstreams, sustaining high merge throughput with code review and Git hygiene.",
+          "Operate an AI-agent-assisted development workflow across parallel workstreams.",
         ],
       },
     ],
@@ -255,8 +255,8 @@ export const talks = [
 
 export const aboutBlurb = [
   "I'm Karlo — a generalist software engineer and student. My work spans ETL pipelines, FastAPI backends, React/Flutter apps, and agentic AI systems built with LangGraph + MCP.",
-  "I gravitate toward tools that make other developers faster and systems that solve real problems for real Filipinos — DevSecOps guardrails, transport and market data for commuters and farmers, and disaster-risk pipelines for LGUs.",
-  "Currently a Junior Developer (Independent Contractor) at Millia Labs, CTO of Seekers Guild, and Cybersecurity Associate at Computer Science Society BulSU. Running Fedora Linux, learning Go, tinkering with a homelab.",
+  "Recent projects: a nutrition facts API, an ETL pipeline for LTFRB transport routes, and a curated free-resources list. Hackathon work spans burnout-prediction and DevSecOps-compliance agents.",
+  "Currently a Junior Developer at Millia Labs, CTO of Seekers Guild, and Cybersecurity Associate at Computer Science Society BulSU. Running Fedora Linux, learning Go, tinkering with a homelab.",
 ];
 
 export const certifications = [

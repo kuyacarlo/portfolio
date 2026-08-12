@@ -56,7 +56,7 @@ export function remarkTikz() {
 
       let html = "";
       try {
-        const svg = await cachedSvg(cacheFile, prepared, t.wantsCircuit);
+        const svg = fixSourceMinus(await cachedSvg(cacheFile, prepared, t.wantsCircuit));
         html =
           `<div class="tikz-figure"><img src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}" ` +
           `alt="TikZ / CircuiTikZ diagram" loading="lazy" decoding="async"></div>`;
@@ -118,6 +118,39 @@ function escapeHtml(s: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+/**
+ * circuitikz typesets a voltage source's minus as a cmsy10 glyph ("¡") that
+ * TikZJax renders off-baseline (misaligned next to the source's "+"). Replace
+ * those standalone minus glyphs with a drawn dash at the glyph's center so it
+ * aligns with the "+" mark. Labels (multi-glyph text runs) are left alone.
+ */
+function fixSourceMinus(svg: string): string {
+  return svg.replace(
+    /<text([^>]*font-family="cmsy10"[^>]*)>¡<\/text>/g,
+    (_m, attrs: string) => {
+      let cx = 0;
+      let cy = 0;
+      const rot = /transform="rotate\([\d.]+ ([-\d.]+) ([-\d.]+)\)"/.exec(attrs);
+      const trl = /transform="translate\(([-\d.]+) ([-\d.]+)\)"/.exec(attrs);
+      if (rot) {
+        cx = parseFloat(rot[1]);
+        cy = parseFloat(rot[2]);
+      } else if (trl) {
+        cx = parseFloat(trl[1]);
+        cy = parseFloat(trl[2]);
+      } else {
+        cx = parseFloat(/x="([-\d.]+)"/.exec(attrs)?.[1] ?? "0");
+        cy = parseFloat(/y="([-\d.]+)"/.exec(attrs)?.[1] ?? "0");
+      }
+      const half = 3;
+      return (
+        `<path stroke="#000" stroke-width=".6" ` +
+        `d="M${(cx - half).toFixed(3)} ${cy.toFixed(3)} h${(half * 2).toFixed(3)}"/>`
+      );
+    },
+  );
 }
 
 function prepareTikzSource(raw: string, wantsCircuit: boolean): string {

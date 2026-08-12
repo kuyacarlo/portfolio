@@ -14,6 +14,11 @@ Shared memory of failure modes and constraints for this workspace. **Do not dele
 
 ## 📝 Latest Session Logs (2026-08-13)
 
+### 0. Astro content cache hides remark-plugin changes
+- **Issue:** Editing `remark-tikz.ts` (e.g. adding a fix) had no effect on the built notes — old SVG output kept appearing even after `rm -rf .astro dist`.
+  - **Resolution:** Astro persists the processed content collection in **`node_modules/.astro/data-store.json`**, which `rm -rf .astro` does NOT clear. Deleting `node_modules/.astro` too forces the remark plugins to re-run. (Confirmed: plugin marker logged only after clearing it.)
+  - **Prevention:** When changing a markdown/remark pipeline, clear `node_modules/.astro` as well. Also: don't run `git checkout -- <file>` on an uncommitted file mid-debug — it reverts your fix.
+
 ### 1. Failure Modes & Resolutions
 - **Issue:** `astro build` crashed with `The requested module 'neotraverse' does not provide an export named 'forEach'` at `getStaticPaths` — every build red, `dist/` stale.
   - **Resolution:** Root cause was a **mixed npm + pnpm install**: a stale npm-installed `neotraverse@0.6.18` sat at the top of `node_modules` and shadowed Astro's nested `neotraverse@1.0.1` when the prerender bundle externalized its bare import. Fixed by wiping `node_modules`, deleting `package-lock.json`, adding `"packageManager": "pnpm@10.33.0"` + `pnpm.onlyBuiltDependencies: ["esbuild"]`, clean `pnpm install`. (See `src/lib/`, `package.json`.)
