@@ -1,6 +1,11 @@
 /**
- * rehype plugin: render ```tikz / ```circuitikz fences to inline SVG at build time
+ * remark plugin: render ```tikz / ```circuitikz fences to inline SVG at build time
  * via node-tikzjax (WASM). No client TikZJax required.
+ *
+ * Runs at the remark (mdast) level — BEFORE Shiki highlights code — because
+ * Astro 7 runs Shiki before user rehype plugins, which would neutralize the
+ * fence language and make it undetectable. Converting the code node to an
+ * `html` node here means Shiki never sees the fence.
  */
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -36,10 +41,10 @@ type Target = {
   wantsCircuit: boolean;
 };
 
-export function rehypeTikz() {
+export function remarkTikz() {
   return async (tree: any) => {
     const targets: Target[] = [];
-    collect(tree, null, null, targets);
+    collect(tree, null, -1, targets);
     if (!targets.length) return;
 
     await mkdir(CACHE_DIR, { recursive: true });
@@ -49,104 +54,70 @@ export function rehypeTikz() {
       const key = createHash("sha1").update(prepared).digest("hex").slice(0, 16);
       const cacheFile = path.join(CACHE_DIR, `${key}.svg`);
 
-      let svg = "";
+      let html = "";
       try {
-        svg = await readFile(cacheFile, "utf8");
-      } catch {
-        try {
-          svg = await tex2svg(prepared, {
-            showConsole: false,
-            texPackages: t.wantsCircuit ? { circuitikz: "" } : {},
-            embedFontCss: false,
-          });
-          await writeFile(cacheFile, svg, "utf8");
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : String(err);
-          console.warn("[rehype-tikz] render failed:", msg);
-          t.parent.children[t.index] = {
-            type: "element",
-            tagName: "pre",
-            properties: { className: ["tikz-error"] },
-            children: [
-              {
-                type: "text",
-                value: `CircuiTikZ failed to render at build time.\n${msg}`,
-              },
-            ],
-          };
-          continue;
-        }
+        const svg = await cachedSvg(cacheFile, prepared, t.wantsCircuit);
+        html =
+          `<div class="tikz-figure"><img src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}" ` +
+          `alt="TikZ / CircuiTikZ diagram" loading="lazy" decoding="async"></div>`;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn("[remark-tikz] render failed:", msg);
+        html = `<pre class="tikz-error">CircuiTikZ failed to render at build time.\n${escapeHtml(msg)}</pre>`;
       }
 
-      t.parent.children[t.index] = {
-        type: "element",
-        tagName: "div",
-        properties: { className: ["tikz-figure"] },
-        children: [
-          {
-            type: "element",
-            tagName: "img",
-            properties: {
-              src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
-              alt: "TikZ / CircuiTikZ diagram",
-              loading: "lazy",
-              decoding: "async",
-            },
-            children: [],
-          },
-        ],
-      };
+      t.parent.children[t.index] = { type: "html", value: html };
     }
   };
 }
 
-function collect(node: any, parent: any, index: number | null, out: Target[]) {
-  if (
-    node.type === "element" &&
-    node.tagName === "pre" &&
-    node.children?.[0]?.type === "element" &&
-    node.children[0].tagName === "code"
-  ) {
-    const code = node.children[0];
-    const classes: string[] = (code.properties?.className ?? []).map(String);
-    const dataLang = String(
-      node.properties?.dataLanguage ?? code.properties?.dataLanguage ?? "",
-    ).toLowerCase();
-    const langs = new Set<string>([
-      dataLang,
-      ...classes.map((c) => c.replace(/^language-/, "").toLowerCase()),
-    ]);
+async function cachedSvg(
+  cacheFile: string,
+  prepared: string,
+  wantsCircuit: boolean,
+): Promise<string> {
+  try {
+    return await readFile(cacheFile, "utf8");
+  } catch {
+    const svg = await tex2svg(prepared, {
+      showConsole: false,
+      texPackages: wantsCircuit ? { circuitikz: "" } : {},
+      embedFontCss: false,
+    });
+    await writeFile(cacheFile, svg, "utf8");
+    return svg;
+  }
+}
 
-    const src = extractText(code).replace(/\u00a0/g, " ");
-    // Only explicit tikz / circuitikz fences render. ```tex stays as source.
-    // Read lang from the fence meta before Shiki rewrites classes.
-    const isTikzLang = [...TIKZ_LANGS].some((l) => langs.has(l));
-
-    if (isTikzLang && parent && index !== null) {
+function collect(node: any, parent: any, index: number, out: Target[]) {
+  if (node?.type === "code" && node.lang) {
+    const lang = String(node.lang).toLowerCase();
+    if (TIKZ_LANGS.has(lang)) {
+      const src = (node.value || "").replace(/\u00a0/g, " ");
       out.push({
         parent,
         index,
         src,
         wantsCircuit:
-          langs.has("circuitikz") ||
-          langs.has("circuit-tikz") ||
+          lang === "circuitikz" ||
+          lang === "circuit-tikz" ||
           CIRCUIT_HINT.test(src),
       });
       return;
     }
   }
-
-  if (node.children) {
+  if (node?.children && Array.isArray(node.children)) {
     for (let i = 0; i < node.children.length; i++) {
       collect(node.children[i], node, i, out);
     }
   }
 }
 
-function extractText(n: any): string {
-  if (n.type === "text") return n.value || "";
-  if (n.children) return n.children.map(extractText).join("");
-  return "";
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function prepareTikzSource(raw: string, wantsCircuit: boolean): string {
