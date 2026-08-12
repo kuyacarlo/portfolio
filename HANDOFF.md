@@ -1,7 +1,7 @@
 # kuyacarlo-portfolio — Handoff Document
 
 **Last updated:** August 2026
-**Version:** v0.5
+**Version:** v0.6
 **Owner:** John Carlo Santos (`kuyacarlo`)
 
 ---
@@ -66,7 +66,7 @@ kuyacarlo-portfolio/
 | Project image slots | `aspect-ratio: 4/3` placeholder grid — drop screenshots anytime (`img` on the project object) |
 | Vanilla CSS | No framework lock-in, fast build, easy to reason about |
 | Build-time TikZ | CircuiTikZ → SVG via node-tikzjax (WASM) — static output, no client strobing |
-| Astro | Zero JS by default, static output, fast deploy to Vercel |
+| Astro | Zero JS by default, static output, fast deploy to Cloudflare Pages |
 
 **Inspiration:** stimmie.dev, leerob.com (prose-first), paco.me (column grid)
 
@@ -101,7 +101,7 @@ Quality Checks for Devs and Data Pros (Data Engineering Pilipinas), Git & GitHub
 ## Next steps
 
 ### High priority
-- [ ] **Point domain** — deploy to Vercel and point `kuyacarlo.dev` (currently not live)
+- [ ] **Point domain** — deploy to Cloudflare Pages and point `kuyacarlo.dev` (currently not live)
 - [ ] **Add project screenshots** — set `img: "/file.jpg"` on project objects in `src/lib/portfolio-data.ts` and drop files in `public/`
 - [ ] **Add static resume PDF** — drop `john-carlo-santos.pdf` into `public/resume/` (see `public/resume/README.md`). Until then the "Download PDF" button falls back to print-to-PDF on `/resume`
 
@@ -116,17 +116,18 @@ Quality Checks for Devs and Data Pros (Data Engineering Pilipinas), Git & GitHub
 
 ---
 
-## Deploying to Vercel
+## Deploying to Cloudflare Pages
+
+Automated via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` then `wrangler pages deploy` against `dist/`. Manual/local:
 
 ```bash
-# First deploy (interactive, sets up project)
-npx vercel --prod
-
-# Subsequent deploys
-vercel deploy --prod
+pnpm wrangler pages deploy   # uses wrangler.toml → ./dist
 ```
 
-Vercel auto-detects Astro. Set the `PUBLIC_*` vars from `.env.example` in the project settings.
+Prerequisites:
+- Cloudflare Pages project `kuyacarlo-portfolio` (wrangler auto-creates on first deploy)
+- GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+- `PUBLIC_*` vars are inlined from the workflow `env` (mirror of `.env.example`) — update there if they change
 
 ---
 

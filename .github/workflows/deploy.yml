@@ -1,0 +1,60 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+# Public site links — same values as .env.example. Astro inlines PUBLIC_* at
+# build time; keep in sync with src/lib/site.ts fallbacks.
+env:
+  PUBLIC_BOOKING_URL: https://cal.com/kuyacarlo
+  PUBLIC_EMAIL: santos.karlo@outlook.com
+  PUBLIC_LINKEDIN_URL: https://linkedin.com/in/kuyacarlo
+  PUBLIC_GITHUB_URL: https://github.com/kuyacarlo
+  PUBLIC_DEVTO_URL: https://dev.to/kuyacarlo
+  PUBLIC_STATUS_URL: https://status.kuyacarlo.dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          if-no-files-found: error
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Uses wrangler.toml (name + pages_build_output_dir = ./dist)
+          command: pages deploy
