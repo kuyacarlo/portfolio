@@ -56,5 +56,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Uses wrangler.toml (name + pages_build_output_dir = ./dist)
-          command: pages deploy
+          # Uses wrangler.toml → [assets] directory = ./dist
+          command: deploy

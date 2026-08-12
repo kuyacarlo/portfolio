@@ -6,7 +6,7 @@ Personal portfolio for John Carlo Santos (`kuyacarlo`) — data engineer, DevOps
 
 - **Astro 5** — multi-page static output, zero client JS by default
 - **Vanilla CSS** — no Tailwind, no frameworks (tokens + components in `src/styles/global.css`)
-- **Cloudflare Pages** — deployed at `kuyacarlo.dev` (target domain, not live yet)
+- **Cloudflare Workers (static assets)** — deployed at `kuyacarlo.dev` (target domain, not live yet)
 
 ## Quickstart (pnpm)
 
@@ -46,12 +46,12 @@ src/
 
 ## Deploy
 
-Deploys to **Cloudflare Pages** from GitHub Actions (`.github/workflows/deploy.yml`): on push to `main`, it runs `pnpm build` then `wrangler pages deploy` against `dist/` (config in `wrangler.toml`).
+Deploys to **Cloudflare Workers (static assets)** from GitHub Actions (`.github/workflows/deploy.yml`): on push to `main`, it runs `pnpm build` then `wrangler deploy` (serves `dist/` via `[assets]` in `wrangler.toml`).
 
 Manual/local:
 
 ```bash
-pnpm wrangler pages deploy   # uses wrangler.toml → ./dist
+pnpm wrangler deploy   # uses wrangler.toml → ./dist
 ```
 
 Prerequisites (one-time):
