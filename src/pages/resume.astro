@@ -207,4 +207,154 @@ const hasStaticPdf = fs.existsSync(
       max-width: 100%;
     }
   }
+
+  /* ─── Print: compact single-page CV ─────────────────────────────── */
+  @media print {
+    @page {
+      size: letter;
+      margin: 0.45in 0.6in;
+    }
+
+    .wrap {
+      display: block !important;
+      min-height: 0 !important;
+    }
+    .resume-page {
+      max-width: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-size: 10pt;
+      line-height: 1.3;
+      color: #000;
+    }
+
+    .resume-screen-only,
+    .resume-actions,
+    .footer {
+      display: none !important;
+    }
+
+    .resume-header {
+      padding: 0 0 8pt;
+      text-align: center;
+    }
+    .resume-name {
+      font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin: 0 0 2pt;
+    }
+    .resume-tagline-line {
+      font-size: 10pt;
+      color: #000;
+      margin: 0 0 2pt;
+    }
+    .resume-tagline-em {
+      font-style: italic;
+      font-weight: 400;
+      color: #000;
+    }
+    .resume-contact {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-size: 9pt;
+      color: #000;
+      margin: 0 0 8pt;
+    }
+    .resume-contact a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .resume-section {
+      margin: 0 0 12pt;
+      padding: 0;
+      border-top: none;
+      break-inside: avoid;
+    }
+    .resume-section h2 {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-size: 11pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+      padding-bottom: 2pt;
+      margin: 0 0 6pt;
+    }
+
+    .resume-about-p {
+      margin: 0 0 4pt;
+      line-height: 1.3;
+    }
+    .resume-about-p:last-child { margin-bottom: 0; }
+
+    .resume-item { margin: 0 0 8pt; }
+    .resume-item:last-child { margin-bottom: 0; }
+    .resume-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12pt;
+      margin-bottom: 0;
+    }
+    .resume-item-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #000;
+    }
+    .resume-item-meta {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-size: 9pt;
+      font-style: italic;
+      color: #000;
+      white-space: nowrap;
+    }
+    .resume-item-submeta { display: none; }
+    .resume-item p {
+      margin: 1pt 0 0;
+      line-height: 1.3;
+    }
+
+    .resume-role { margin: 3pt 0 0; }
+    .resume-role-title {
+      font-size: 10pt;
+      font-style: italic;
+      font-weight: 400;
+      color: #000;
+      margin: 0 0 1pt;
+    }
+    .resume-role ul {
+      margin: 1pt 0 0;
+      padding-left: 1.15em;
+    }
+    .resume-role li {
+      line-height: 1.3;
+      margin: 0 0 1pt;
+    }
+
+    .resume-skills-grid { display: none !important; }
+    .resume-skills-harvard { display: block; }
+    .resume-skill-line {
+      margin: 0 0 2pt;
+      line-height: 1.3;
+    }
+    .resume-skill-line strong { font-weight: 700; color: #000; }
+
+    .resume-talk-list { margin: 0; padding: 0; }
+    .resume-talk-list li {
+      margin: 0 0 2pt;
+      line-height: 1.3;
+    }
+    .resume-talk-list em {
+      font-weight: 700;
+      font-style: normal;
+      color: #000;
+    }
+
+    .r { opacity: 1 !important; transform: none !important; }
+  }
+
 </style>

@@ -618,114 +618,6 @@ a.now-val:hover { color: var(--ink); }
 }
 
 /* Harvard / ATS print layout — black on white, single column, serif body */
-@media print {
-  @page {
-    size: letter;
-    margin: 0.6in 0.7in;
-  }
-
-  .nav,
-  #mobile-nav,
-  #cli-console,
-  .resume-screen-only,
-  .resume-actions,
-  .footer,
-  .resume-skills-grid {
-    display: none !important;
-  }
-
-  html { font-size: 11pt; }
-  body {
-    background: #fff !important;
-    color: #000 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .wrap {
-    max-width: none;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  .resume-page {
-    max-width: none;
-    padding: 0;
-    margin: 0;
-    color: #000;
-    font-family: "Times New Roman", Times, Georgia, serif;
-  }
-
-  .resume-section {
-    margin-top: 12pt;
-    padding-top: 0;
-    border-top: none;
-    break-inside: avoid;
-  }
-
-  .resume-section h2 {
-    font-family: "Times New Roman", Times, Georgia, serif;
-    font-size: 11pt;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #000 !important;
-    border-bottom: 1px solid #000;
-    padding-bottom: 2pt;
-    margin: 0 0 8pt;
-  }
-
-  .resume-item + .resume-item { margin-top: 8pt; }
-  .resume-item-title,
-  .resume-role-title,
-  .resume-talk-list em {
-    color: #000 !important;
-    font-weight: 700;
-  }
-  .resume-item-meta {
-    font-family: "Times New Roman", Times, Georgia, serif;
-    font-size: 10pt;
-    color: #000 !important;
-    font-style: italic;
-  }
-  .resume-item p,
-  .resume-item li,
-  .resume-talk-list li,
-  .resume-skill-line {
-    font-size: 10pt;
-    color: #000 !important;
-    line-height: 1.35;
-  }
-  .resume-item ul {
-    margin-top: 3pt;
-    padding-left: 1.15em;
-  }
-  .resume-item ul li + li { margin-top: 2pt; }
-  .resume-role { margin-top: 2pt; }
-  .resume-role-title {
-    font-size: 10pt;
-    font-style: italic;
-    font-weight: 400;
-    color: #000 !important;
-    margin-bottom: 2pt;
-  }
-  .resume-item-submeta { display: none; }
-
-  .resume-skills-harvard { display: block; }
-  .resume-skill-line {
-    margin: 0 0 3pt;
-  }
-  .resume-skill-line strong {
-    font-weight: 700;
-    color: #000 !important;
-  }
-
-  .resume-talk-list { gap: 3pt; }
-
-  .r { opacity: 1 !important; transform: none !important; }
-}
-
 /* ─── Notes list ─────────────────────────────────────────────────────────── */
 .note-row {
   display: grid;
@@ -1019,13 +911,6 @@ a.now-val:hover { color: var(--ink); }
   .r {
     opacity: 1 !important;
     transform: none !important;
-  }
-  /* Harvard-style reference footnotes for external links */
-  a[href^="http"]:after {
-    content: " [Available at: " attr(href) "]" !important;
-    font-size: 85% !important;
-    color: #333333 !important;
-    font-family: var(--mono) !important;
   }
   /* Ensure project grid fits nicely on printed page */
   .project-grid, .hack-list, .hw-grid {
