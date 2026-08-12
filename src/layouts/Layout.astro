@@ -1,6 +1,14 @@
 ---
 import '../styles/global.css';
 import { displayHost, site } from '../lib/site';
+import {
+  projects,
+  skillGroups,
+  nowItems,
+  NOW_UPDATED,
+  homelabServices,
+  homelabHardware,
+} from '../lib/portfolio-data';
 interface Props {
   title?: string;
   description?: string;
@@ -42,6 +50,39 @@ const isNote = Boolean(noteTitle);
 const hideNavUntilReveal = Boolean(navRevealId);
 const revealId = navRevealId || (isNote ? "note-title" : "");
 const stickyId = navStickyId;
+
+// ~ CLI command outputs — derived from src/lib/portfolio-data.ts (single source of truth).
+const projectTag = (desc: string) =>
+  desc.split(/\s+[—–-]\s+|\.\s+|\?\s+|\!\s+/)[0];
+const cliProjects =
+  "Selected Projects:\n" +
+  projects
+    .map((p) => {
+      const ref = p.url ? ` (${displayHost(p.url)})` : p.private ? " (private)" : "";
+      return `  - ${p.name}: ${projectTag(p.desc)}${ref}`;
+    })
+    .join("\n");
+
+const cliSkills =
+  "Core Skills:\n" +
+  skillGroups.map((g) => `  - ${g.label}: ${g.items.join(", ")}`).join("\n");
+
+const nowCol = (key: string) => `${key}:`.padEnd(11);
+const cliNow =
+  `Now (${NOW_UPDATED}):\n` +
+  nowItems
+    .map((i) => `  ${nowCol(i.key)}${i.text}${i.href ? ` → ${i.href}` : ""}`)
+    .join("\n") +
+  `\n  ${nowCol("open for")}hackathon teams · data/DevOps roles · collabs → /book`;
+
+const cliHomelab =
+  "Homelab Host Setup:\n" +
+  homelabHardware.map(([label, val]) => `  - ${label}: ${val}`).join("\n") +
+  "\n  - Core services: " +
+  homelabServices
+    .slice(0, 5)
+    .map((s) => s.name)
+    .join(", ");
 ---
 <!doctype html>
 <html lang="en">
@@ -107,7 +148,7 @@ const stickyId = navStickyId;
 
 <slot />
 
-<script define:vars={{ contactEmail, contactLinkedin, contactGithub, hideNavUntilReveal, navRevealId: revealId, navStickyId: stickyId, isNote }}>
+<script define:vars={{ contactEmail, contactLinkedin, contactGithub, hideNavUntilReveal, navRevealId: revealId, navStickyId: stickyId, isNote, cliProjects, cliSkills, cliNow, cliHomelab }}>
   // Plain JS only — define:vars scripts are inlined without TS stripping.
   const nav = document.getElementById('nav');
   const revealEl = navRevealId ? document.getElementById(navRevealId) : null;
@@ -267,15 +308,15 @@ const stickyId = navStickyId;
     } else if (cmd === 'close' || cmd === 'exit') {
       hideCLI();
     } else if (cmd === 'projects') {
-      writeOut('Selected Projects:\n  - ComplyAIgent: DevSecOps agentic compliance engine (github.com/liitkud/complyaigent)\n  - tanggol-saka: Decentralized land-ownership for Filipino farmers\n  - bantay: Pre-push secrets + entropy hook\n  - sage-mcp: Notion MCP academic co-pilot\n  - forgesure: Construction ops cost dashboard\n  - pub-routes: LTFRB open-data ETL');
+      writeOut(cliProjects);
     } else if (cmd === 'skills') {
-      writeOut('Core Skills:\n  - Data & Backend: Python, Go, FastAPI, DuckDB, PostgreSQL, Supabase\n  - DevOps & Infra: Podman, GitHub Actions, Ansible, Linux, GCP, AWS, Bash\n  - AI / Agents: LangGraph, MCP\n  - Frontend: TypeScript, Next.js');
+      writeOut(cliSkills);
     } else if (cmd === 'now') {
-      writeOut('Now (2026-07):\n  building:  homelab services + portfolio polish → /homelab\n  learning:  Go\n  exploring: agentic DevSecOps + MCP tooling\n  open for:  hackathon teams · data/DevOps roles · collabs → /book');
+      writeOut(cliNow);
     } else if (cmd === 'contact') {
       writeOut(`Contact Info:\n  - Email: ${contactEmail}\n  - LinkedIn: ${contactLinkedin}\n  - GitHub: ${contactGithub}\n  - Resume: /resume`);
     } else if (cmd === 'homelab') {
-      writeOut('Homelab Host Setup:\n  - Machine: ThinkCentre M710q-N000\n  - OS: Fedora Server · Podman rootless · Netbird mesh\n  - Core services: Traefik, Vaultwarden, Authentik SSO, Grafana stack, Forgejo');
+      writeOut(cliHomelab);
     } else {
       writeOut(`Command not found: ${rawCmd}. Type "help" for a list of commands.`);
     }
