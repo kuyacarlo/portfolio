@@ -6,7 +6,7 @@ Personal portfolio for John Carlo Santos (`kuyacarlo`) — data engineer, DevOps
 
 - **Astro 5** — multi-page static output, zero client JS by default
 - **Vanilla CSS** — no Tailwind, no frameworks (tokens + components in `src/styles/global.css`)
-- **Vercel** — deployed at `kuyacarlo.dev` (target domain, not live yet)
+- **Cloudflare Pages** — deployed at `kuyacarlo.dev` (target domain, not live yet)
 
 ## Quickstart (pnpm)
 
@@ -46,15 +46,17 @@ src/
 
 ## Deploy
 
-```bash
-# Vercel (one command, first time)
-npx vercel --prod
+Deploys to **Cloudflare Pages** from GitHub Actions (`.github/workflows/deploy.yml`): on push to `main`, it runs `pnpm build` then `wrangler pages deploy` against `dist/` (config in `wrangler.toml`).
 
-# Subsequent deploys
-vercel deploy --prod
+Manual/local:
+
+```bash
+pnpm wrangler pages deploy   # uses wrangler.toml → ./dist
 ```
 
-Vercel auto-detects Astro. Set the `PUBLIC_*` vars from `.env.example` in the Vercel project settings.
+Prerequisites (one-time):
+- GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+- The `PUBLIC_*` vars from `.env.example` are inlined by the workflow `env`; override them there if they change.
 
 ## Docs
 

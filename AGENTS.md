@@ -6,7 +6,7 @@ This file tells AI coding agents (Claude, Gemini, Codex, etc.) everything they n
 
 - **Owner:** John Carlo Santos (`kuyacarlo`)
 - **Site:** `kuyacarlo.dev` (target domain, not live yet)
-- **Stack:** Astro 5 · Vanilla CSS · Static output · Deployed to Vercel
+- **Stack:** Astro 5 · Vanilla CSS · Static output · Deployed to Cloudflare Pages
 - **Package manager:** pnpm (canonical — `pnpm-lock.yaml` committed, `package-lock.json` removed)
 
 ## Architecture
@@ -126,13 +126,16 @@ pnpm dev -- --host 0.0.0.0 --port 4321
 
 ## Deploying
 
-```bash
-# Vercel (one command, first time)
-npx vercel --prod
+Deploys to **Cloudflare Pages** via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` and `wrangler pages deploy` against `dist/` (`wrangler.toml`). Manual/local:
 
-# Subsequent deploys
-vercel deploy --prod
+```bash
+pnpm wrangler pages deploy   # uses wrangler.toml → ./dist
 ```
+
+Prerequisites (one-time):
+- Cloudflare Pages project named `kuyacarlo-portfolio` (wrangler auto-creates on first deploy)
+- GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- `PUBLIC_*` site links are inlined from the workflow `env` (mirror of `.env.example`)
 
 ## Changelog
 
@@ -143,3 +146,4 @@ vercel deploy --prod
 | v0.3    | Final redesign — single-column editorial layout, stimmie/leerob/paco inspired |
 | v0.4    | Notes system — KaTeX math, Mermaid, build-time TikZ/CircuiTikZ SSR, `~` CLI terminal overlay, click-to-confetti |
 | v0.5    | Multi-page expansion — homelab, certs, resume, book routes; resume print/harvard layout; pnpm standardization + build fix |
+| v0.6    | Deploy to Cloudflare Pages (GitHub Actions + wrangler) instead of Vercel |
