@@ -974,8 +974,8 @@ a.now-val:hover { color: var(--ink); }
   .proj-desktop-only { display: none; }
   .project-grid .proj-mobile:nth-child(2) { order: 1; } /* WorkSight first */
   .project-grid .proj-mobile:nth-child(1) { order: 2; } /* ComplyAIgent */
-  .project-grid .proj-mobile:nth-child(3) { order: 3; } /* nutrition-api */
-  .project-grid .proj-mobile:nth-child(4) { order: 4; } /* pub-routes */
+  .project-grid .proj-mobile:nth-child(3) { order: 3; } /* awesome-freestack */
+  .project-grid .proj-mobile:nth-child(4) { order: 4; } /* nutrition-api */
 }
 @media (max-width: 640px) {
   .hero-meta { gap: 10px 12px; }
