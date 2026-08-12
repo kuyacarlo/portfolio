@@ -163,5 +163,5 @@ Tables:
 |---|---|---|
 | `remark-math` | Parses `$...$` and `$$...$$` | Build |
 | `rehype-katex` | Renders math → HTML | Build |
-| `rehype-tikz` + `node-tikzjax` | Renders ```tikz / ```circuitikz → SVG | Build |
+| `remark-tikz` + `node-tikzjax` | Renders ```tikz / ```circuitikz → SVG | Build |
 | Mermaid.js | Renders diagram code | Client |

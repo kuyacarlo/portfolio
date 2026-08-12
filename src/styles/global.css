@@ -972,10 +972,10 @@ a.now-val:hover { color: var(--ink); }
 }
 @media (max-width: 720px) {
   .proj-desktop-only { display: none; }
-  .project-grid .proj-mobile:nth-child(1) { order: 2; } /* ComplyAIgent */
   .project-grid .proj-mobile:nth-child(2) { order: 1; } /* WorkSight first */
-  .project-grid .proj-mobile:nth-child(5) { order: 3; } /* SAGE */
-  .project-grid .proj-mobile:nth-child(6) { order: 4; } /* ForgeSure */
+  .project-grid .proj-mobile:nth-child(1) { order: 2; } /* ComplyAIgent */
+  .project-grid .proj-mobile:nth-child(3) { order: 3; } /* nutrition-api */
+  .project-grid .proj-mobile:nth-child(4) { order: 4; } /* pub-routes */
 }
 @media (max-width: 640px) {
   .hero-meta { gap: 10px 12px; }

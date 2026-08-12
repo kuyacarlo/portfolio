@@ -17,7 +17,7 @@ src/
                               # scroll/nav JS, "~" CLI terminal overlay,
                               # click-to-confetti on the collab badge
   layouts/NoteLayout.astro    # Extends Layout for notes (KaTeX CSS, client Mermaid,
-                              # build-time CircuiTikZ via rehype-tikz)
+                              # build-time CircuiTikZ via remark-tikz)
   pages/
     index.astro               # Home
     homelab.astro             # Homelab services + hardware, live status dots
@@ -32,7 +32,7 @@ src/
     cms.ts                    # getPosts() wrapper over Astro content collections (notes)
   content.config.ts           # Notes content collection schema
   content/notes/*.md          # Notes (markdown)
-  plugins/rehype-tikz.ts      # Build-time TikZ/CircuiTikZ → SVG (node-tikzjax WASM)
+  plugins/remark-tikz.ts     # Build-time TikZ/CircuiTikZ → SVG (node-tikzjax WASM)
   styles/global.css           # All CSS. Tokens + components. No Tailwind.
 public/
   hero-bg.jpg                 # Used in nothing currently (kept for reference)
@@ -74,11 +74,11 @@ There is a **fixed nav bar** with links: `homelab`, `notes`, `certs`, `resume`, 
 
 ### Projects / certs / resume data — `src/lib/portfolio-data.ts`
 
-To add a project: add an object to the `projects` array (name, emoji, category, desc, tech, url, live, demo, writeup, img, screenshots, private, optional type/role/team/award/architecture). To add a project image: put the file in `public/`, set `img: "/your-file.jpg"` on the object. Homepage displays 6 featured projects (ComplyAIgent → WorkSight → tanggol-saka → bantay → SAGE → ForgeSure); the mobile order is tuned in `index.astro` (`mobileFeatured` set) and `global.css`.
+To add a project: add an object to the `projects` array (name, emoji, category, desc, tech, url, live, demo, writeup, img, screenshots, private, optional type/role/team/award/architecture). To add a project image: put the file in `public/`, set `img: "/your-file.jpg"` on the object. Homepage displays 6 featured projects (ComplyAIgent → WorkSight → nutrition-api → pub-routes → v4l2loopback-fedora → awesome-freestack); the mobile order is tuned in `index.astro` (`mobileFeatured` set) and `global.css`.
 
 ### Notes — markdown in `src/content/notes/`
 
-Notes are plain markdown files with frontmatter (`title`, `date`, `tags`, `draft`/`hide`, optional `desc`). Slug = filename. Features: KaTeX math (remark-math + rehype-katex), Mermaid diagrams (client-side, in `NoteLayout`), and CircuiTikZ/TikZ → inline SVG at build time via `src/plugins/rehype-tikz.ts`. Full authoring guide lives in **`NOTES.md`** — read it before writing or editing notes.
+Notes are plain markdown files with frontmatter (`title`, `date`, `tags`, `draft`/`hide`, optional `desc`). Slug = filename. Features: KaTeX math (remark-math + rehype-katex), Mermaid diagrams (client-side, in `NoteLayout`), and CircuiTikZ/TikZ → inline SVG at build time via `src/plugins/remark-tikz.ts` (mdast-level, so it runs before Shiki). Full authoring guide lives in **`NOTES.md`** — read it before writing or editing notes.
 
 ### Homepage features
 

@@ -18,24 +18,26 @@ BS Computer Engineering @ Bulacan State University · 2028
 | Project | Role / notes | Stack | Link |
 |---|---|---|---|
 | **ComplyAIgent** | Backend + agent eng · AMD Hackathon 2026 | Go, LangGraph, FastAPI, Next.js | [repo](https://github.com/liitkud/complyaigent) |
-| **WorkSight** | Builder · BPI DataWave 2025, Top 3 / 100+ teams | Python, LangGraph, Data | source private |
-| **tanggol-saka** | Lead · civic land-ownership for indigenous farmers | TypeScript, Next.js | [repo](https://github.com/kuyacarlo/tanggol-saka) · [live](https://tanggol-saka.vercel.app) |
-| **bantay** | Solo · pre-push secrets + entropy gate (fail-closed) | TypeScript, LLM, Auth0 | [repo](https://github.com/kuyacarlo/bantay) |
-| **SAGE** | Agent/MCP eng · MLH GHW 2026 Notion MCP | Python, LangGraph, MCP, Notion | [repo](https://github.com/kuyacarlo/sage-mcp) |
-| **ForgeSure** | Lead · full-stack construction ops | Python, FastAPI, Next.js | [repo](https://github.com/kuyacarlo/forgesure) · [live](https://forgesure.vercel.app) |
+| **WorkSight** | Builder · BPI DataWave 2025, Top 3 / 100+ teams | Python, LangGraph, Next.js | source private |
+| **nutrition-api** | Solo · serving nutritional facts to downstream devices | FastAPI, Docker, SQLite | [repo](https://github.com/kuyacarlo/nutrition-api) |
+| **pub-routes** | Solo · LTFRB routes ETL | BeautifulSoup, Pandas, urllib3 | [repo](https://github.com/kuyacarlo/pub-routes) |
+| **v4l2loopback-fedora** | Solo · OBS Virtual Camera package | dkms, GitHub Actions | [repo](https://github.com/kuyacarlo/v4l2loopback-fedora) |
+| **awesome-freestack** | Curator · free resources for builders | — | [repo](https://github.com/kuyacarlo/awesome-freestack) |
 
 ---
 
 ## Stack
 
-**Data & backend** — Python, Go, FastAPI, DuckDB, PostgreSQL, Supabase  
-**DevOps & infra** — Podman, GitHub Actions, Ansible, Linux, GCP, AWS, Bash  
-**AI / agents** — LangGraph, MCP  
-**Frontend** — TypeScript, Next.js
+**Languages** — Python, TypeScript, Dart, Go, SQL, Bash  
+**Data engineering** — Pandas/NumPy, PostgreSQL, DuckDB, ETL, Web Scraping, JSON/YAML  
+**Backend & AI** — FastAPI, LangGraph, Agentic AI, MCP, FastMCP, pytest  
+**Frontend & mobile** — React / Next.js, Flutter  
+**Infra & DevOps** — Docker, Podman, GitHub/Forgejo Actions, Ansible, Linux Hardening, Git  
+**Cloud** — GCP, AWS, Supabase
 
 ---
 
-## Now · 2026-07
+## Now · 2026-08
 
 ```
 building:  homelab services + portfolio polish → /homelab

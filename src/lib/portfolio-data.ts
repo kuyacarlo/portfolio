@@ -3,7 +3,7 @@
 export const TAGLINE = "Iterate fast, think deep, ship meaning.";
 export const REPO_COUNT = 37;
 export const HOMELAB_SERVICE_COUNT = 12;
-export const NOW_UPDATED = "2026-07";
+export const NOW_UPDATED = "2026-08";
 
 export type ProjectType = "Solo" | "Team" | "Lead";
 
@@ -27,13 +27,13 @@ export type Project = {
   architecture?: string;
 };
 
-/** Featured homepage order: ComplyAIgent → WorkSight → tanggol-saka → bantay → SAGE → forgesure */
+/** Featured homepage order: ComplyAIgent → WorkSight → nutrition-api → pub-routes → v4l2loopback-fedora → awesome-freestack */
 export const projects: Project[] = [
   {
     name: "ComplyAIgent",
     emoji: "⚖️",
-    category: "AMD Hackathon Submission",
-    desc: "Agentic DevSecOps compliance engine — ingests regulatory text, enforces pre-push policies with LangGraph HIL, Go CLI, and Next.js dashboard. Built for AMD Developer Challenge 2026.",
+    category: "AMD Hackathon 2026",
+    desc: "Agentic DevSecOps engine that compiles regulatory text (PDF / Markdown / scraped) into fail-closed pre-push guardrails — a Go CLI pairing Gitleaks with entropy scoring, and a LangGraph human-in-the-loop interrupt routing approvals through a FastAPI backend.",
     tech: ["Go", "LangGraph", "FastAPI", "Next.js"],
     url: "https://github.com/liitkud/complyaigent",
     live: null,
@@ -46,14 +46,14 @@ export const projects: Project[] = [
     role: "Backend + agent eng",
     team: "Hackathon team",
     award: "AMD Hackathon 2026",
-    architecture: "LangGraph HIL → Go CLI policy gate → Next.js dashboard",
+    architecture: "Regulatory text → Go CLI gate + LangGraph HIL → FastAPI",
   },
   {
     name: "WorkSight",
     emoji: "📊",
     category: "BPI DataWave 2025",
-    desc: "Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams.",
-    tech: ["Python", "LangGraph", "Data"],
+    desc: "Agentic engine that transforms fragmented enterprise metadata into predictive burnout insights. Top 3 out of 100+ teams.",
+    tech: ["Python", "LangGraph", "Next.js"],
     url: null,
     live: null,
     demo: null,
@@ -67,29 +67,12 @@ export const projects: Project[] = [
     award: "Top 3 Finalist",
   },
   {
-    name: "tanggol-saka",
-    emoji: "🌾",
-    category: "Civic Tech / Decentralized",
-    desc: "Decentralized land-ownership system for indigenous Filipino farmers. USSD proof-of-occupation, offline-first, Tagalog UI, digital land certificates.",
-    tech: ["TypeScript", "Next.js", "Decentralized"],
-    url: "https://github.com/kuyacarlo/tanggol-saka",
-    live: "https://tanggol-saka.vercel.app",
-    demo: null,
-    writeup: null,
-    img: null,
-    screenshots: [],
-    private: false,
-    type: "Lead",
-    role: "Lead builder",
-    architecture: "Offline-first USSD + web certificates",
-  },
-  {
-    name: "bantay",
-    emoji: "🛡️",
-    category: "DevSecOps Tooling",
-    desc: "Pre-push hook catching secrets + entropy anomalies. Regex + LLM two-layer detection. Auth0 CIBA human-in-the-loop for medium-risk pushes. Fail-closed.",
-    tech: ["TypeScript", "LLM", "Auth0", "Git Hooks"],
-    url: "https://github.com/kuyacarlo/bantay",
+    name: "nutrition-api",
+    emoji: "🥗",
+    category: "Side Project",
+    desc: "API for serving nutritional facts from various sources onto downstream devices.",
+    tech: ["FastAPI", "Docker", "SQLite"],
+    url: "https://github.com/kuyacarlo/nutrition-api",
     live: null,
     demo: null,
     writeup: null,
@@ -97,42 +80,51 @@ export const projects: Project[] = [
     screenshots: [],
     private: false,
     type: "Solo",
-    architecture: "Regex + LLM detectors → CIBA gate → fail-closed push",
   },
   {
-    name: "SAGE",
-    emoji: "🎓",
-    category: "EdTech / Agents",
-    desc: "Notion MCP-powered academic co-pilot for Filipino students. Builds semester workspace from CHED-verified curriculum via agentic orchestration. MLH GHW 2026 Notion MCP Challenge.",
-    tech: ["Python", "LangGraph", "MCP", "Notion"],
-    url: "https://github.com/kuyacarlo/sage-mcp",
+    name: "pub-routes",
+    emoji: "🚌",
+    category: "Side Project",
+    desc: "ETL pipeline transforming LTFRB transport routes into a CSV file.",
+    tech: ["BeautifulSoup", "Pandas", "urllib3"],
+    url: "https://github.com/kuyacarlo/pub-routes",
     live: null,
     demo: null,
     writeup: null,
     img: null,
     screenshots: [],
     private: false,
-    type: "Team",
-    role: "Agent / MCP eng",
-    team: "Hackathon team",
-    award: "MLH GHW 2026 · Notion MCP",
-    architecture: "LLM reasoning ↔ MCP ↔ Notion APIs",
+    type: "Solo",
   },
   {
-    name: "ForgeSure",
-    emoji: "🔧",
-    category: "SaaS / Construction Ops",
-    desc: "All-in-one dashboard for equipment cost and maintenance tracking — for construction teams tired of spreadsheets.",
-    tech: ["Python", "FastAPI", "Next.js"],
-    url: "https://github.com/kuyacarlo/forgesure",
-    live: "https://forgesure.vercel.app",
+    name: "v4l2loopback-fedora",
+    emoji: "📹",
+    category: "Side Project",
+    desc: "Fedora package script for Video4Linux loopback devices (OBS Virtual Camera).",
+    tech: ["dkms", "GitHub Actions"],
+    url: "https://github.com/kuyacarlo/v4l2loopback-fedora",
+    live: null,
     demo: null,
     writeup: null,
     img: null,
     screenshots: [],
     private: false,
-    type: "Lead",
-    role: "Full-stack",
+    type: "Solo",
+  },
+  {
+    name: "awesome-freestack",
+    emoji: "🎒",
+    category: "Community",
+    desc: "Curated assortment of free resources for students, hobbyists, and startup builders.",
+    tech: [],
+    url: "https://github.com/kuyacarlo/awesome-freestack",
+    live: null,
+    demo: null,
+    writeup: null,
+    img: null,
+    screenshots: [],
+    private: false,
+    type: "Solo",
   },
 ];
 
@@ -143,39 +135,39 @@ export const hackathons = [
     place: "Top 3 Finalist",
     name: "BPI DataWave 2025",
     proj: "WorkSight",
-    desc: "Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams.",
+    desc: "Architected an agentic engine that transforms fragmented enterprise metadata into predictive burnout insights. Top 3 out of 100+ teams.",
     podium: true,
-    url: "https://github.com/kuyacarlo/WorkSight",
+    url: null,
   },
   {
-    place: "1st Runner Up",
+    place: "First Runner Up",
     name: "LPU Innoverse 2025",
     proj: "BetterTranspo",
-    desc: "Decentralized platform for BEEP™ payments with LoraWAN — real-time routes, fare estimation, fullness meter.",
+    desc: "Crafted a decentralized platform for BEEP™ and Card payments with LoraWAN — real-time transport routes, fare estimation, and a fullness meter for passengers.",
     podium: true,
-    url: "https://github.com/kuyacarlo/BetterTranspo",
+    url: null,
   },
   {
-    place: "MLH GHW 2026",
-    name: "Notion MCP Challenge",
-    proj: "SAGE",
-    desc: "Autonomous academic orchestrator. MCP bridges LLM reasoning to production Notion APIs.",
-    podium: false,
-    url: "https://github.com/kuyacarlo/sage-mcp",
-  },
-  {
-    place: "UP PJDSC 2025",
-    name: "Data Science Competition",
+    place: "Participant",
+    name: "PJDSC 2025 · UP Data Science Society & Eskwelabs",
     proj: "KLIMA",
-    desc: "Bronze→Silver→Gold ETL pipeline for localized LGU disaster risk alerts. Piloted in Calumpit, Bulacan.",
-    podium: true,
+    desc: "Designed a Bronze→Silver→Gold ETL pipeline transforming raw environmental data into localized LGU disaster risk alerts; engineered API interconnectivity and containerized ML inference microservices, piloted in Calumpit, Bulacan.",
+    podium: false,
     url: "https://github.com/Signal-No-5/klima",
   },
   {
-    place: "AMD Hackathon 2026",
-    name: "Developer Challenge",
+    place: "Participant",
+    name: "UPLB · The Innovation Lab & UP Data Science Society",
+    proj: "SARAI-SABI",
+    desc: "Designed and built a multi-platform tracker for Market Prices, Land Ownership, and Pest Prevention for farmers and cooperatives.",
+    podium: false,
+    url: null,
+  },
+  {
+    place: "Participant",
+    name: "AMD Developer Hackathon 2026",
     proj: "ComplyAIgent",
-    desc: "Agentic DevSecOps compliance engine. Three-tier comparator, human-in-the-loop, Go CLI.",
+    desc: "Agentic DevSecOps engine that compiles regulatory text into fail-closed pre-push guardrails — a Go CLI pairing Gitleaks with entropy scoring, and LangGraph human-in-the-loop routing for medium-risk approvals.",
     podium: false,
     url: "https://github.com/liitkud/complyaigent",
   },
@@ -183,13 +175,16 @@ export const hackathons = [
 
 export const experience = [
   {
-    org: "Millia Labs",
+    org: "Millia Labs Pte. Ltd.",
     roles: [
       {
-        title: "Software Engineering Intern",
-        dates: "Jun 2026 — present",
+        title: "Junior Developer (Independent Contractor)",
+        dates: "Jul 2026 — present",
         bullets: [
-          "GCP infrastructure, CI/CD pipeline maintenance, and MCP backend integrations.",
+          "Build and maintain features across a property-operations web dashboard and companion Flutter mobile app — task management, turnover scheduling, inspections, and guest communications.",
+          "Develop backend services and agent orchestration workflows in Python / FastAPI against a PostgreSQL database.",
+          "Improve CI/CD reliability and developer tooling through self-hosted runner infrastructure, automated lint and type-check gates, and test-suite isolation.",
+          "Operate an AI-agent-assisted development workflow across parallel workstreams, sustaining high merge throughput with code review and Git hygiene.",
         ],
       },
     ],
@@ -212,58 +207,67 @@ export const experience = [
     roles: [
       {
         title: "Cybersecurity Associate",
-        dates: "2025 — present",
+        dates: "2026 — present",
         bullets: [
           "Support society security education and workshops for CompE / CS peers.",
         ],
       },
+      {
+        title: "External Officer",
+        dates: "2025",
+        bullets: [],
+      },
     ],
   },
   {
-    org: "BulSU — The Otaku Philippines",
+    org: "BulSU Microsoft Student Community",
     roles: [
       {
-        title: "Vice President for Internal Affairs",
-        dates: "2024 — 2025",
+        title: "Creatives Officer",
+        dates: "2024",
         bullets: [
-          "Ran internal ops and member coordination for the campus anime / creative org.",
+          "Led design and media output for community events and campaigns.",
         ],
       },
       {
-        title: "Multimedia Head",
-        dates: "2023 — 2024",
-        bullets: [
-          "Led design and media output for events and org campaigns.",
-        ],
+        title: "Member",
+        dates: "2025 — present",
+        bullets: [],
+      },
+    ],
+  },
+  {
+    org: "Google Cloud & NVIDIA Communities",
+    roles: [
+      {
+        title: "Google Cloud Innovator & Community Member · NVIDIA Developer Community Member",
+        dates: "2025 — present",
+        bullets: [],
       },
     ],
   },
 ];
 
 export const talks = [
-  {
-    title: "Quality Checks for Devs and Data Pros",
-    org: "Data Engineering Pilipinas",
-  },
   { title: "Git & GitHub Fundamentals", org: "Computer Science Society BulSU" },
-  { title: "Web Dev Basics", org: "Seekers Guild" },
+  { title: "Web Development Basics (HTML & CSS)", org: "Seekers Guild" },
 ];
 
 export const aboutBlurb = [
-  "I'm Karlo — a generalist software engineer and student. My work spans ETL pipelines, containerized microservices, FastAPI backends, and agentic AI systems built with LangGraph + MCP.",
-  "I gravitate toward tools that make other developers faster and projects that solve real problems for real Filipinos — pre-push security hooks, land-ownership systems for indigenous farmers, disaster-risk pipelines for LGUs.",
-  "Currently CTO of Seekers Guild and Cybersecurity Associate at Computer Science Society BulSU. Running Fedora Linux, learning Go, tinkering with a homelab.",
+  "I'm Karlo — a generalist software engineer and student. My work spans ETL pipelines, FastAPI backends, React/Flutter apps, and agentic AI systems built with LangGraph + MCP.",
+  "I gravitate toward tools that make other developers faster and systems that solve real problems for real Filipinos — DevSecOps guardrails, transport and market data for commuters and farmers, and disaster-risk pipelines for LGUs.",
+  "Currently a Junior Developer (Independent Contractor) at Millia Labs, CTO of Seekers Guild, and Cybersecurity Associate at Computer Science Society BulSU. Running Fedora Linux, learning Go, tinkering with a homelab.",
 ];
 
 export const certifications = [
-  { name: "Associate Python Developer", issuer: "DataCamp", date: "Jun 2025" },
   { name: "Azure Data Fundamentals", issuer: "Microsoft", date: "May 2025" },
   { name: "Azure AI Services Workshop", issuer: "Microsoft", date: "May 2025" },
-  { name: "Intro to Cybersecurity", issuer: "Cisco", date: "2025" },
-  { name: "Cybersecurity Simulation", issuer: "Mastercard", date: "Apr 2025" },
+  { name: "Intro to Cybersecurity", issuer: "Cisco NetAcad", date: "2025" },
+  { name: "Cybersecurity Simulation", issuer: "Mastercard (Forage)", date: "Apr 2025" },
+  { name: "Google Cloud Developer Program — BigLake Qwik Start Lab", issuer: "Cloud Skills Boost", date: "2025" },
 ];
 
-/** Resume featured builds — WorkSight, ComplyAIgent, SAGE */
+/** Resume featured projects — from CV "Projects" section. */
 export const resumeWork: {
   name: string;
   category: string;
@@ -271,41 +275,55 @@ export const resumeWork: {
   meta?: string;
 }[] = [
   {
-    name: "WorkSight",
-    category: "BPI DataWave 2025",
-    desc: "Agentic engine transforming enterprise metadata into predictive burnout insights. Top 3 / 100+ teams.",
-    meta: "Top 3 Finalist",
+    name: "nutrition-api",
+    category: "FastAPI · Docker · SQLite",
+    desc: "API for serving nutritional facts from various sources onto downstream devices.",
+    meta: "Solo",
   },
   {
-    name: "ComplyAIgent",
-    category: "AMD Hackathon 2026",
-    desc: "Agentic DevSecOps compliance engine — regulatory text to pre-push policy enforcement. LangGraph HIL, Go CLI, Next.js dashboard.",
-    meta: "Backend + agent eng · Team",
+    name: "pub-routes",
+    category: "BeautifulSoup · Pandas · urllib3",
+    desc: "ETL pipeline transforming LTFRB transport routes into a CSV file.",
+    meta: "Solo",
   },
   {
-    name: "SAGE",
-    category: "MLH GHW 2026 · Notion MCP",
-    desc: "Notion MCP academic co-pilot for Filipino students. Builds semester workspaces from CHED-verified curriculum via agentic orchestration.",
-    meta: "Agent / MCP eng · Team",
+    name: "v4l2loopback-fedora",
+    category: "dkms · GitHub Actions",
+    desc: "Fedora package script for Video4Linux loopback devices (OBS Virtual Camera).",
+    meta: "Solo",
+  },
+  {
+    name: "awesome-freestack",
+    category: "Community resources",
+    desc: "Curated assortment of free resources for students, hobbyists, and startup builders.",
+    meta: "Curator",
   },
 ];
 
 export const skillGroups: { label: string; items: string[] }[] = [
   {
-    label: "Data & Backend",
-    items: ["Python", "Go", "FastAPI", "DuckDB", "PostgreSQL", "Supabase"],
+    label: "Languages",
+    items: ["Python", "TypeScript", "Dart", "Go", "SQL", "Bash"],
   },
   {
-    label: "DevOps & Infra",
-    items: ["Podman", "GitHub Actions", "Ansible", "Linux", "GCP", "AWS", "Bash"],
+    label: "Data Engineering",
+    items: ["Pandas/NumPy", "PostgreSQL", "DuckDB", "ETL", "Web Scraping", "JSON/YAML"],
   },
   {
-    label: "AI / Agents",
-    items: ["LangGraph", "MCP"],
+    label: "Backend & AI",
+    items: ["FastAPI", "LangGraph", "Agentic AI", "MCP", "FastMCP", "pytest"],
   },
   {
-    label: "Frontend",
-    items: ["TypeScript", "Next.js"],
+    label: "Frontend & Mobile",
+    items: ["React / Next.js", "Flutter"],
+  },
+  {
+    label: "Infra & DevOps",
+    items: ["Docker", "Podman", "GitHub/Forgejo Actions", "Ansible", "Linux Hardening", "Git"],
+  },
+  {
+    label: "Cloud Architecture",
+    items: ["GCP", "AWS", "Supabase"],
   },
 ];
 
