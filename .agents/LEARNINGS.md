@@ -5,10 +5,10 @@ Shared memory of failure modes and constraints for this workspace. **Do not dele
 ---
 
 ## ⚡ Active Action Plan (Next Steps)
-- [ ] Add GitHub secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` (repo → Settings → Secrets) — deploy job fails auth until then. **Account ID must be `magallanes-main` (`04a311dd63265e896ca15a8e8124f144`), not the compscietybulsu account** — wrong account = wrong namespace.
+- [x] Add GitHub secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` — done via `gh secret set` (token sourced from `CF_TOKEN` in `.env`; account = `magallanes-main`). CI deploy verified green end-to-end.
 - [x] Unlink Vercel GitHub integration — done (Vercel checks gone from PRs).
 - [x] Point `kuyacarlo.dev` at the Worker — done via Worker route (`kuyacarlo.dev/*`) + proxied DNS on the apex (note: the OAuth token can't touch DNS or worker custom-domains API (10036/10405); the proxied-apex flip is a manual dashboard step).
-- [ ] Add `site: "https://kuyacarlo.dev"` to `astro.config.mjs` now that the domain is live (canonical/sitemap/OG URLs) — and add a `www` → apex redirect if desired.
+- [x] Add `site: "https://kuyacarlo.dev"` to `astro.config.mjs` — done (#32); canonical/OG URLs now correct. Optional follow-up: add a `www` → apex redirect.
 
 ---
 
