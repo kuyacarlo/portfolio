@@ -51,7 +51,7 @@ Deploys to **Cloudflare Workers (static assets)** from GitHub Actions (`.github/
 Manual/local:
 
 ```bash
-pnpm wrangler deploy   # uses wrangler.toml → ./dist
+pnpm wrangler deploy --profile magallanes   # uses wrangler.toml → ./dist (magallanes-main account)
 ```
 
 Prerequisites (one-time):

@@ -121,11 +121,11 @@ Quality Checks for Devs and Data Pros (Data Engineering Pilipinas), Git & GitHub
 Automated via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` then `wrangler deploy`. Manual/local:
 
 ```bash
-pnpm wrangler deploy   # uses wrangler.toml → ./dist
+pnpm wrangler deploy --profile magallanes   # uses wrangler.toml → ./dist
 ```
 
 Prerequisites:
-- GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+- GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` — **account ID must be `magallanes-main`: `04a311dd63265e896ca15a8e8124f144`** (wrong account = wrong namespace)
 - Worker `kuyacarlo-portfolio` is auto-created on first deploy; add the custom domain (`kuyacarlo.dev`) under Worker → Settings → Domains
 - `PUBLIC_*` vars are inlined from the workflow `env` (mirror of `.env.example`) — update there if they change
 

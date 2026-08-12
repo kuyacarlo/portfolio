@@ -5,7 +5,7 @@ Shared memory of failure modes and constraints for this workspace. **Do not dele
 ---
 
 ## ⚡ Active Action Plan (Next Steps)
-- [ ] Add GitHub secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` (repo → Settings → Secrets) — deploy job fails auth until then.
+- [ ] Add GitHub secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` (repo → Settings → Secrets) — deploy job fails auth until then. **Account ID must be `magallanes-main` (`04a311dd63265e896ca15a8e8124f144`), not the compscietybulsu account** — wrong account = wrong namespace.
 - [ ] Unlink Vercel GitHub integration (Vercel dashboard → project → Settings → Git, or repo GitHub → Settings → Applications → Vercel). Otherwise Vercel keeps deploying alongside Pages.
 - [ ] Point `kuyacarlo.dev` at the Worker (Worker → Settings → Domains) after the first successful deploy.
 - [ ] Add `site: "https://kuyacarlo.dev"` to `astro.config.mjs` once the domain is live (canonical/sitemap/OG URLs).
@@ -43,8 +43,8 @@ Shared memory of failure modes and constraints for this workspace. **Do not dele
 - **GPG Signatures Verify:** N/A — commits pushed without local signing (karlo config uses GPG signing via git-profiles; `git log --show-signature` not re-checked on this box).
 
 ### 3. Guidelines for the Next Agent
-- Build/deploy is **Cloudflare Workers static assets** (`.github/workflows/deploy.yml` + `wrangler.toml` `[assets] directory = "./dist"`). Static Astro → no adapter. Verify with `pnpm build`; local manual deploy: `pnpm wrangler deploy`.
-- Wrangler 4.x folds Pages into Workers: `wrangler pages deploy` delegates and fails without `--force`; for static sites use `[assets]` in `wrangler.toml` + `wrangler deploy`.
+- Build/deploy is **Cloudflare Workers static assets** (`.github/workflows/deploy.yml` + `wrangler.toml` `[assets] directory = "./dist"`). Static Astro → no adapter. Verify with `pnpm build`; local manual deploy: `pnpm wrangler deploy --profile magallanes` (default wrangler profile is the compscietybulsu account — the WRONG namespace).
+- Wrangler 4.x folds Pages into Workers: `wrangler pages deploy` delegates and fails without `--force`; for static sites use `[assets]` in `wrangler.toml` + `wrangler deploy`. Select account with `--profile <name>` (OAuth configs in `~/.config/.wrangler/config/<name>.toml`).
 - Always create a feature branch, use `pnpm` (never npm), run `pnpm build` before finishing, PR back to `main`. The deploy job runs on every `main` push — a merge is also a release.
 - `src/lib/portfolio-data.ts` is the single source of truth for all page content — including the `~` CLI strings. Do not hardcode content elsewhere.
 - The `.r`/`.d1-d4` reveal classes are legacy no-ops (always visible). Do not add reveal animations.
