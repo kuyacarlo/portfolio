@@ -1,3 +1,7 @@
 name = "kuyacarlo-portfolio"
 compatibility_date = "2026-08-13"
-pages_build_output_dir = "./dist"
+
+# Static site → Workers Static Assets (Cloudflare's unified platform;
+# Pages legacy is folded into Workers as of wrangler 4.x).
+[assets]
+directory = "./dist"
