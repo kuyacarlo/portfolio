@@ -129,11 +129,11 @@ pnpm dev -- --host 0.0.0.0 --port 4321
 Deploys to **Cloudflare Workers (static assets)** via GitHub Actions (`.github/workflows/deploy.yml`) — on push to `main` it runs `pnpm build` then `wrangler deploy` (serves `dist/` via `[assets]` in `wrangler.toml`). Manual/local:
 
 ```bash
-pnpm wrangler deploy   # uses wrangler.toml → ./dist
+pnpm wrangler deploy --profile magallanes   # uses wrangler.toml → ./dist
 ```
 
 Prerequisites (one-time):
-- GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (**`magallanes-main` — `04a311dd63265e896ca15a8e8124f144`**; wrong account = wrong namespace)
 - Worker named `kuyacarlo-portfolio` is auto-created on first deploy; add a custom domain (`kuyacarlo.dev`) under Worker → Settings → Domains
 - `PUBLIC_*` site links are inlined from the workflow `env` (mirror of `.env.example`)
 
