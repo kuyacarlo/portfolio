@@ -1,38 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../lib/site';
+import { homelabServices, homelabHardware, homelabStack } from '../lib/portfolio-data';
 
 /** Catalog of what's hosted. Live up/down comes from Uptime Kuma only. */
-const services = [
-  { name: "Forgejo",     desc: "Self-hosted Git. Mirrors to GitHub.", url: "https://forge.kuyacarlo.dev" },
-  { name: "Authentik",   desc: "Identity provider — SSO for all services." },
-  { name: "Vaultwarden", desc: "Bitwarden-compatible password server.", url: "https://vault.kuyacarlo.dev" },
-  { name: "Traefik",     desc: "Reverse proxy + auto TLS via Let's Encrypt." },
-  { name: "Portainer",   desc: "Container management UI." },
-  { name: "Grafana",     desc: "Monitoring dashboard — Prometheus + Loki." },
-  { name: "Prometheus",  desc: "Metrics scraping from all containers." },
-  { name: "Loki",        desc: "Log aggregation. Tailed by Promtail." },
-  { name: "n8n",         desc: "Workflow automation — webhooks, notifications." },
-  { name: "Uptime Kuma", desc: "Public status page for hosted services.", url: site.statusUrl },
-  { name: "Forgejo CI",  desc: "Self-hosted CI runner. Mostly linting + tests." },
-  { name: "Netbird",     desc: "Mesh VPN — connect lab hosts from anywhere." },
-];
-
-const hardware = [
-  ["Machine",  "ThinkCentre M710q-N000"],
-  ["Storage",  "512 GB SSD OS · 2 TB HDD data (1×1 TB + 2×500 GB)"],
-  ["OS",       "Fedora Server"],
-  ["VPN",      "Netbird"],
-];
-
-const stack = [
-  ["Container runtime", "Podman (rootless)"],
-  ["Secrets",           "Vaultwarden + env files"],
-  ["DNS",               "Pi-hole for ad blocking"],
-  ["Monitoring",        "Grafana + Prometheus + Loki + Uptime Kuma"],
-  ["CI/CD",             "Forgejo Actions"],
-  ["Auth",              "Authentik SSO — OAuth2 proxy in front of services"],
-];
+// Uptime Kuma's URL is env-driven (PUBLIC_STATUS_URL), so keep it sourced from site config.
+const services = homelabServices.map((s) =>
+  s.name === "Uptime Kuma" ? { ...s, url: site.statusUrl } : s,
+);
+const hardware = homelabHardware;
+const stack = homelabStack;
 
 const statusApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/default`;
 const heartbeatApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/heartbeat/default`;

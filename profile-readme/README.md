@@ -17,19 +17,19 @@ BS Computer Engineering @ Bulacan State University · 2028
 
 | Project | Role / notes | Stack | Link |
 |---|---|---|---|
-| **ComplyAIgent** | Backend + agent · AMD Hackathon 2026 | Go, LangGraph, FastAPI | [repo](https://github.com/liitkud/complyaigent) |
+| **ComplyAIgent** | Backend + agent eng · AMD Hackathon 2026 | Go, LangGraph, FastAPI, Next.js | [repo](https://github.com/liitkud/complyaigent) |
+| **WorkSight** | Builder · BPI DataWave 2025, Top 3 / 100+ teams | Python, LangGraph, Data | source private |
 | **tanggol-saka** | Lead · civic land-ownership for indigenous farmers | TypeScript, Next.js | [repo](https://github.com/kuyacarlo/tanggol-saka) · [live](https://tanggol-saka.vercel.app) |
 | **bantay** | Solo · pre-push secrets + entropy gate (fail-closed) | TypeScript, LLM, Auth0 | [repo](https://github.com/kuyacarlo/bantay) |
-| **sage-mcp** | Agent/MCP · MLH GHW 2026 Notion challenge | Python, LangGraph, MCP | [repo](https://github.com/kuyacarlo/sage-mcp) |
-
-Also: [forgesure](https://github.com/kuyacarlo/forgesure) · [live](https://forgesure.vercel.app)
+| **SAGE** | Agent/MCP eng · MLH GHW 2026 Notion MCP | Python, LangGraph, MCP, Notion | [repo](https://github.com/kuyacarlo/sage-mcp) |
+| **ForgeSure** | Lead · full-stack construction ops | Python, FastAPI, Next.js | [repo](https://github.com/kuyacarlo/forgesure) · [live](https://forgesure.vercel.app) |
 
 ---
 
 ## Stack
 
 **Data & backend** — Python, Go, FastAPI, DuckDB, PostgreSQL, Supabase  
-**DevOps & infra** — Podman, GitHub Actions, Ansible, Linux, GCP, AWS  
+**DevOps & infra** — Podman, GitHub Actions, Ansible, Linux, GCP, AWS, Bash  
 **AI / agents** — LangGraph, MCP  
 **Frontend** — TypeScript, Next.js
 
@@ -38,7 +38,7 @@ Also: [forgesure](https://github.com/kuyacarlo/forgesure) · [live](https://forg
 ## Now · 2026-07
 
 ```
-building:  homelab services + portfolio polish
+building:  homelab services + portfolio polish → /homelab
 learning:  Go
 exploring: agentic DevSecOps + MCP tooling
 ```

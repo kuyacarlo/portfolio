@@ -1,16 +1,16 @@
 # kuyacarlo-portfolio — Handoff Document
 
-**Last updated:** July 2026  
-**Version:** v0.3  
+**Last updated:** August 2026
+**Version:** v0.5
 **Owner:** John Carlo Santos (`kuyacarlo`)
 
 ---
 
 ## What this is
 
-A personal portfolio website for John Carlo Santos — BS Computer Engineering student, data engineer, hackathon builder, and CTO of Seekers Guild. Built in Astro, statically generated, single-page.
+A personal portfolio website for John Carlo Santos — BS Computer Engineering student, data engineer, DevOps builder, hackathon competitor, and CTO of Seekers Guild. Built with Astro 5, statically generated, multi-page.
 
-**Live target domain:** `kuyacarlo.dev` (not yet pointed)  
+**Live target domain:** `kuyacarlo.dev` (not yet pointed)
 **Dev server:** `http://localhost:4321` / `http://idea:4321`
 
 ---
@@ -20,14 +20,35 @@ A personal portfolio website for John Carlo Santos — BS Computer Engineering s
 ```
 kuyacarlo-portfolio/
 ├── src/
-│   ├── layouts/Layout.astro    # HTML shell, fonts, scroll reveal script
-│   ├── pages/index.astro       # Everything — content arrays + all HTML
-│   └── styles/global.css       # Full design system — tokens, components
+│   ├── layouts/
+│   │   ├── Layout.astro         # Shell — fonts, fixed nav, mobile drawer, scroll JS,
+│   │   │                        # "~" CLI terminal overlay, click-to-confetti
+│   │   └── NoteLayout.astro     # Note variant — KaTeX CSS, client Mermaid, rehype-tikz
+│   ├── pages/
+│   │   ├── index.astro          # Home (hero, projects, hackathons, now, contact)
+│   │   ├── homelab.astro        # Services + hardware, live status dots
+│   │   ├── notes/index.astro    # Notes list
+│   │   ├── notes/[slug].astro   # Single note
+│   │   ├── certs.astro          # Certifications
+│   │   ├── resume.astro         # Resume (screen + print/harvard layout)
+│   │   └── book.astro           # Cal.com embed + contact
+│   ├── lib/
+│   │   ├── portfolio-data.ts    # SINGLE SOURCE OF TRUTH for page content
+│   │   ├── site.ts              # PUBLIC_* env-backed site links
+│   │   └── cms.ts               # getPosts() over Astro content collections (notes)
+│   ├── content.config.ts        # Notes collection schema
+│   ├── content/notes/*.md       # Notes (markdown)
+│   ├── plugins/rehype-tikz.ts   # Build-time TikZ/CircuiTikZ → SVG (node-tikzjax)
+│   └── styles/global.css        # Full design system — tokens, components
 ├── public/
-│   └── hero-bg.jpg             # Reference image (unused in current design)
-├── AGENTS.md                   # Guide for AI agents working on this codebase
-├── HANDOFF.md                  # This document
-└── README.md                   # Quick start
+│   ├── favicon.ico / favicon.svg
+│   ├── hero-bg.jpg              # Reference image (unused in current design)
+│   ├── resume/                  # Drop john-carlo-santos.pdf here (see README in folder)
+│   └── tikz/                    # Legacy static TikZ SVGs (kept; new notes use fences)
+├── AGENTS.md                    # Guide for AI agents working on this codebase
+├── HANDOFF.md                   # This document
+├── NOTES.md                     # How to write notes
+└── README.md                    # Quick start
 ```
 
 ---
@@ -36,112 +57,96 @@ kuyacarlo-portfolio/
 
 | Decision | Rationale |
 |---|---|
-| Single-page | Portfolio content is concise — no need for routing overhead |
-| No sticky nav | Inspired by leerob.com — let the content breathe |
+| Multi-page with fixed nav | homelab / notes / certs / resume / book get their own routes; nav is a deliberate fixed element |
+| Nav hides on home hero | `navRevealId="work"` keeps the hero clean until you scroll to Selected Work |
+| Note nav variant | `NoteLayout` swaps the logo for the note title, which fades into the bar on scroll |
 | Warm greyscale | Less blue → more readable at night, more timeless |
-| `680px` max-width | Comfortable reading width, single-column editorial feel |
-| Project image slots | `aspect-ratio: 16/9` placeholders — drop screenshots anytime |
+| `1360px` max-width | Comfortable single-column editorial feel |
+| One accent (`--sand #c4a882`) | Used sparingly for awards, code, terminal chrome |
+| Project image slots | `aspect-ratio: 4/3` placeholder grid — drop screenshots anytime (`img` on the project object) |
 | Vanilla CSS | No framework lock-in, fast build, easy to reason about |
-| Astro | Zero JS by default, static output, fast deploy to Vercel/Cloudflare |
+| Build-time TikZ | CircuiTikZ → SVG via node-tikzjax (WASM) — static output, no client strobing |
+| Astro | Zero JS by default, static output, fast deploy to Vercel |
 
-**Inspiration:** stimmie.dev (media cards, sidebar), leerob.com (prose-first, no chrome), paco.me (column grid, stagger)
+**Inspiration:** stimmie.dev, leerob.com (prose-first), paco.me (column grid)
 
 ---
 
 ## Content inventory
 
-### Projects (10 total)
-| Project | Live? | Has screenshot? |
+### Featured projects (6 — homepage)
+| Project | Live? | Screenshot? |
 |---|---|---|
+| ComplyAIgent (AMD Hackathon 2026) | — | ❌ placeholder |
+| WorkSight (BPI DataWave 2025, Top 3) | — (private) | ❌ placeholder |
 | tanggol-saka | ✅ tanggol-saka.vercel.app | ❌ placeholder |
 | bantay | — | ❌ placeholder |
-| forgesure | ✅ forgesure.vercel.app | ❌ placeholder |
-| git-profile | — | ❌ placeholder |
-| built | — | ❌ placeholder |
-| sage-mcp | — | ❌ placeholder |
-| sulong | ✅ sarai-sulong.vercel.app | ❌ placeholder |
-| pub-routes | — | ❌ placeholder |
-| nutrition-api | — | ❌ placeholder |
-| qc-for-devs-data-pros | — | ❌ placeholder |
+| SAGE (MLH GHW 2026 · Notion MCP) | — | ❌ placeholder |
+| ForgeSure | ✅ forgesure.vercel.app | ❌ placeholder |
 
 ### Hackathons (5)
-BPI DataWave 2025 (Top 3), LPU Innoverse 2025 (1st Runner Up), MLH Notion MCP, UP PJDSC, AMD Dev Hackathon 2026
+BPI DataWave 2025 (Top 3), LPU Innoverse 2025 (1st Runner Up), MLH GHW 2026 Notion MCP, UP PJDSC 2025, AMD Hackathon 2026
 
-### Talks (2)
-Git & GitHub Fundamentals, Web Dev Basics — HTML & CSS
+### Certifications (5)
+Associate Python Developer (DataCamp), Azure Data Fundamentals (Microsoft), Azure AI Services Workshop (Microsoft), Intro to Cybersecurity (Cisco), Cybersecurity Simulation (Mastercard)
 
-### Writing (2 dev.to articles)
+### Talks (3)
+Quality Checks for Devs and Data Pros (Data Engineering Pilipinas), Git & GitHub Fundamentals (CSS BulSU), Web Dev Basics (Seekers Guild)
+
+### Notes (3)
+`pre-push-safety`, `building-mcp-servers`, `syntax-reference` — all live in `src/content/notes/`
 
 ---
 
-## Immediate next steps
+## Next steps
 
 ### High priority
-- [ ] **Add your photo** — drop it in `public/photo.jpg`, add to the About section header
-- [ ] **Add project screenshots** — for tanggol-saka, forgesure, bantay at minimum. Put in `public/screenshots/`, set `img: "/screenshots/name.jpg"` in the project object
-- [ ] **Point domain** — buy `kuyacarlo.dev` (or use `karlo.dev` if available) and deploy to Vercel
+- [ ] **Point domain** — deploy to Vercel and point `kuyacarlo.dev` (currently not live)
+- [ ] **Add project screenshots** — set `img: "/file.jpg"` on project objects in `src/lib/portfolio-data.ts` and drop files in `public/`
+- [ ] **Add static resume PDF** — drop `john-carlo-santos.pdf` into `public/resume/` (see `public/resume/README.md`). Until then the "Download PDF" button falls back to print-to-PDF on `/resume`
 
 ### Medium priority
-- [ ] **Devpost profile** — create one at `devpost.com/kuyacarlo` and link from Contact
-- [ ] **OG image** — add a `public/og.jpg` for social sharing previews (1200×630px)
-- [ ] **Google Search Console** — verify domain after deploy
+- [ ] **OG image** — no `public/og.jpg` yet; add one (1200×630px) for social sharing previews
+- [ ] **Social proof strip** — gated off (`socialProof.enabled = false`); drop 4–6 photos in `public/proof/`, flip `enabled: true`, fill `photos`
+- [ ] **Google Search Console** — verify the domain after deploy
 
 ### Low priority / future
-- [ ] Blog/notes section (inline, like stimmie's writing section)
-- [ ] GitHub activity heatmap (client-side, like stimmie.dev)
-- [ ] `now` page — what you're currently working on
-- [ ] Dark/light mode toggle (currently dark-only)
+- [ ] More notes (KaTeX / Mermaid / CircuiTikZ all working — see `NOTES.md`)
+- [ ] Dark/light mode toggle (currently dark-only; print uses a light paper theme)
 
 ---
 
 ## Deploying to Vercel
 
 ```bash
-# Install Vercel CLI if needed
-npm i -g vercel
-
 # First deploy (interactive, sets up project)
-vercel
+npx vercel --prod
 
-# Production deploy
-vercel --prod
+# Subsequent deploys
+vercel deploy --prod
 ```
 
-Vercel auto-detects Astro. Zero config needed.
-
-### Alternative: Cloudflare Pages
-```bash
-npm run build
-# Upload dist/ to Cloudflare Pages manually, or connect repo
-```
-
-### Alternative: GitHub Pages
-Add `.github/workflows/deploy.yml` using `withastro/action`.
+Vercel auto-detects Astro. Set the `PUBLIC_*` vars from `.env.example` in the project settings.
 
 ---
 
 ## Running locally
 
 ```bash
-npm install
-npm run dev -- --host 0.0.0.0 --port 4321
+pnpm install
+pnpm dev -- --host 0.0.0.0 --port 4321
 ```
 
 Access at `http://localhost:4321` or `http://idea:4321` from JetBrains IDE.
 
 ---
 
-## Adding project screenshots
+## Adding a project
 
-1. Take a screenshot (1280×720 recommended)
-2. Drop it in `public/screenshots/project-name.jpg`
-3. In `src/pages/index.astro`, find the project and change:
-   ```js
-   img: null
-   // to:
-   img: "/screenshots/project-name.jpg"
-   ```
-4. The `<img>` tag and hover zoom effect apply automatically.
+1. Open `src/lib/portfolio-data.ts`
+2. Add an object to `projects` (name, emoji, category, desc, tech, url, live, demo, writeup, img, screenshots, private; optional type/role/team/award/architecture)
+3. Optionally add a screenshot — `public/your-file.jpg`, set `img: "/your-file.jpg"`
+4. The card, tags, links, and live dot apply automatically
 
 ---
 
@@ -152,12 +157,14 @@ Access at `http://localhost:4321` or `http://idea:4321` from JetBrains IDE.
 | v0.1 | Initial scaffold — dark navy/cyan, all content placed |
 | v0.2 | Greyscale redesign, fixed nav class bug, project image slot system |
 | v0.3 | Final redesign — single-column editorial, stimmie/leerob/paco inspired |
+| v0.4 | Notes system — KaTeX, Mermaid, build-time TikZ/CircuiTikZ SSR, `~` CLI console, click-to-confetti |
+| v0.5 | Multi-page expansion — homelab, certs, resume, book routes; resume print/harvard layout; pnpm standardization + build fix |
 
 ---
 
 ## Contact
 
-**John Carlo Santos**  
-santos.karlo@outlook.com  
-linkedin.com/in/kuyacarlo  
+**John Carlo Santos**
+santos.karlo@outlook.com
+linkedin.com/in/kuyacarlo
 github.com/kuyacarlo

@@ -206,7 +206,6 @@ ul   { list-style: none; }
   text-decoration-color: var(--b1);
   text-underline-offset: 3px;
 }
-.sec-muted { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); white-space: nowrap; }
 .sec-count {
   margin-top: 16px;
   font-family: var(--mono);
@@ -316,20 +315,6 @@ ul   { list-style: none; }
   font-size: 0.78rem;
   color: var(--ink-3);
   letter-spacing: 0.01em;
-}
-.hero-kbd {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--ink-3);
-  user-select: none;
-  margin-left: 8px;
-}
-.hero-kbd kbd {
-  background: var(--s2);
-  border: 1px solid var(--b1);
-  padding: 2px 5px;
-  border-radius: 3px;
-  color: var(--ink-2);
 }
 
 /* ─── Buttons ────────────────────────────────────────────────────────────── */
@@ -471,51 +456,10 @@ ul   { list-style: none; }
 .hack-proj  { display: inline-block; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); border: 1px solid var(--b1); border-radius: 4px; padding: 1px 8px; margin-bottom: 8px; }
 .hack-desc  { font-size: 0.78rem; color: var(--ink-2); line-height: 1.6; }
 
-/* ─── About grid ─────────────────────────────────────────────────────────── */
-.about-grid { display: grid; grid-template-columns: 1fr 340px; gap: 60px; align-items: start; }
-.prose p { font-size: 0.92rem; color: var(--ink-2); line-height: 1.8; margin-bottom: 14px; }
-.prose p:last-child { margin-bottom: 0; }
-.prose strong { color: var(--ink); font-weight: 500; }
-.prose a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--b2); text-underline-offset: 3px; }
-.prose a:hover { color: var(--ink); }
-
-.about-aside > * + * { margin-top: 12px; }
-.aside-card { border: 1px solid var(--b1); border-radius: var(--r); overflow: hidden; }
-.aside-head { padding: 12px 16px; border-bottom: 1px solid var(--b1); }
-.aside-head-label { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
-.aside-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--b1); font-size: 0.82rem; }
-.aside-row:last-child { border-bottom: none; }
-.aside-val { color: var(--ink); font-weight: 500; }
-.aside-sub { font-size: 0.72rem; color: var(--ink-3); }
-.aside-date { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); white-space: nowrap; }
-
-/* skill pills */
+/* ─── Skill pills ────────────────────────────────────────────────────────── */
 .skill-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.skill-groups { margin-top: 28px; }
-.skill-groups-label {
-  font-size: 0.72rem;
-  color: var(--ink-3);
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 14px;
-}
-.skill-group-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 24px;
-}
-.skill-group-name {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 8px;
-}
 
-/* certifications (about main column) */
-.cert-block { margin-top: 32px; }
+/* certifications (certs page) */
 .cert-list {
   border: 1px solid var(--b1);
   border-radius: var(--r);
@@ -533,57 +477,6 @@ ul   { list-style: none; }
 .cert-name { font-size: 0.85rem; color: var(--ink); font-weight: 500; }
 .cert-issuer { font-size: 0.72rem; color: var(--ink-3); margin-top: 2px; }
 .cert-date { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); white-space: nowrap; }
-
-/* ─── Experience ─────────────────────────────────────────────────────────── */
-.exp-list { display: flex; flex-direction: column; gap: 28px; }
-.exp-org-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.exp-role + .exp-role { margin-top: 14px; }
-.exp-role-nested {
-  padding-left: 14px;
-  border-left: 1px solid var(--b1);
-}
-.exp-role-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: baseline;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
-}
-.exp-title { font-size: 0.88rem; color: var(--ink); font-weight: 500; }
-.exp-dates { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
-.exp-bullets {
-  list-style: disc;
-  padding-left: 1.1em;
-  color: var(--ink-2);
-  font-size: 0.82rem;
-  line-height: 1.65;
-}
-.exp-bullets li + li { margin-top: 4px; }
-.talks-block { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--b1); }
-.talks-label {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 10px;
-}
-.talks-list { display: flex; flex-direction: column; gap: 8px; }
-.talks-list li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  font-size: 0.85rem;
-  color: var(--ink-2);
-}
-.talks-list em { color: var(--ink); font-style: normal; font-weight: 500; }
-.talks-org { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
 
 /* ─── Now ────────────────────────────────────────────────────────────────── */
 .now-block {
@@ -627,22 +520,6 @@ a.now-val:hover { color: var(--ink); }
   color: var(--ink-3);
 }
 
-/* ─── Homelab teaser ─────────────────────────────────────────────────────── */
-.homelab-teaser {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 20px;
-  border: 1px solid var(--b1);
-  border-radius: 6px;
-  padding: 28px 32px;
-  transition: background 0.15s, border-color 0.15s;
-}
-.homelab-teaser:hover { background: var(--s1); border-color: var(--b2); }
-.homelab-teaser-title { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-.homelab-teaser-desc { font-size: 0.82rem; color: var(--ink-3); }
-.homelab-teaser-arrow { font-size: 1.1rem; color: var(--ink-3); }
-
 /* ─── Contact ────────────────────────────────────────────────────────────── */
 .contact-block { max-width: 640px; }
 .contact-lead { font-size: 1.05rem; color: var(--ink); margin-bottom: 8px; line-height: 1.5; }
@@ -653,30 +530,6 @@ a.now-val:hover { color: var(--ink); }
   margin-bottom: 20px;
 }
 .contact-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
-.contact-channels {
-  border: 1px solid var(--b1);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-.contact-row {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--b1);
-  align-items: baseline;
-}
-.contact-row:last-child { border-bottom: none; }
-.contact-label {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.contact-val { font-size: 0.88rem; color: var(--ink-2); }
-.contact-val:hover { color: var(--ink); }
-.contact-email { user-select: all; }
 .social-icons {
   display: flex;
   flex-wrap: wrap;
@@ -703,37 +556,7 @@ a.now-val:hover { color: var(--ink); }
 }
 
 /* ─── Resume page ────────────────────────────────────────────────────────── */
-.resume-page { padding-bottom: 80px; }
 .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 12px; }
-.resume-hint {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--ink-3);
-  margin-bottom: 28px;
-}
-.resume-h1 {
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  margin-bottom: 12px;
-}
-.resume-harvard-header .resume-h1 { margin-bottom: 10px; }
-.resume-harvard-contact {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--ink-3);
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-.resume-harvard-contact a {
-  color: var(--ink-2);
-  text-decoration: underline;
-  text-decoration-color: var(--b1);
-  text-underline-offset: 3px;
-}
-.resume-harvard-contact a:hover { color: var(--ink); }
-.resume-sub { font-size: 0.92rem; color: var(--ink-2); line-height: 1.7; max-width: 520px; }
 .resume-about-p {
   font-size: 0.88rem;
   color: var(--ink-2);
@@ -741,11 +564,6 @@ a.now-val:hover { color: var(--ink); }
   margin-bottom: 10px;
 }
 .resume-about-p:last-child { margin-bottom: 0; }
-.resume-tagline {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--ink-3);
-}
 .resume-section { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--b1); }
 .resume-section h2 {
   font-family: var(--mono);
@@ -775,29 +593,18 @@ a.now-val:hover { color: var(--ink); }
 }
 .resume-role { margin-top: 8px; }
 .resume-role-title { font-size: 0.88rem; color: var(--ink-2); margin-bottom: 4px; }
-.resume-talk-list, .resume-cert-list {
+.resume-talk-list {
   list-style: none;
   padding: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.resume-talk-list li, .resume-cert-list li {
+.resume-talk-list li {
   font-size: 0.85rem;
   color: var(--ink-2);
   line-height: 1.55;
 }
-.resume-cert-list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--b1);
-}
-.resume-cert-list li:first-child { border-top: 1px solid var(--b1); }
-.resume-cert-name { color: var(--ink); font-weight: 500; }
-.resume-cert-meta { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
 .resume-skills-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -813,15 +620,6 @@ a.now-val:hover { color: var(--ink); }
   font-weight: 500;
   margin-bottom: 8px;
 }
-.resume-pdf-note {
-  margin-top: 48px;
-  padding-top: 20px;
-  border-top: 1px solid var(--b1);
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--ink-3);
-}
-.resume-pdf-note code { color: var(--ink-2); }
 
 /* Harvard / ATS print layout — black on white, single column, serif body */
 @media print {
@@ -835,7 +633,6 @@ a.now-val:hover { color: var(--ink); }
   #cli-console,
   .resume-screen-only,
   .resume-actions,
-  .resume-pdf-note,
   .footer,
   .resume-skills-grid {
     display: none !important;
@@ -864,35 +661,6 @@ a.now-val:hover { color: var(--ink); }
     font-family: "Times New Roman", Times, Georgia, serif;
   }
 
-  .resume-harvard-header {
-    text-align: center;
-    margin-bottom: 14pt;
-    border-bottom: 1px solid #000;
-    padding-bottom: 10pt;
-  }
-
-  .resume-h1 {
-    font-size: 18pt;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    line-height: 1.2;
-    margin: 0 0 6pt;
-    color: #000 !important;
-  }
-
-  .resume-harvard-contact {
-    font-family: "Times New Roman", Times, Georgia, serif;
-    font-size: 10pt;
-    color: #000 !important;
-    margin: 0;
-  }
-
-  .resume-harvard-contact a {
-    color: #000 !important;
-    text-decoration: none;
-  }
-
   .resume-section {
     margin-top: 12pt;
     padding-top: 0;
@@ -915,13 +683,11 @@ a.now-val:hover { color: var(--ink); }
   .resume-item + .resume-item { margin-top: 8pt; }
   .resume-item-title,
   .resume-role-title,
-  .resume-cert-name,
   .resume-talk-list em {
     color: #000 !important;
     font-weight: 700;
   }
-  .resume-item-meta,
-  .resume-cert-meta {
+  .resume-item-meta {
     font-family: "Times New Roman", Times, Georgia, serif;
     font-size: 10pt;
     color: #000 !important;
@@ -930,7 +696,6 @@ a.now-val:hover { color: var(--ink); }
   .resume-item p,
   .resume-item li,
   .resume-talk-list li,
-  .resume-cert-list li,
   .resume-skill-line {
     font-size: 10pt;
     color: #000 !important;
@@ -959,14 +724,6 @@ a.now-val:hover { color: var(--ink); }
     font-weight: 700;
     color: #000 !important;
   }
-
-  .resume-cert-list li {
-    border: none;
-    padding: 1pt 0;
-    display: flex;
-    justify-content: space-between;
-  }
-  .resume-cert-list li:first-child { border: none; }
 
   .resume-talk-list { gap: 3pt; }
 
@@ -1193,20 +950,6 @@ a.now-val:hover { color: var(--ink); }
   padding: 5px 14px;
   margin-bottom: 28px;
 }
-.cal-embed {
-  border: 1px solid var(--b1);
-  border-radius: var(--r);
-  min-height: 500px;
-  background: var(--s1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 12px;
-  color: var(--ink-3);
-  font-size: 0.85rem;
-  font-family: var(--mono);
-}
 
 /* ─── Footer ─────────────────────────────────────────────────────────────── */
 .footer {
@@ -1222,22 +965,10 @@ a.now-val:hover { color: var(--ink); }
   font-family: var(--mono);
 }
 
-/* ─── Reveal ─────────────────────────────────────────────────────────────── */
-/* No opacity hide — text must stay readable even if JS/observer fails. */
-.r { }
-.r.on { }
-.d1,.d2,.d3,.d4 { }
-
-/* ─── Typing cursor ──────────────────────────────────────────────────────── */
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.cursor{display:inline-block;width:2px;height:0.85em;background:var(--ink-3);margin-left:2px;vertical-align:middle;animation:blink 1.1s step-end infinite}
-
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .project-grid { grid-template-columns: 1fr 1fr; }
   .hack-list    { grid-template-columns: 1fr; }
-  .about-grid   { grid-template-columns: 1fr; gap: 36px; }
-  .skill-group-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .proj-desktop-only { display: none; }
@@ -1254,7 +985,6 @@ a.now-val:hover { color: var(--ink); }
   .nav-toggle { display: flex; }
   .note-row { grid-template-columns: 1fr; gap: 4px; }
   .note-date { display: none; }
-  .hide-mobile { display: none !important; }
   .resume-skills-grid { grid-template-columns: 1fr; }
   .resume-actions { flex-direction: column; align-items: stretch; }
   .resume-actions .btn { justify-content: center; }
@@ -1276,7 +1006,7 @@ a.now-val:hover { color: var(--ink); }
     color: #000000 !important;
     font-size: 11pt !important;
   }
-  .nav, #mobile-nav, #cli-console, .hero-actions, .avail-badge, .sec-rule, .note-arrow, .status-dot, .status-text, #cli-close {
+  .nav, #mobile-nav, #cli-console, .avail-badge, .sec-rule, .note-arrow, .status-dot, .status-text, #cli-close {
     display: none !important;
   }
   .wrap {

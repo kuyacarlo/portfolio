@@ -345,3 +345,37 @@ export const counts = {
   services: HOMELAB_SERVICE_COUNT,
   certs: certifications.length,
 };
+
+/** Homelab catalog — shared by /homelab and the `~` CLI's `homelab` command. */
+export type HomelabService = { name: string; desc: string; url: string | null };
+
+export const homelabServices: HomelabService[] = [
+  { name: "Forgejo", desc: "Self-hosted Git. Mirrors to GitHub.", url: "https://forge.kuyacarlo.dev" },
+  { name: "Authentik", desc: "Identity provider — SSO for all services.", url: null },
+  { name: "Vaultwarden", desc: "Bitwarden-compatible password server.", url: "https://vault.kuyacarlo.dev" },
+  { name: "Traefik", desc: "Reverse proxy + auto TLS via Let's Encrypt.", url: null },
+  { name: "Portainer", desc: "Container management UI.", url: null },
+  { name: "Grafana", desc: "Monitoring dashboard — Prometheus + Loki.", url: null },
+  { name: "Prometheus", desc: "Metrics scraping from all containers.", url: null },
+  { name: "Loki", desc: "Log aggregation. Tailed by Promtail.", url: null },
+  { name: "n8n", desc: "Workflow automation — webhooks, notifications.", url: null },
+  { name: "Uptime Kuma", desc: "Public status page for hosted services.", url: "https://status.kuyacarlo.dev" },
+  { name: "Forgejo CI", desc: "Self-hosted CI runner. Mostly linting + tests.", url: null },
+  { name: "Netbird", desc: "Mesh VPN — connect lab hosts from anywhere.", url: null },
+];
+
+export const homelabHardware: [string, string][] = [
+  ["Machine", "ThinkCentre M710q-N000"],
+  ["Storage", "512 GB SSD OS · 2 TB HDD data (1×1 TB + 2×500 GB)"],
+  ["OS", "Fedora Server"],
+  ["VPN", "Netbird"],
+];
+
+export const homelabStack: [string, string][] = [
+  ["Container runtime", "Podman (rootless)"],
+  ["Secrets", "Vaultwarden + env files"],
+  ["DNS", "Pi-hole for ad blocking"],
+  ["Monitoring", "Grafana + Prometheus + Loki + Uptime Kuma"],
+  ["CI/CD", "Forgejo Actions"],
+  ["Auth", "Authentik SSO — OAuth2 proxy in front of services"],
+];
