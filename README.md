@@ -6,7 +6,7 @@ Personal portfolio for John Carlo Santos (`kuyacarlo`) — data engineer, DevOps
 
 - **Astro 5** — multi-page static output, zero client JS by default
 - **Vanilla CSS** — no Tailwind, no frameworks (tokens + components in `src/styles/global.css`)
-- **Cloudflare Workers (static assets)** — deployed at `kuyacarlo.dev` (target domain, not live yet)
+- **Cloudflare Workers (static assets)** — live at `kuyacarlo.dev`
 
 ## Quickstart (pnpm)
 
