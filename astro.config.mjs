@@ -7,6 +7,7 @@ import { rehypeTikz } from './src/plugins/rehype-tikz.ts';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://kuyacarlo.dev',
   markdown: {
     processor: unified({
       remarkPlugins: [

@@ -101,7 +101,7 @@ Quality Checks for Devs and Data Pros (Data Engineering Pilipinas), Git & GitHub
 ## Next steps
 
 ### High priority
-- [ ] **Point domain** — deploy to Cloudflare Workers and point `kuyacarlo.dev` (currently not live)
+- [x] **Point domain** — `kuyacarlo.dev` is live, served by the `kuyacarlo-portfolio` Worker (route + proxied DNS on magallanes-main)
 - [ ] **Add project screenshots** — set `img: "/file.jpg"` on project objects in `src/lib/portfolio-data.ts` and drop files in `public/`
 - [ ] **Add static resume PDF** — drop `john-carlo-santos.pdf` into `public/resume/` (see `public/resume/README.md`). Until then the "Download PDF" button falls back to print-to-PDF on `/resume`
 

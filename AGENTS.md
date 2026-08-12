@@ -5,7 +5,7 @@ This file tells AI coding agents (Claude, Gemini, Codex, etc.) everything they n
 ## Project identity
 
 - **Owner:** John Carlo Santos (`kuyacarlo`)
-- **Site:** `kuyacarlo.dev` (target domain, not live yet)
+- **Site:** `kuyacarlo.dev` (live — Workers custom route + proxied DNS on the magallanes-main account)
 - **Stack:** Astro 5 · Vanilla CSS · Static output · Deployed to Cloudflare Workers (static assets)
 - **Package manager:** pnpm (canonical — `pnpm-lock.yaml` committed, `package-lock.json` removed)
 
