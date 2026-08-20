@@ -74,7 +74,7 @@ There is a **fixed nav bar** with links: `homelab`, `notes`, `certs`, `resume`, 
 
 ### Projects / certs / resume data — `src/lib/portfolio-data.ts`
 
-To add a project: add an object to the `projects` array (name, emoji, category, desc, tech, url, live, demo, writeup, img, screenshots, private, optional type/role/team/award/architecture). To add a project image: put the file in `public/`, set `img: "/your-file.jpg"` on the object. Homepage displays 6 featured projects (ComplyAIgent → WorkSight → nutrition-api → pub-routes → v4l2loopback-fedora → awesome-freestack); the mobile order is tuned in `index.astro` (`mobileFeatured` set) and `global.css`.
+To add a project: add an object to the `projects` array (name, emoji, category, desc, tech, url, live, demo, writeup, img, screenshots, private, optional type/role/team/award/architecture). To add a project image: put the file in `public/`, set `img: "/your-file.jpg"` on the object. Homepage displays 6 featured projects (FerretOPS → WorkSight → nutrition-api → pub-routes → v4l2loopback-fedora → awesome-freestack); the mobile order is tuned in `index.astro` (`mobileFeatured` set) and `global.css`.
 
 ### Notes — markdown in `src/content/notes/`
 
