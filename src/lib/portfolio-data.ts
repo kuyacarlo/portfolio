@@ -39,7 +39,7 @@ export const projects: Project[] = [
     live: "https://ferretops.kuyacarlo.workers.dev/",
     demo: null,
     writeup: null,
-    img: null,
+    img: "/screenshots/ferretops.png",
     screenshots: [],
     private: false,
     type: "Team",
