@@ -2,7 +2,7 @@
 title: "Building MCP Servers That Actually Work"
 date: "2026-06-04"
 tags: ["mcp", "ai", "python", "agentic"]
-desc: "What I learned building SAGE and ComplyAIgent — the non-obvious parts of wiring LLMs to real APIs via MCP."
+desc: "What I learned building SAGE and FerretOPS — the non-obvious parts of wiring LLMs to real APIs via MCP."
 ---
 
 MCP (Model Context Protocol) is deceptively simple to start and deceptively hard to get right in production. Here's what two hackathon builds taught me.
@@ -50,11 +50,11 @@ The model can handle a structured error response gracefully. It cannot reliably 
 
 The model WILL call your tool more than once. If your tool creates a Notion page, creating it twice should be safe (upsert, not insert). If your tool charges a payment, it should be idempotent by design (check if already done).
 
-SAGE checks if a workspace already exists before creating it. ComplyAIgent uses a database `ON CONFLICT DO UPDATE` to make policy ingestion idempotent.
+SAGE checks if a workspace already exists before creating it. FerretOPS uses a database `ON CONFLICT DO UPDATE` to make policy ingestion idempotent.
 
 ## Lesson 4: Human-in-the-loop is not optional for high-stakes tools
 
-`bantay` uses Auth0 CIBA for this. ComplyAIgent pauses the LangGraph workflow and waits for an approval event before executing a policy enforcement action.
+`bantay` uses Auth0 CIBA for this. FerretOPS pauses the LangGraph workflow and waits for an approval event before executing a policy enforcement action.
 
 The pattern:
 
@@ -75,6 +75,6 @@ Don't skip this for anything that writes data, sends notifications, or makes irr
 
 For SAGE, I would separate the "planner" LLM call (what to do?) from the "executor" tool calls (do it). Mixing them in one agent makes the trace hard to debug and the behavior hard to predict.
 
-For ComplyAIgent, I would stub the LLM calls in tests from day one. Testing an agentic system without mocking the LLM is slow, expensive, and flaky.
+For FerretOPS, I would stub the LLM calls in tests from day one. Testing an agentic system without mocking the LLM is slow, expensive, and flaky.
 
 The tooling is immature. The patterns are still emerging. Build small, test at every layer, and expect to throw away your first design.

@@ -27,16 +27,16 @@ export type Project = {
   architecture?: string;
 };
 
-/** Featured homepage order: ComplyAIgent → WorkSight → awesome-freestack → nutrition-api → pub-routes → v4l2loopback-fedora */
+/** Featured homepage order: FerretOPS → WorkSight → awesome-freestack → nutrition-api → pub-routes → v4l2loopback-fedora */
 export const projects: Project[] = [
   {
-    name: "ComplyAIgent",
+    name: "FerretOPS",
     emoji: "⚖️",
     category: "AMD Hackathon 2026",
     desc: "Agentic DevSecOps compliance engine — regulatory text into fail-closed pre-push guardrails.",
     tech: ["Go", "LangGraph", "FastAPI", "Next.js"],
     url: "https://github.com/liitkud/complyaigent",
-    live: null,
+    live: "https://ferretops.kuyacarlo.workers.dev/",
     demo: null,
     writeup: null,
     img: null,
@@ -166,7 +166,7 @@ export const hackathons = [
   {
     place: "Participant",
     name: "AMD Developer Hackathon 2026",
-    proj: "ComplyAIgent",
+    proj: "FerretOPS",
     desc: "Agentic DevSecOps engine that compiles regulatory text into fail-closed pre-push guardrails — a Go CLI pairing Gitleaks with entropy scoring, and LangGraph human-in-the-loop routing for medium-risk approvals.",
     podium: false,
     url: "https://github.com/liitkud/complyaigent",

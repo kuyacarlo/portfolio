@@ -17,7 +17,7 @@ BS Computer Engineering @ Bulacan State University · 2028
 
 | Project | Role / notes | Stack | Link |
 |---|---|---|---|
-| **ComplyAIgent** | Backend + agent eng · AMD Hackathon 2026 | Go, LangGraph, FastAPI, Next.js | [repo](https://github.com/liitkud/complyaigent) |
+| **FerretOPS** | Backend + agent eng · AMD Hackathon 2026 | Go, LangGraph, FastAPI, Next.js | [repo](https://github.com/liitkud/complyaigent) |
 | **WorkSight** | Builder · BPI DataWave 2025, Top 3 / 100+ teams | Python, LangGraph, Next.js | source private |
 | **nutrition-api** | Solo · serving nutritional facts to downstream devices | FastAPI, Docker, SQLite | [repo](https://github.com/kuyacarlo/nutrition-api) |
 | **pub-routes** | Solo · LTFRB routes ETL | BeautifulSoup, Pandas, urllib3 | [repo](https://github.com/kuyacarlo/pub-routes) |
