@@ -64,7 +64,7 @@ const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "
         <div class={`project-card r d${(i % 4) + 1}${mobileFeatured.has(p.name) ? " proj-mobile" : " proj-desktop-only"}`}>
           <div class="proj-thumb">
             {p.img
-              ? <img src={p.img} alt={p.name} loading="lazy" />
+              ? <img src={p.img} alt={p.name} loading={i < 3 ? "eager" : "lazy"} decoding="async" />
               : <div class="proj-placeholder"></div>
             }
           </div>
