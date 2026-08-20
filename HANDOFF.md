@@ -77,7 +77,7 @@ kuyacarlo-portfolio/
 ### Featured projects (6 — homepage)
 | Project | Live? | Screenshot? |
 |---|---|---|
-| FerretOPS (AMD Hackathon 2026) | ✅ ferretops.kuyacarlo.workers.dev | ❌ placeholder |
+| FerretOPS (AMD Hackathon 2026) | ✅ ferretops.kuyacarlo.workers.dev | ✅ /screenshots/ferretops.png |
 | WorkSight (BPI DataWave 2025, Top 3) | — (private) | ❌ placeholder |
 | tanggol-saka | ✅ tanggol-saka.vercel.app | ❌ placeholder |
 | bantay | — | ❌ placeholder |
