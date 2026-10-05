@@ -12,8 +12,15 @@ import {
 import { site } from '../lib/site';
 
 const emailMailto = `mailto:${site.email}`;
-/** Show on mobile (3–4 cards). Full list stays on desktop. */
-const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "nutrition-api"]);
+/** Show on mobile (featured cards). Full list stays on desktop. */
+const mobileFeatured = new Set([
+  "ComplyAIgent (FerretOPS)",
+  "git-profile & ssh-profile",
+  "WorkSight",
+  "Kasigla (PhasmaFrame)",
+  "awesome-freestack",
+  "BetterBulakan",
+]);
 ---
 
 <Layout active="home" navRevealId="work">
@@ -22,9 +29,9 @@ const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "
 <div class="wrap">
   <section class="hero">
     <div style="margin-bottom: 16px;">
-      <span class="hero-status" id="collab-status" style="cursor:pointer; display:inline-flex; border: 1px solid var(--b1); padding: 5px 12px; border-radius: 99px; background: var(--s1); color: var(--ink-2); font-size: 0.72rem;" title="Click for a surprise!">
+      <span class="hero-status" id="collab-status" style="cursor:pointer; display:inline-flex; border: 1px solid var(--b1); padding: 5px 12px; border-radius: 99px; background: var(--s1); color: var(--ink-2); font-size: 0.72rem;" title="Status: Actively open to full-time / contract roles">
         <span class="hero-status-dot"></span>
-        available for collab
+        available for hire & collab
       </span>
     </div>
     <div class="hero-name r">
@@ -37,9 +44,9 @@ const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "
     <div class="hero-rule r d1"></div>
     <div class="hero-sub r d2">
       <p class="hero-desc">
-        <strong>Data engineer</strong>, DevOps builder &amp; hackathon competitor.
+        <strong>Software &amp; Systems Engineer</strong>, CTO @ <strong>Seekers Guild</strong>.
         BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.
-        I build ETL pipelines, FastAPI backends, React/Flutter apps, and agentic AI systems with LangGraph + MCP.
+        Actively open to work. I build high-throughput ETL data pipelines, fail-closed DevSecOps guardrails, and autonomous agent harnesses.
       </p>
       <p class="hero-tagline">{TAGLINE}</p>
     </div>
@@ -54,8 +61,8 @@ const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "
       <span class="sec-num">01</span>
       <span class="sec-name">Selected Work</span>
       <span class="sec-rule"></span>
-      <a href={PROOF_OF_WORK_URL} target="_blank" rel="noopener" class="sec-link">
-        proof of work ↗
+      <a href={PROOF_OF_WORK_URL} class="sec-link">
+        view full resume →
       </a>
     </div>
 
@@ -65,7 +72,7 @@ const mobileFeatured = new Set(["WorkSight", "FerretOPS", "awesome-freestack", "
           <div class="proj-thumb">
             {p.img
               ? <img src={p.img} alt={p.name} loading={i < 3 ? "eager" : "lazy"} decoding="async" />
-              : <div class="proj-placeholder"></div>
+              : <div class="proj-placeholder"><span class="placeholder-emoji" aria-hidden="true">{p.emoji}</span></div>
             }
           </div>
           <div class="proj-body">

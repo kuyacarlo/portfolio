@@ -389,10 +389,22 @@ ul   { list-style: none; }
 .proj-placeholder {
   position: absolute;
   inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-image:
     linear-gradient(var(--b1) 1px, transparent 1px),
     linear-gradient(90deg, var(--b1) 1px, transparent 1px);
   background-size: 22px 22px;
+}
+.placeholder-emoji {
+  font-size: 2.2rem;
+  opacity: 0.85;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  transition: transform 0.3s ease;
+}
+.project-card:hover .placeholder-emoji {
+  transform: scale(1.15);
 }
 
 .proj-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; gap: 6px; }

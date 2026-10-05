@@ -1,0 +1,76 @@
+# John Carlo Santos — Full Engineering Profile & Technical Dossier
+
+Canonical Handle: kuyacarlo (also kuya-carlo)
+Website: https://kuyacarlo.dev
+Email: santos.karlo@outlook.com
+Location: Bulakan, Bulacan, Philippines (GMT+8)
+Education: Bulacan State University, Bachelor of Science in Computer Engineering (Expected 2028)
+Leadership: Chief Technology Officer (CTO) @ Seekers Guild (May 2025 – Present)
+Status: Actively open to work — full-time software engineering, data engineering, DevOps, and contract opportunities.
+
+---
+
+## Executive Summary
+John Carlo Santos is a systems and data engineer who bridges low-level infrastructure (Linux systems, rootless Podman containers, Go CLI tooling) with high-level agentic AI pipelines (LangGraph, Model Context Protocol, FastMCP, FastAPI). He serves as CTO of Seekers Guild, directing technical architecture and developer mentorship. Winner of multiple national hackathons across fintech, civic tech, DevSecOps, and environmental telemetry.
+
+---
+
+## Technical Skills Matrix
+
+### Core Languages
+Python (Async, FastAPI, pytest), TypeScript/JavaScript (Next.js App Router, React), Go (CLI & microservices), Dart (Flutter), SQL (Postgres, DuckDB, SQLite), Bash/Shell, C.
+
+### AI & Agentic Orchestration
+LangGraph state machines, Human-in-the-Loop (HIL) interrupts, Model Context Protocol (MCP / FastMCP), Agent Fleet Claim Ledgers, Retrieval-Augmented Generation (RAG), Prompt/Context/Harness Engineering.
+
+### Data Engineering
+DuckDB analytics, PostgreSQL relational modeling, SQLite embedded state, Pandas/NumPy ETL scripting, Bronze→Silver→Gold data warehousing architectures, BeautifulSoup4/HTTPX web scrapers.
+
+### Infrastructure, Containers & Linux
+Podman Rootless (Quadlets, Systemd user units), Docker, Linux Hardening (Fedora/Debian/Arch), GitHub Actions & Forgejo CI/CD, Ansible, Pre-commit quality gates, GPG Commit Signing.
+
+### Cloud Architecture
+Google Cloud Platform (Cloud Run, Compute Engine, Cloud Functions), Amazon Web Services (Lambda, S3), Supabase (Auth, Postgres poolers), Cloudflare Workers & Pages.
+
+---
+
+## Shipped Hackathon Builds & Competitions
+
+1. **ComplyAIgent (AMD Developer Hackathon 2026)**
+   - Stack: Go, LangGraph, FastAPI, Next.js, Gitleaks, Docker.
+   - Purpose: Ingests unstructured regulatory PDFs/markdown and compiles compliance rules into fail-closed pre-push git hooks with Auth0 CIBA asynchronous mobile approvals.
+
+2. **WorkSight (BPI DataWave 2025 — Top 3 Finalist)**
+   - Stack: Next.js, Python, LangGraph, Analytics.
+   - Purpose: Multi-agent analytics platform that ingests enterprise metadata to predict employee burnout patterns and optimize workload allocation. Top 3 out of 100+ teams.
+
+3. **BetterTranspo (LPU Innoverse 2025 — 1st Runner Up)**
+   - Stack: IoT, LoRaWAN, Next.js, Transit Telemetry.
+   - Purpose: Decentralized transit tracking platform with BEEP card fare estimation, passenger fullness sensors, and real-time route visualization.
+
+4. **KLIMA (UP Data Science Society & Eskwelabs PJDSC 2025)**
+   - Stack: FastAPI, Flutter, ETL Pipelines, ML Inference.
+   - Purpose: Bronze→Silver→Gold environmental data processing pipeline converting rainfall and river telemetry into localized flood alerts for Calumpit LGU.
+
+5. **SAGE (MLH Notion MCP Challenge 2026)**
+   - Stack: Python, FastMCP, LangGraph, Notion API.
+   - Purpose: Autonomous academic co-pilot using MCP to convert CHED-verified university curricula into personalized semester Notion workspaces.
+
+6. **Bantay (Auth0 for AI Agents 2026)**
+   - Stack: LangGraph, Auth0 CIBA, Python, Secret Scanning.
+   - Purpose: Two-layer pre-push git security hook pairing regex pattern matching with Auth0 CIBA push notifications for smartphone approvals.
+
+7. **Kasigla (PhasmaFrame — Community Health Telemetry)**
+   - Stack: Astro, React, Hono, SQLite, Protocol Buffers, Docker.
+   - Purpose: Offline-first hypertension follow-up platform enabling patients to record blood pressure readings offline and execute protocol-buffered, device-to-device handoffs to Barangay Health Workers (BHWs).
+
+---
+
+## Featured Open-Source Projects
+
+- **Git Profile & SSH Profile (`git-profile` / `ssh-profile`)**: Go CLI suite for switching Git identities, GPG signing keys, and scoped SSH configs per repository.
+- **room-tba**: Automated schedule and room vacancy finder for BulSU students under the BulSUTools initiative.
+- **BetterBulakan**: Municipal transparency portal for Bulakan, Bulacan.
+- **freestack**: Curated catalog of developer tiers, student unlocks, and startup resources.
+- **v4l2loopback-fedora**: Packaging script and DKMS module automation for Video4Linux loopback virtual camera devices on Fedora.
+- **Nutrition API (`meal-server`)**: High-throughput FastAPI service serving nutritional datasets with containerized SQLite.

@@ -1,0 +1,29 @@
+# John Carlo Santos (kuyacarlo)
+
+> Software & Systems Engineer, CTO of Seekers Guild, and BS Computer Engineering student at Bulacan State University (graduating 2028). Actively open to full-time, contract, and freelance roles.
+
+## Identity & Contact
+- Canonical Name: John Carlo Santos
+- Online Handles: kuyacarlo, kuya-carlo
+- Website: https://kuyacarlo.dev
+- Email: santos.karlo@outlook.com
+- GitHub: https://github.com/kuya-carlo
+- LinkedIn: https://linkedin.com/in/kuyacarlo
+- Portfolio / Notes: https://kuyacarlo.dev/notes
+
+## Technical Specializations
+- Backend & Agentic AI: Python (FastAPI, pytest), LangGraph, Model Context Protocol (MCP / FastMCP), REST APIs, WebSocket.
+- Data Engineering: DuckDB, PostgreSQL, SQLite, Pandas, NumPy, ETL Pipelines (Bronze→Silver→Gold), Web Scraping.
+- Infrastructure & DevOps: Rootless Podman (Quadlets), Docker, GitHub Actions / Forgejo CI/CD, Linux Hardening (Fedora/Debian), Ansible, GPG Signing.
+- Languages: Python, TypeScript/JavaScript, Go, Dart, SQL, Bash/Shell, C.
+- Cloud: Google Cloud Platform (Cloud Run, Compute Engine), AWS (Lambda, S3), Supabase, Cloudflare Workers/Pages.
+
+## Key Projects & Competitions
+- ComplyAIgent (AMD Developer Hackathon 2026): Agentic DevSecOps engine compiling regulatory text into fail-closed pre-push git hooks.
+- WorkSight (BPI DataWave 2025): Top 3 Finalist out of 100+ teams; metadata-to-burnout predictive analytics engine.
+- BetterTranspo (LPU Innoverse 2025): 1st Runner Up; LoRaWAN public transit telemetry and BEEP card integration.
+- KLIMA (PJDSC 2025): Sensor ETL pipeline delivering localized flood risk alerts for Calumpit LGU.
+- Git Profile (`git-profile` / `ssh-profile`): High-performance Go CLI suite for managing multiple Git identities, SSH keys, and GPG sign-offs.
+- room-tba: Campus room finder and vacancy tracker for BulSU students.
+- BetterBulakan: Civic transparency portal for Bulakan, Bulacan.
+- freestack: Open-source curated directory of free developer tools and student unlocks.

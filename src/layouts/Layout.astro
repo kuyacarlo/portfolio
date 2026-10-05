@@ -32,8 +32,8 @@ interface Props {
   noteTitle?: string;
 }
 const {
-  title = "John Carlo Santos",
-  description = "Data engineer, DevOps builder & hackathon competitor. BulSU Computer Engineering '28. Bulacan, PH.",
+  title = "John Carlo Santos (kuyacarlo) — Software & Systems Engineer",
+  description = "Software & Systems Engineer, CTO @ Seekers Guild. BS Computer Engineering @ BulSU ('28). Actively open to full-time/contract engineering roles. Building high-throughput data pipelines, DevSecOps guardrails, and agentic AI systems.",
   active = "",
   hideBookCta = false,
   navRevealId = "",
@@ -92,14 +92,63 @@ const cliHomelab =
   <title>{title}</title>
   <meta name="description"      content={description} />
   <meta name="author"           content="John Carlo Santos" />
+  <link rel="canonical"         href="https://kuyacarlo.dev" />
+  <link rel="describedby" type="text/markdown" href="https://kuyacarlo.dev/llms.txt" />
   <meta property="og:type"      content="website" />
+  <meta property="og:site_name" content="John Carlo Santos (kuyacarlo)" />
+  <meta property="og:url"       content="https://kuyacarlo.dev" />
   <meta property="og:title"     content={title} />
   <meta property="og:description" content={description} />
+  <meta name="twitter:card"     content="summary_large_image" />
+  <meta name="twitter:title"    content={title} />
+  <meta name="twitter:description" content={description} />
   <meta name="robots"           content="index, follow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230d0c0b'/%3E%3Ctext x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='13' font-family='monospace' fill='%23f0ede6'%3Ejk%3C/text%3E%3C/svg%3E" />
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "John Carlo Santos",
+      "alternateName": ["kuyacarlo", "kuya-carlo", "Karlo Santos"],
+      "url": "https://kuyacarlo.dev",
+      "email": "mailto:santos.karlo@outlook.com",
+      "jobTitle": "Chief Technology Officer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Seekers Guild"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Bulacan State University"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bulakan",
+        "addressRegion": "Bulacan",
+        "addressCountry": "PH"
+      },
+      "sameAs": [
+        "https://github.com/kuya-carlo",
+        "https://github.com/kuyacarlo",
+        "https://linkedin.com/in/kuyacarlo",
+        "https://dev.to/kuyacarlo"
+      ],
+      "knowsAbout": [
+        "Software Engineering",
+        "Data Engineering",
+        "DevSecOps",
+        "FastAPI",
+        "LangGraph",
+        "Go",
+        "Podman",
+        "Linux Systems",
+        "Model Context Protocol"
+      ]
+    }
+  </script>
   <slot name="head" />
 </head>
 <body class={isHome ? "page-home" : isNote ? "page-note" : undefined}>
