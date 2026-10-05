@@ -1,29 +1,34 @@
-# John Carlo Santos (kuyacarlo)
+# John Carlo Santos
 
-> Software & Systems Engineer, CTO of Seekers Guild, and BS Computer Engineering student at Bulacan State University (graduating 2028). Actively open to full-time, contract, and freelance roles.
+> Software & Systems Engineer, Chief Technology Officer at Seekers Guild, and Computer Engineering student at Bulacan State University ('28). Specializes in high-throughput data engineering, fail-closed DevSecOps guardrails, rootless container infrastructure, and autonomous AI agent harnesses. Actively open to full-time engineering, data, and DevOps roles.
 
-## Identity & Contact
-- Canonical Name: John Carlo Santos
-- Online Handles: kuyacarlo, kuya-carlo
-- Website: https://kuyacarlo.dev
-- Email: santos.karlo@outlook.com
-- GitHub: https://github.com/kuya-carlo
-- LinkedIn: https://linkedin.com/in/kuyacarlo
-- Portfolio / Notes: https://kuyacarlo.dev/notes
+## Core Navigation & Pages
+- [Full Technical Dossier](https://kuyacarlo.dev/llms-full.txt): Complete uncompressed technical resume, projects, and architecture details.
+- [Resume / CV](https://kuyacarlo.dev/resume): Web and print-optimized curriculum vitae.
+- [Technical Notes](https://kuyacarlo.dev/notes): Deep-dives into systems engineering, offline-first architectures, and MCP tooling.
+- [Homelab & Infrastructure](https://kuyacarlo.dev/homelab): Live hardware specs, rootless Podman service ledger, and network topology.
+- [Certifications](https://kuyacarlo.dev/certs): Verified credentials in Azure AI/Data, Cisco Networking, and Cloud Computing.
+- [Book a Call](https://kuyacarlo.dev/book): Direct meeting scheduler via Cal.com.
 
-## Technical Specializations
-- Backend & Agentic AI: Python (FastAPI, pytest), LangGraph, Model Context Protocol (MCP / FastMCP), REST APIs, WebSocket.
-- Data Engineering: DuckDB, PostgreSQL, SQLite, Pandas, NumPy, ETL Pipelines (Bronze→Silver→Gold), Web Scraping.
-- Infrastructure & DevOps: Rootless Podman (Quadlets), Docker, GitHub Actions / Forgejo CI/CD, Linux Hardening (Fedora/Debian), Ansible, GPG Signing.
-- Languages: Python, TypeScript/JavaScript, Go, Dart, SQL, Bash/Shell, C.
-- Cloud: Google Cloud Platform (Cloud Run, Compute Engine), AWS (Lambda, S3), Supabase, Cloudflare Workers/Pages.
+## Published Technical Notes
+- [Why We Run Rootless Podman Quadlets Instead of Root Docker](https://kuyacarlo.dev/notes/rootless-podman-quadlets): How declarative systemd Quadlets eliminate root daemon vulnerabilities and automate boot lifecycle.
+- [Designing Offline-First Healthcare Telemetry with SQLite & Protocol Buffers](https://kuyacarlo.dev/notes/offline-first-telemetry): Vital-sign data collection, Protobuf schemas, and D2D handoffs for rural health workers in Kasigla.
+- [QC for Devs & Data Pros — Your Pre-Push Safety Net](https://kuyacarlo.dev/notes/pre-push-safety): Pre-push hook checklist and fail-closed secret scanning with Bantay.
+- [Building High-Performance MCP Servers with FastMCP](https://kuyacarlo.dev/notes/building-mcp-servers): Connecting LLM reasoning engines to production APIs using Model Context Protocol.
 
-## Key Projects & Competitions
-- ComplyAIgent (AMD Developer Hackathon 2026): Agentic DevSecOps engine compiling regulatory text into fail-closed pre-push git hooks.
-- WorkSight (BPI DataWave 2025): Top 3 Finalist out of 100+ teams; metadata-to-burnout predictive analytics engine.
-- BetterTranspo (LPU Innoverse 2025): 1st Runner Up; LoRaWAN public transit telemetry and BEEP card integration.
-- KLIMA (PJDSC 2025): Sensor ETL pipeline delivering localized flood risk alerts for Calumpit LGU.
-- Git Profile (`git-profile` / `ssh-profile`): High-performance Go CLI suite for managing multiple Git identities, SSH keys, and GPG sign-offs.
-- room-tba: Campus room finder and vacancy tracker for BulSU students.
-- BetterBulakan: Civic transparency portal for Bulakan, Bulacan.
-- freestack: Open-source curated directory of free developer tools and student unlocks.
+## Featured Open-Source Projects
+- [ComplyAIgent](https://github.com/liitkud/complyaigent): DevSecOps policy compliance engine compiling regulatory text into fail-closed pre-push git hooks. *AMD Developer Hackathon 2026*.
+- [git-profile & ssh-profile](https://github.com/kuyacarlo/git-profile): Production Go CLI suite for seamlessly switching multiple Git identities, GPG signing keys, and scoped SSH URLs per repository.
+- [WorkSight](https://github.com/4sightorg/worksight): Multi-agent workplace analytics platform predicting employee burnout from enterprise metadata. *Top 3 Finalist @ BPI DataWave 2025*.
+- [BetterTranspo](https://github.com/kuyacarlo): Decentralized public transit platform integrating BEEP™ card payments, LoRaWAN vehicle tracking, and passenger fullness meters. *1st Runner Up @ LPU Innoverse 2025*.
+- [KLIMA](https://github.com/Signal-No-5/klima): Bronze→Silver→Gold environmental data processing pipeline delivering localized flood risk alerts for Calumpit LGU. *PJDSC 2025*.
+- [SAGE](https://github.com/kuyacarlo/sage-mcp): Autonomous academic co-pilot using MCP to ingest CHED-verified university curricula into Notion. *MLH Notion MCP Challenge*.
+- [Bantay](https://github.com/kuyacarlo/bantay): Two-layer pre-push git security hook pairing local pattern matching with async smartphone approvals for AI agents.
+- [freestack](https://freestack.kuyacarlo.dev): Curated directory of free developer tiers, student unlocks, and startup resources with commercial notes.
+- [room-tba](https://github.com/kuyacarlo/room-tba): BulSU campus room schedule and vacancy finder under the BulSUTools initiative.
+- [BetterBulakan](https://github.com/kuyacarlo/betterbulakan): Community-powered municipal public utility and transparency portal for Bulakan, Bulacan.
+
+## Optional External Profiles
+- [GitHub](https://github.com/kuya-carlo): Primary source code repositories and open-source contributions.
+- [LinkedIn](https://linkedin.com/in/kuyacarlo): Professional networking profile and career history.
+- [dev.to](https://dev.to/kuyacarlo): Technical blog posts and tutorials.

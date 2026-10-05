@@ -1,36 +1,37 @@
-# John Carlo Santos — Full Engineering Profile & Technical Dossier
+# John Carlo Santos — Full Technical Dossier & Developer Profile
 
-Canonical Handle: kuyacarlo (also kuya-carlo)
+Canonical Name: John Carlo Santos
+Online Handles: kuyacarlo, kuya-carlo
 Website: https://kuyacarlo.dev
 Email: santos.karlo@outlook.com
-Location: Bulakan, Bulacan, Philippines (GMT+8)
+Location: Bulakan, Bulacan / Manila, Philippines (GMT+8)
 Education: Bulacan State University, Bachelor of Science in Computer Engineering (Expected 2028)
 Leadership: Chief Technology Officer (CTO) @ Seekers Guild (May 2025 – Present)
-Status: Actively open to work — full-time software engineering, data engineering, DevOps, and contract opportunities.
+Availability: Actively open to work — full-time engineering, data engineering, DevOps, and contract opportunities.
 
 ---
 
 ## Executive Summary
-John Carlo Santos is a systems and data engineer who bridges low-level infrastructure (Linux systems, rootless Podman containers, Go CLI tooling) with high-level agentic AI pipelines (LangGraph, Model Context Protocol, FastMCP, FastAPI). He serves as CTO of Seekers Guild, directing technical architecture and developer mentorship. Winner of multiple national hackathons across fintech, civic tech, DevSecOps, and environmental telemetry.
+John Carlo Santos is a systems and data engineer who bridges low-level infrastructure (Linux kernel modules, rootless Podman Quadlets, Go CLI tools) with production agentic AI architectures (LangGraph, Model Context Protocol, FastMCP, FastAPI). As CTO of Seekers Guild, he directs technical infrastructure, developer mentorship, and authentication architecture across active student builder communities. Winner of multiple national hackathons across DevSecOps, fintech, civic tech, and environmental telemetry.
 
 ---
 
 ## Technical Skills Matrix
 
-### Core Languages
-Python (Async, FastAPI, pytest), TypeScript/JavaScript (Next.js App Router, React), Go (CLI & microservices), Dart (Flutter), SQL (Postgres, DuckDB, SQLite), Bash/Shell, C.
+### Core Programming Languages
+Python (FastAPI, pytest, asyncio), TypeScript/JavaScript (Next.js App Router, React, Svelte), Go (CLI tooling, concurrency, microservices), Dart (Flutter), SQL (Postgres, DuckDB, SQLite), Bash/Shell scripting, C.
 
 ### AI & Agentic Orchestration
-LangGraph state machines, Human-in-the-Loop (HIL) interrupts, Model Context Protocol (MCP / FastMCP), Agent Fleet Claim Ledgers, Retrieval-Augmented Generation (RAG), Prompt/Context/Harness Engineering.
+LangGraph state machines, Human-in-the-Loop (HIL) interrupts, Model Context Protocol (MCP / FastMCP), Autonomous Agent Fleet Claim Ledgers, Retrieval-Augmented Generation (RAG), Prompt Engineering, Context Partitioning, Harness Engineering.
 
-### Data Engineering
-DuckDB analytics, PostgreSQL relational modeling, SQLite embedded state, Pandas/NumPy ETL scripting, Bronze→Silver→Gold data warehousing architectures, BeautifulSoup4/HTTPX web scrapers.
+### Data Engineering & Pipelines
+DuckDB analytics, PostgreSQL relational modeling, SQLite embedded local storage, Pandas/NumPy ETL scripting, Bronze→Silver→Gold data warehousing architectures, BeautifulSoup4/HTTPX web scrapers.
 
 ### Infrastructure, Containers & Linux
-Podman Rootless (Quadlets, Systemd user units), Docker, Linux Hardening (Fedora/Debian/Arch), GitHub Actions & Forgejo CI/CD, Ansible, Pre-commit quality gates, GPG Commit Signing.
+Rootless Podman (Systemd Quadlet units, `.container` files, user session lingering), Docker, Linux Hardening (Fedora/Debian/Arch), GitHub Actions & Forgejo CI/CD pipelines, Ansible automation, Pre-commit quality gates, GPG Commit Signing.
 
 ### Cloud Architecture
-Google Cloud Platform (Cloud Run, Compute Engine, Cloud Functions), Amazon Web Services (Lambda, S3), Supabase (Auth, Postgres poolers), Cloudflare Workers & Pages.
+Google Cloud Platform (Cloud Run, Compute Engine, Cloud Functions), Amazon Web Services (Lambda, S3), Supabase (Postgres poolers, Auth), Cloudflare Workers & Pages.
 
 ---
 
@@ -42,11 +43,11 @@ Google Cloud Platform (Cloud Run, Compute Engine, Cloud Functions), Amazon Web S
 
 2. **WorkSight (BPI DataWave 2025 — Top 3 Finalist)**
    - Stack: Next.js, Python, LangGraph, Analytics.
-   - Purpose: Multi-agent analytics platform that ingests enterprise metadata to predict employee burnout patterns and optimize workload allocation. Top 3 out of 100+ teams.
+   - Purpose: Multi-agent analytics platform that transforms fragmented enterprise metadata into predictive burnout insights and optimal workload rebalancing. Top 3 out of 100+ teams.
 
 3. **BetterTranspo (LPU Innoverse 2025 — 1st Runner Up)**
    - Stack: IoT, LoRaWAN, Next.js, Transit Telemetry.
-   - Purpose: Decentralized transit tracking platform with BEEP card fare estimation, passenger fullness sensors, and real-time route visualization.
+   - Purpose: Decentralized transit tracking platform with BEEP™ card fare estimation, passenger fullness sensors, and real-time route visualization.
 
 4. **KLIMA (UP Data Science Society & Eskwelabs PJDSC 2025)**
    - Stack: FastAPI, Flutter, ETL Pipelines, ML Inference.
@@ -71,6 +72,15 @@ Google Cloud Platform (Cloud Run, Compute Engine, Cloud Functions), Amazon Web S
 - **Git Profile & SSH Profile (`git-profile` / `ssh-profile`)**: Go CLI suite for switching Git identities, GPG signing keys, and scoped SSH configs per repository.
 - **room-tba**: Automated schedule and room vacancy finder for BulSU students under the BulSUTools initiative.
 - **BetterBulakan**: Municipal transparency portal for Bulakan, Bulacan.
-- **freestack**: Curated catalog of developer tiers, student unlocks, and startup resources.
+- **freestack (awesome-freestack)**: Curated catalog of developer tiers, student unlocks, and startup resources with commercial terms and limits.
 - **v4l2loopback-fedora**: Packaging script and DKMS module automation for Video4Linux loopback virtual camera devices on Fedora.
 - **Nutrition API (`meal-server`)**: High-throughput FastAPI service serving nutritional datasets with containerized SQLite.
+
+---
+
+## Homelab & Sovereign Infrastructure
+
+- **Hardware**: ThinkCentre M710q-N000 (Fedora Server), 512 GB NVMe OS + 2 TB storage pools.
+- **Networking**: Encrypted Netbird mesh VPN connecting dev laptops, edge VPS, and home servers across residential CGNAT.
+- **Container Runtime**: Rootless Podman Quadlets managed via systemd user units.
+- **Self-Hosted Services**: Forgejo (private Git on port 2222), Authentik (SSO/OIDC), Vaultwarden (password/secret server), Traefik (reverse proxy + auto TLS), Prometheus + Grafana + Loki (monitoring & log aggregation), Uptime Kuma (status monitoring).
