@@ -1,50 +1,60 @@
 <!--
-  Copy into github.com/kuyacarlo/kuyacarlo README.md — source of truth for profile landing.
+  This is a mirror of github.com/kuyacarlo/kuyacarlo's README.md — copy there to publish changes.
   Keep in sync with src/lib/portfolio-data.ts on the portfolio site.
 -->
 
-# kuyacarlo
+# John Carlo Santos (kuyacarlo)
 
-**Data engineer · DevOps builder · hackathon competitor**  
-BS Computer Engineering @ Bulacan State University · 2028  
-*Iterate fast, think deep, ship meaning.*
+> **Software & Systems Engineer · CTO @ [Seekers Guild](https://github.com/seekersguild) · BS Computer Engineering @ BulSU ('28)**  
+> *Actively open to full-time engineering, data engineering, DevOps, and contract roles.*  
+> 🌐 **[kuyacarlo.dev](https://kuyacarlo.dev)** • 💼 **[LinkedIn](https://linkedin.com/in/kuyacarlo)** • 📬 **santos.karlo@outlook.com**
 
-→ [kuyacarlo.dev](https://kuyacarlo.dev) · [LinkedIn](https://linkedin.com/in/kuyacarlo) · [dev.to](https://dev.to/kuyacarlo) · santos.karlo@outlook.com
-
----
-
-## Featured builds
-
-| Project | Role / notes | Stack | Link |
-|---|---|---|---|
-| **FerretOPS** | Backend + agent eng · AMD Hackathon 2026 | Go, LangGraph, FastAPI, Next.js | [repo](https://github.com/liitkud/complyaigent) |
-| **WorkSight** | Builder · BPI DataWave 2025, Top 3 / 100+ teams | Python, LangGraph, Next.js | source private |
-| **nutrition-api** | Solo · serving nutritional facts to downstream devices | FastAPI, Docker, SQLite | [repo](https://github.com/kuyacarlo/nutrition-api) |
-| **pub-routes** | Solo · LTFRB routes ETL | BeautifulSoup, Pandas, urllib3 | [repo](https://github.com/kuyacarlo/pub-routes) |
-| **v4l2loopback-fedora** | Solo · OBS Virtual Camera package | dkms, GitHub Actions | [repo](https://github.com/kuyacarlo/v4l2loopback-fedora) |
-| **awesome-freestack** | Curator · free resources for builders | — | [repo](https://github.com/kuyacarlo/awesome-freestack) |
-
----
-
-## Stack
-
-**Languages** — Python, TypeScript, Dart, Go, SQL, Bash  
-**Data engineering** — Pandas/NumPy, PostgreSQL, DuckDB, ETL, Web Scraping, JSON/YAML  
-**Backend & AI** — FastAPI, LangGraph, Agentic AI, MCP, FastMCP, pytest  
-**Frontend & mobile** — React / Next.js, Flutter  
-**Infra & DevOps** — Docker, Podman, GitHub/Forgejo Actions, Ansible, Linux Hardening, Git  
-**Cloud** — GCP, AWS, Supabase
-
----
-
-## Now · 2026-08
-
-```
-building:  homelab services + portfolio polish → /homelab
-learning:  Go
-exploring: agentic DevSecOps + MCP tooling
+```text
+"Think with reason, build with passion. Iterate fast, think deep, ship meaning."
 ```
 
 ---
 
-More: [portfolio](https://kuyacarlo.dev) · [homelab](https://kuyacarlo.dev/homelab) · [book a call](https://kuyacarlo.dev/book)
+## ⚡ What I Build & Operate
+
+I engineer high-throughput data pipelines, fail-closed DevSecOps guardrails, and autonomous agent harnesses—bridging low-level systems (Linux kernel modules, rootless Podman Quadlets, Go CLI tools) with production agentic AI architectures (LangGraph, Model Context Protocol, FastMCP, FastAPI).
+
+- 🔭 **Current Focus**: Autonomous agent execution harnesses, edge telemetry, and developer productivity tooling.
+- 🏛️ **Leadership**: Chief Technology Officer @ Seekers Guild, directing technical infrastructure, auth architectures, and developer mentorship.
+- 📍 **Location**: Bulakan / Manila, Philippines (GMT+8).
+
+---
+
+## 🏆 Featured Projects & Hackathon Proof-of-Work
+
+| Project | Stack | Focus & Impact |
+|---|---|---|
+| **[ComplyAIgent](https://github.com/liitkud/complyaigent)** | `Go` `LangGraph` `FastAPI` `Gitleaks` | Agentic DevSecOps engine compiling regulatory text into fail-closed pre-push git hooks with Auth0 CIBA smartphone approvals. *AMD Developer Hackathon 2026*. |
+| **[git-profile & ssh-profile](https://github.com/kuyacarlo/git-profile)** | `Go` `Git` `SSH` | Production Go CLI suite for seamlessly switching multiple Git identities, GPG signing keys, and scoped SSH URLs per repo. |
+| **[WorkSight](https://github.com/4sightorg/worksight)** | `Python` `LangGraph` `Next.js` | Agentic workplace intelligence platform turning fragmented enterprise metadata into predictive burnout insights. *Top 3 Finalist @ BPI DataWave 2025*. |
+| **[Kasigla](https://github.com/Phasmanastasis/PhasmaFrame)** | `Astro` `React` `Hono` `SQLite` `Protobuf` | Offline-first hypertension follow-up MVP for community healthcare, enabling patient-to-BHW protocol-buffered record handoffs. *Healthcare Telemetry Hackathon 2026*. |
+| **[BetterTranspo](https://github.com/kuyacarlo)** | `IoT` `LoRaWAN` `Next.js` | Decentralized public transit platform integrating BEEP™ card payments, vehicle tracking, and passenger density meters. *1st Runner Up @ LPU Innoverse 2025*. |
+| **[KLIMA](https://github.com/Signal-No-5/klima)** | `FastAPI` `Flutter` `ETL` | Bronze→Silver→Gold environmental data processing pipeline delivering localized flood risk alerts for Calumpit LGU. *PJDSC 2025*. |
+| **[SAGE](https://github.com/kuyacarlo/sage-mcp)** | `Python` `FastMCP` `Notion API` | Autonomous academic co-pilot using Model Context Protocol (MCP) to ingest CHED curricula into Notion. *MLH Notion MCP Challenge*. |
+| **[Bantay](https://github.com/kuyacarlo/bantay)** | `LangGraph` `Auth0 CIBA` `Python` | Two-layer pre-push git security hook pairing local pattern matching with async smartphone approvals for AI agents. |
+| **[freestack](https://github.com/kuyacarlo/freestack)** | `TypeScript` `Markdown` | Curated open-source directory of free developer tiers, student unlocks, and startup resources with commercial notes. |
+| **[room-tba](https://github.com/kuyacarlo/room-tba)** | `Svelte` `TypeScript` | Automated campus schedule and vacancy finder for BulSU students under the BulSUTools initiative. |
+
+---
+
+## 🛠️ Technical Stack & Tooling
+
+```
+Languages       Python, TypeScript/JavaScript, Go, Dart, SQL, Bash/Shell, C
+Backend & AI    FastAPI, LangGraph, Model Context Protocol (MCP / FastMCP), REST APIs, pytest
+Data Eng        DuckDB, PostgreSQL, SQLite, Pandas, NumPy, ETL Pipelines, Web Scraping
+DevOps & Infra  Podman (Rootless / Quadlets), Docker, GitHub/Forgejo Actions CI/CD, Linux Hardening, GPG
+Cloud Platforms GCP (Cloud Run, Compute Engine), AWS (Lambda, S3), Supabase, Cloudflare Workers
+```
+
+---
+
+## 🔗 Connect & Collaborate
+
+- 💬 Let's talk engineering, hackathons, or open roles: **[Book a call on Cal.com](https://kuyacarlo.dev/book)**
+- 📝 Read technical notes and homelab writeups: **[kuyacarlo.dev/notes](https://kuyacarlo.dev/notes)**
