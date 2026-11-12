@@ -1,50 +1,72 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { TAGLINE, certifications, counts } from '../lib/portfolio-data';
+import certData from '../data/certs.json';
+import nowContent from '../data/now.json';
+
+type Certificate = { name: string; issuer: string; year: string | number; layer: string | number; verifyUrl?: string };
+const verifiedCerts = (certData.certs as Certificate[]).filter((cert) => Boolean(cert.verifyUrl));
 ---
 
 <Layout
   active="certs"
-  title="Certifications — John Carlo Santos"
-  description={`Certifications for John Carlo Santos. ${TAGLINE}`}
+  title="Certs — John Carlo Santos"
+  description="Verified certifications and credentials for John Carlo Santos."
 >
-  <div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
-    <!-- header -->
-    <section style="padding-top:120px;padding-bottom:60px;">
-      <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
-        Certifications<span style="color:var(--ink-3);">.</span>
-      </h1>
-      <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
-        Credentials outside the homepage — issuer and date, scannable.
-        Full one-pager still lives on <a href="/resume" class="sec-link">resume</a>.
-      </p>
+  <main id="main" class="certs-redesign">
+    <section class="cr-hero">
+      <span class="cr-eyebrow">certs</span>
+      <h1>Certs</h1>
+      <p>Each one links to the issuer, so you don't have to take my word for it.</p>
     </section>
 
-    <section class="section" id="certs" style="flex:1;">
-      <div class="sec-label r">
-        <span class="sec-num">01</span>
-        <span class="sec-name">Certifications</span>
-        <span class="sec-rule"></span>
-      </div>
-
-      <div class="cert-list r d2">
-        {certifications.map((c) => (
-          <div class="cert-row">
-            <div>
-              <div class="cert-name">{c.name}</div>
-              <div class="cert-issuer">{c.issuer}</div>
+    {verifiedCerts.length > 0 && (
+      <section class="cr-grid" aria-label="Verified certifications">
+        {verifiedCerts.map((cert) => (
+          <article class="cr-card">
+            <div class="cr-card-meta"><span>{String(cert.layer).padStart(2, '0')}</span><span>{cert.year}</span></div>
+            <div class="cr-card-body">
+              <h2>{cert.name}</h2>
+              <p>{cert.issuer}</p>
             </div>
-            <div class="cert-date">{c.date}</div>
-          </div>
+            <a href={cert.verifyUrl} target="_blank" rel="noopener noreferrer">verify <span aria-hidden="true">↗</span></a>
+          </article>
         ))}
-      </div>
-      <p class="sec-count r d3">{counts.certs} credentials</p>
-    </section>
+      </section>
+    )}
 
-    <footer class="footer">
+    <footer class="cr-footer">
       <span>© 2026 John Carlo Santos</span>
-      <span>{TAGLINE}</span>
-      <span><a href="/resume" class="footer-link">resume →</a></span>
+      <span>{nowContent.tagline}</span>
     </footer>
-  </div>
+  </main>
 </Layout>
+
+<style>
+  .certs-redesign { max-width:var(--container, 1440px); min-height:calc(100vh - 64px); margin:0 auto; border-inline:var(--rule, 2px solid var(--ink)); color:var(--ink); background:var(--paper); display:flex; flex-direction:column; }
+  .cr-hero { padding:var(--space-5, 48px) var(--gutter, 24px); border-bottom:var(--rule, 2px solid var(--ink)); display:flex; flex-direction:column; align-items:flex-start; gap:20px; }
+  .cr-eyebrow { font:700 13px/1.2 var(--font-mono, 'Red Hat Mono', monospace); text-transform:uppercase; }
+  .cr-hero h1 { margin:0; font:900 clamp(56px, 9vw, 136px)/.85 var(--font-display, 'Red Hat Display', sans-serif); letter-spacing:-.04em; text-transform:uppercase; }
+  .cr-hero p { max-width:640px; margin:0; font:400 19px/1.55 var(--font-text, 'Red Hat Text', sans-serif); }
+  .cr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(320px, 100%), 1fr)); border-bottom:var(--rule, 2px solid var(--ink)); }
+  .cr-card { min-width:0; margin:0 -2px -2px 0; border-right:var(--rule, 2px solid var(--ink)); border-bottom:var(--rule, 2px solid var(--ink)); display:flex; flex-direction:column; }
+  .cr-card-meta { padding:12px 24px; border-bottom:var(--rule, 2px solid var(--ink)); display:flex; justify-content:space-between; gap:16px; font:500 12px/1.4 var(--font-mono, 'Red Hat Mono', monospace); text-transform:uppercase; }
+  .cr-card-body { flex:1; padding:24px; display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+  .cr-card-body h2 { margin:0; font:800 24px/1.15 var(--font-display, 'Red Hat Display', sans-serif); }
+  .cr-card-body p { margin:0; font:400 16px/1.5 var(--font-text, 'Red Hat Text', sans-serif); }
+  .cr-card > a { padding:14px 24px; border-top:var(--rule, 2px solid var(--ink)); color:inherit; font:400 14px/1.4 var(--font-mono, 'Red Hat Mono', monospace); }
+  .cr-card > a:hover { background:var(--ink); color:var(--paper); }
+  .cr-footer { margin-top:auto; padding:20px 24px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font:400 13px/1.5 var(--font-mono, 'Red Hat Mono', monospace); }
+  .certs-redesign a:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+  @media(max-width:767px) {
+    .certs-redesign { min-height:calc(100vh - 56px); }
+    .cr-hero { padding:32px 16px; gap:16px; }
+    .cr-hero h1 { font-size:56px; }
+    .cr-hero p { font-size:16px; }
+    .cr-grid { grid-template-columns:1fr; }
+    .cr-card-meta { padding:10px 16px; }
+    .cr-card-body { padding:18px 16px; }
+    .cr-card-body h2 { font-size:20px; }
+    .cr-card > a { padding:12px 16px; }
+    .cr-footer { padding:20px 16px; }
+  }
+</style>

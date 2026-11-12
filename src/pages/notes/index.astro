@@ -1,35 +1,95 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getPosts } from '../../lib/cms';
+import layers from '../../data/layers.json';
+
 const posts = await getPosts();
+const layerName = (n: number) => layers.find((layer) => layer.n === n)?.name ?? '';
+const labelFor = (values: number[]) => `Layers: ${values.map(layerName).filter(Boolean).join(', ')}`;
 ---
+<Layout active="notes" title="Notes — John Carlo Santos" description="Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.">
+  <main id="main" class="notes-page page">
+    <header class="notes-hero">
+      <p class="eyebrow">writing / field notes</p>
+      <h1>NOTES</h1>
+      <p>Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.</p>
+    </header>
 
-<Layout active="notes" title="Notes — John Carlo Santos">
-<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
-
-  <section style="padding-top:120px;padding-bottom:48px;">
-    <h1 class="r" style="font-size:clamp(2.2rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.04em;margin-bottom:10px;">Notes.</h1>
-    <p class="r d1" style="font-size:0.88rem;color:var(--ink-2);max-width:440px;">
-      Occasional writing on data engineering, DevOps, MCP, and building things in the Philippines.
-    </p>
-  </section>
-
-  <div class="r d2" style="padding-bottom:80px;flex:1;">
-    {posts.length === 0 && (
-      <p style="font-size:0.88rem;color:var(--ink-3);padding:24px 0;border-top:1px solid var(--b1);">No notes yet.</p>
-    )}
-    {posts.map(p => (
-      <a href={`/notes/${p.slug}`} class="note-row">
-        <span class="note-date">{p.date}</span>
-        <span class="note-title">{p.title}</span>
-        <span class="note-arrow">↗</span>
-      </a>
-    ))}
-  </div>
-
-  <footer class="footer" style="margin-top:auto;">
-    <span>© 2026 John Carlo Santos</span>
-  </footer>
-
-</div>
+    <section class="notes-index" aria-label="Notes by layer">
+      <div class="layer-filter" role="group" aria-label="Filter notes by layer">
+        <button type="button" data-layer-filter="all" aria-pressed="true">ALL</button>
+        {layers.map((layer) => <button type="button" data-layer-filter={layer.n} aria-pressed="false">{String(layer.n).padStart(2, '0')}</button>)}
+      </div>
+      <div class="notes-list" aria-live="polite">
+        {posts.map((post) => (
+          <a class="note-list-item" href={`/notes/${post.slug}`} data-note-layers={post.layers.join(',')}>
+            <span class="note-list-date">{post.date}</span>
+            <span class="note-list-copy">
+              <strong>{post.title}</strong>
+              {post.desc && <span>{post.desc}</span>}
+            </span>
+            <span class="coverage" role="img" aria-label={labelFor(post.layers)}>
+              {layers.map((layer) => <span class:list={['coverage-cell', { filled: post.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
+            </span>
+          </a>
+        ))}
+        <p class="notes-empty" hidden>Nothing at this layer yet.</p>
+        {posts.length === 0 && <p class="notes-empty">No notes yet.</p>}
+      </div>
+    </section>
+    <footer class="site-footer"><span>© {new Date().getFullYear()} John Carlo Santos</span><span>Iterate fast, think deep, ship meaning.</span></footer>
+  </main>
 </Layout>
+
+<script>
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-layer-filter]')];
+  const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')];
+  const empty = document.querySelector<HTMLElement>('.notes-empty');
+  const params = new URLSearchParams(location.search);
+  const initial = params.get('layer');
+  const applyFilter = (layer: string, push = false) => {
+    let visible = 0;
+    for (const item of items) {
+      const matches = layer === 'all' || (item.dataset.noteLayers ?? '').split(',').includes(layer);
+      item.hidden = !matches;
+      if (matches) visible += 1;
+    }
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layerFilter === layer)));
+    if (empty) empty.hidden = visible !== 0;
+    if (push) {
+      const next = new URL(location.href);
+      if (layer === 'all') next.searchParams.delete('layer');
+      else next.searchParams.set('layer', layer);
+      history.pushState({}, '', next);
+    }
+  };
+  const validInitial = initial && buttons.some((button) => button.dataset.layerFilter === initial) ? initial : 'all';
+  applyFilter(validInitial);
+  buttons.forEach((button) => button.addEventListener('click', () => applyFilter(button.dataset.layerFilter ?? 'all', true)));
+  window.addEventListener('popstate', () => applyFilter(new URLSearchParams(location.search).get('layer') ?? 'all'));
+</script>
+
+<style>
+  .notes-hero { padding-block: clamp(48px, 8vw, 104px); border-bottom: var(--rule); }
+  .notes-hero h1 { margin: 0 0 var(--space-3); font: var(--type-page-title); letter-spacing: -.04em; }
+  .notes-hero > p:last-child { max-width: 720px; margin: 0; font: var(--type-lead); }
+  .notes-index { padding-block: var(--space-4); }
+  .layer-filter { display: flex; overflow-x: auto; border: var(--rule); margin-bottom: var(--space-4); }
+  .layer-filter button { flex: 0 0 auto; min-width: 56px; min-height: 48px; padding: 0 14px; border: 0; border-right: var(--rule); background: var(--paper); font: var(--type-label); }
+  .layer-filter button:last-child { border-right: 0; }
+  .layer-filter button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
+  .note-list-item { display: grid; grid-template-columns: 120px minmax(0,1fr) 216px; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-top: var(--rule); color: var(--ink); text-decoration: none; }
+  .note-list-date { color: var(--muted); font: var(--type-label); }
+  .note-list-copy { display: grid; gap: 6px; }
+  .note-list-copy strong { font: var(--type-card); }
+  .note-list-copy > span { font: var(--type-body); }
+  .notes-empty { margin: 0; padding: var(--space-3); border: var(--rule); font: var(--type-label); }
+  .notes-page .site-footer { margin-inline: calc(-1 * var(--gutter)); }
+  @media (max-width: 767px) {
+    .notes-hero { padding-block: var(--space-5); }
+    .notes-hero > p:last-child { font-size: 16px; }
+    .note-list-item { grid-template-columns: minmax(0,1fr); gap: 8px; }
+    .note-list-item .coverage { width: 100%; height: 14px; }
+    .note-list-date { font-size: 11px; }
+  }
+</style>

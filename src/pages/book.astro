@@ -2,104 +2,66 @@
 import Layout from '../layouts/Layout.astro';
 import { displayHost, site } from '../lib/site';
 
-// Availability — hardcode this or wire to CMS/CF KV
-const available = true;
-const availText = available
-  ? "Open to short-term contracts, hackathon teams, and freelance data work."
-  : "Currently heads-down on a project. Check back in a few weeks.";
-
-const emailMailto = `mailto:${site.email}`;
+const choices = ['Hackathon team', 'Data or DevOps role', 'Collaboration', 'Just talk shop'];
 ---
+<Layout active="book" title="Let’s talk — John Carlo Santos" description="Choose a time to talk with John Carlo Santos. Times are shown in Manila time, UTC+8.">
+  <main id="main" class="book-page page">
+    <header class="book-hero">
+      <p class="eyebrow">BOOK / CONTACT</p>
+      <h1>Pick one.<br />I’ll reply.</h1>
+      <p>Three choices and your email. Times are in Manila, UTC+8.</p>
+    </header>
 
-<Layout active="" title="Let's Talk — John Carlo Santos">
-<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
-
-  <section class="book-hero" style="flex:1;">
-    <div class="r">
-      <a href="/" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-bottom:28px;display:inline-block;">← back</a>
-    </div>
-
-    <h1 class="r d1" style="font-size:clamp(2.5rem,7vw,5.5rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
-      Let's talk<span style="color:var(--ink-3);">.</span>
-    </h1>
-
-    <p class="r d2" style="font-size:0.95rem;color:var(--ink-2);max-width:480px;line-height:1.75;margin-bottom:40px;">
-      {availText}
-    </p>
-
-    <!-- Good fits -->
-    <div class="r d3" style="margin-bottom:40px;">
-      <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;">Good fits</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
-        {[
-          ["Data Engineering",    "ETL pipelines, data cleaning, open datasets"],
-          ["Agentic AI / MCP",    "LangGraph workflows, MCP server builds"],
-          ["DevOps tooling",      "CI/CD setup, Podman, self-hosted infra"],
-          ["Hackathon teaming",   "Fast execution, full-stack, data track"],
-        ].map(([title, desc]) => (
-          <div style="background:var(--bg);padding:18px 20px;">
-            <div style="font-size:0.85rem;font-weight:500;color:var(--ink);margin-bottom:4px;">{title}</div>
-            <div style="font-size:0.78rem;color:var(--ink-3);">{desc}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <!-- Cal embed + reach out side by side on desktop, stacked on mobile -->
-    <div class="book-grid r d4">
-      <div class="book-cal">
-        <iframe
-          src={site.bookingUrl}
-          title="Let's talk"
-          loading="lazy"
-          style="width:100%;min-height:720px;border:0;border-radius:6px;background:var(--bg);"
-        ></iframe>
-        <p style="font-family:var(--mono);font-size:0.72rem;color:var(--ink-3);margin-top:12px;">
-          Opens in a new tab: <a href={site.bookingUrl} target="_blank" rel="noopener" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;">{displayHost(site.bookingUrl)} ↗</a>
-        </p>
-      </div>
-
-      <div class="book-contact">
-        <p style="font-size:0.78rem;color:var(--ink-3);font-family:var(--mono);margin-bottom:14px;">or reach out directly</p>
-        <div style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
-          {[
-            {label:"Email",    val:site.email,                    href:emailMailto},
-            {label:"LinkedIn", val:displayHost(site.linkedinUrl), href:site.linkedinUrl},
-          ].map((row, i, arr) => (
-            <a href={row.href} target={row.label!=="Email"?"_blank":undefined} rel="noopener"
-               style={`display:flex;align-items:center;justify-content:space-between;padding:16px 20px;font-size:0.85rem;gap:12px;transition:background 0.15s;${i<arr.length-1?'border-bottom:1px solid var(--b1);':''}`}
-               onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background=''">
-              <div>
-                <div style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">{row.label}</div>
-                <div style="color:var(--ink);">{row.val}</div>
-              </div>
-              <span style="color:var(--ink-3);">↗</span>
-            </a>
-          ))}
+    <div class="book-layout">
+      <section class="book-context" aria-labelledby="book-context-title">
+        <h2 id="book-context-title">Good fits</h2>
+        <ul>{choices.map((choice) => <li>{choice}</li>)}</ul>
+        <div class="book-duration">
+          <h2>When</h2>
+          <p>Choose an open time in the scheduler. Duration and availability come from Cal.com.</p>
         </div>
-      </div>
+        <div class="book-contact">
+          <p class="label">Prefer email?</p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+      </section>
+
+      <section class="book-provider" aria-labelledby="book-when-title">
+        <div class="provider-heading"><h2 id="book-when-title">When</h2><a href={site.bookingUrl} target="_blank" rel="noopener noreferrer">OPEN IN {displayHost(site.bookingUrl)} ↗</a></div>
+        <iframe src={site.bookingUrl} title="Choose a time to talk with John Carlo Santos" loading="lazy"></iframe>
+        <p class="provider-note">Available times and booking details are supplied by the scheduler.</p>
+      </section>
     </div>
 
-  </section>
-
-  <footer class="footer" style="margin-top:auto;">
-    <span>© 2026 John Carlo Santos</span>
-    <a href="/" style="color:var(--ink-3);text-decoration:underline;text-decoration-color:var(--b1);text-underline-offset:3px;">← back home</a>
-  </footer>
-
-</div>
+    <footer class="site-footer"><span>© {new Date().getFullYear()} John Carlo Santos</span><span>Iterate fast, think deep, ship meaning.</span></footer>
+  </main>
 </Layout>
 
 <style>
-  .book-grid {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 32px;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .book-grid {
-      grid-template-columns: 1fr;
-    }
+  .book-hero { padding-block:clamp(48px,8vw,96px); border-bottom:var(--rule); }
+  .book-hero h1 { margin:0 0 var(--space-3); font:var(--type-hero); letter-spacing:-.035em; }
+  .book-hero > p:last-child { max-width:620px; margin:0; font:var(--type-lead); }
+  .book-layout { display:grid; grid-template-columns:minmax(250px, .75fr) minmax(0, 1.5fr); gap:var(--space-4); padding-block:var(--space-4); }
+  .book-context, .book-provider { min-width:0; border:var(--rule); }
+  .book-context { padding:var(--space-3); }
+  .book-context h2, .provider-heading h2 { margin:0; font:var(--type-section); }
+  .book-context ul { margin:var(--space-3) 0 var(--space-4); padding:0; list-style:none; border-top:var(--rule); }
+  .book-context li { padding:14px 0; border-bottom:var(--rule); font:var(--type-card); }
+  .book-duration { padding-top:var(--space-3); border-top:var(--rule); }
+  .book-duration p { margin:var(--space-2) 0 0; font:var(--type-body); }
+  .book-contact { margin-top:var(--space-4); padding-top:var(--space-3); border-top:var(--rule); }
+  .book-contact p { margin-bottom:8px; }
+  .provider-heading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; padding:16px; border-bottom:var(--rule); }
+  .provider-heading a { font:var(--type-label); }
+  .book-provider iframe { display:block; width:100%; min-height:720px; border:0; background:var(--paper); }
+  .provider-note { margin:0; padding:12px 16px; border-top:var(--rule); color:var(--muted); font:var(--type-label); }
+  .book-page .site-footer { margin-inline:calc(-1 * var(--gutter)); }
+  @media(max-width:767px) {
+    .book-hero { padding-block:var(--space-5); }
+    .book-hero > p:last-child { font-size:16px; }
+    .book-layout { display:flex; flex-direction:column; padding-block:var(--space-3); }
+    .book-context { padding:var(--space-2); }
+    .book-context li { font-size:18px; }
+    .book-provider iframe { min-height:650px; }
   }
 </style>

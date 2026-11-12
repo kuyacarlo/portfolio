@@ -7,8 +7,6 @@ import Layout from './Layout.astro';
 interface Props {
   title?: string;
   description?: string;
-  /** Short title shown in the sticky note nav after scroll */
-  noteTitle?: string;
   hasMath?: boolean;
   hasTikz?: boolean;
   hasMermaid?: boolean;
@@ -16,14 +14,13 @@ interface Props {
 const {
   title,
   description,
-  noteTitle = "",
   hasMath = false,
   hasTikz = false,
   hasMermaid = false,
 } = Astro.props;
 ---
 
-<Layout title={title} description={description} active="notes" noteTitle={noteTitle}>
+<Layout title={title} description={description} active="notes">
   {hasMath && (
     <link
       rel="stylesheet"
@@ -45,17 +42,17 @@ const {
 
       mermaid.initialize({
         startOnLoad: false,
-        theme: 'dark',
-        darkMode: true,
-        fontFamily: 'JetBrains Mono, monospace',
+        theme: 'base',
+        fontFamily: 'Red Hat Mono, monospace',
         themeVariables: {
-          background:    '#141312',
-          primaryColor:  '#252320',
-          primaryBorderColor: '#363430',
-          primaryTextColor:   '#f0ede6',
-          lineColor:     '#4a4844',
-          edgeLabelBackground: '#141312',
-          clusterBkg:    '#1d1c1a',
+          background: '#ffffff',
+          primaryColor: '#f2f2f2',
+          primaryBorderColor: '#000000',
+          primaryTextColor: '#000000',
+          lineColor: '#000000',
+          edgeLabelBackground: '#ffffff',
+          clusterBkg: '#f2f2f2',
+          fontFamily: 'Red Hat Text, sans-serif',
         },
       });
 
@@ -79,27 +76,16 @@ const {
   .math-display { overflow-x: auto; padding: 16px 0; }
   .katex-display { margin: 0; }
 
-  .mermaid {
-    background: var(--s1);
-    border: 1px solid var(--b1);
-    border-radius: 6px;
-    padding: 24px;
-    margin-bottom: 18px;
-    overflow-x: auto;
-    text-align: center;
-  }
+  .mermaid { background: var(--surface); border: var(--rule); padding: 24px; margin-bottom: 24px; overflow-x: auto; text-align: center; }
   .mermaid svg { max-width: 100%; height: auto; }
 
-  /* Circuit figures: muted paper, not pure white — avoids high-contrast
-     flashes when Astro HMR remounts the note body during edits. */
   .tikz-figure {
     display: flex;
     justify-content: center;
     margin: 24px 0;
     padding: 20px;
-    background: #e8e4dc;
-    border-radius: 6px;
-    border: 1px solid var(--b1);
+    background: var(--surface);
+    border: var(--rule);
     overflow-x: auto;
     contain: paint;
   }
@@ -109,31 +95,16 @@ const {
     max-width: 100%;
     height: auto;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .tikz-figure {
-      transition: none;
-    }
-  }
   .tikz-error {
-    background: var(--s1);
-    border: 1px solid var(--b1);
-    border-radius: 6px;
+    background: var(--surface);
+    border: var(--rule);
     padding: 14px 16px;
-    color: var(--ink-3);
-    font-family: var(--mono);
-    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
     margin-bottom: 18px;
     white-space: pre-wrap;
   }
 
-  .note-article .body pre.astro-code {
-    border: 1px solid var(--b1);
-    border-radius: 6px;
-    padding: 20px 22px;
-    overflow-x: auto;
-    font-size: 0.82rem;
-    line-height: 1.7;
-    margin-bottom: 18px;
-    background: var(--s1) !important;
-  }
+  .note-article .body pre.astro-code { border: var(--rule); padding: 16px; overflow-x: auto; font: var(--type-code); margin-bottom: 24px; background: var(--surface) !important; }
 </style>

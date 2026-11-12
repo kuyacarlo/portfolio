@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="404 — John Carlo Santos" description="This page was never committed.">
+  <main id="main" class="not-found page">
+    <div class="not-found-copy">
+      <p class="eyebrow">ERROR 404</p>
+      <h1>This page was never committed.</h1>
+      <p>The link is wrong, or I moved something and didn’t leave a redirect. Either way, it’s on me.</p>
+      <div class="not-found-actions"><a class="button button-primary" href="/">HOME</a><a class="button button-secondary" href="/notes">NOTES</a></div>
+    </div>
+    <svg class="missing-mark" role="img" aria-label="Six step mark with the fourth step missing" viewBox="0 0 36 36" shape-rendering="crispEdges">
+      <rect x="0" y="30" width="6" height="6" fill="currentColor" />
+      <rect x="6" y="24" width="6" height="6" fill="currentColor" />
+      <rect x="12" y="18" width="6" height="6" fill="currentColor" />
+      <rect x="18" y="12" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 1" />
+      <rect x="24" y="6" width="6" height="6" fill="currentColor" />
+      <rect x="30" y="0" width="6" height="6" fill="currentColor" />
+    </svg>
+  </main>
+  <footer class="site-footer"><span>© {new Date().getFullYear()} John Carlo Santos</span><span>Iterate fast, think deep, ship meaning.</span></footer>
+</Layout>
+
+<style>
+  .not-found { min-height:calc(100vh - var(--header-h) - 64px); display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-5); padding-block:var(--space-6); }
+  .not-found-copy { flex:999 1 560px; }
+  .not-found h1 { max-width:900px; margin:0 0 var(--space-3); font:var(--type-hero); letter-spacing:-.035em; }
+  .not-found-copy > p:not(.eyebrow) { max-width:640px; font:var(--type-lead); }
+  .not-found-actions { display:flex; flex-wrap:wrap; gap:var(--space-2); margin-top:var(--space-4); }
+  .missing-mark { flex:1 1 160px; width:min(100%, 280px); height:auto; }
+  .not-found + .site-footer { width:min(100%, var(--container)); }
+  @media(max-width:767px) {
+    .not-found { min-height:auto; padding-block:var(--space-5); }
+    .not-found-copy > p:not(.eyebrow) { font-size:16px; }
+    .missing-mark { width:160px; flex-basis:160px; margin-inline:auto; }
+    .not-found + .site-footer { margin-top:var(--space-4); }
+  }
+</style>

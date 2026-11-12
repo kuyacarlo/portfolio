@@ -1,0 +1,4 @@
+{
+  "_note": "Waiting on Karlo (HANDOFF.md §9.2). Shape per entry: { name, issuer, year, layer, verifyUrl }. Render only entries with a verifyUrl.",
+  "certs": []
+}

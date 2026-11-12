@@ -1,250 +1,319 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import {
-  TAGLINE,
-  PROOF_OF_WORK_URL,
-  counts,
-  hackathons,
-  nowItems,
-  projects,
-  socialProof,
-} from '../lib/portfolio-data';
 import { site } from '../lib/site';
+import projectContent from '../data/projects.json';
+import hackathonContent from '../data/hackathons.json';
+import nowContent from '../data/now.json';
+import layers from '../data/layers.json';
 
-const emailMailto = `mailto:${site.email}`;
-/** Show on mobile (featured cards). Full list stays on desktop. */
-const mobileFeatured = new Set([
-  "ComplyAIgent (FerretOPS)",
-  "git-profile & ssh-profile",
-  "WorkSight",
-  "Kasigla (PhasmaFrame)",
-  "awesome-freestack",
-  "BetterBulakan",
-]);
+const layerName = (n: number) => layers.find((layer) => layer.n === n)?.name ?? '';
+const coverageLabel = (values: number[]) => `Layers: ${values.map(layerName).filter(Boolean).join(', ')}`;
+const projects = projectContent.projects.map((project) => {
+  const links = project.links as { source?: string; live?: string; internal?: string };
+  return { ...project, source: links.source, live: links.live, internal: links.internal };
+});
+const phoneProjects = projects.filter((project) => project.featuredOnPhone);
+const podiums = hackathonContent.filter((item) => item.podium);
+const otherCompetitions = hackathonContent.filter((item) => !item.podium);
 ---
 
-<Layout active="home" navRevealId="work">
-
-<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
-<div class="wrap">
-  <section class="hero">
-    <div style="margin-bottom: 16px;">
-      <span class="hero-status" id="collab-status" style="cursor:pointer; display:inline-flex; border: 1px solid var(--b1); padding: 5px 12px; border-radius: 99px; background: var(--s1); color: var(--ink-2); font-size: 0.72rem;" title="Status: Actively open to full-time / contract roles">
-        <span class="hero-status-dot"></span>
-        available for hire & collab
-      </span>
-    </div>
-    <div class="hero-name r">
-      <div class="line1"><span>John Carlo</span></div>
-      <span class="line2">Santos.</span>
-      <div class="hero-meta">
-        <a href="/book" class="btn btn-filled hero-cta">Let's talk <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-    <div class="hero-rule r d1"></div>
-    <div class="hero-sub r d2">
-      <p class="hero-desc">
-        <strong>Software &amp; Systems Engineer</strong>, CTO @ <strong>Seekers Guild</strong>.
-        BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.
-        Actively open to work. I build high-throughput ETL data pipelines, fail-closed DevSecOps guardrails, and autonomous agent harnesses.
-      </p>
-      <p class="hero-tagline">{TAGLINE}</p>
-    </div>
-  </section>
-</div>
-
-
-<!-- PROJECTS -->
-<section class="section" id="work">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">01</span>
-      <span class="sec-name">Selected Work</span>
-      <span class="sec-rule"></span>
-      <a href={PROOF_OF_WORK_URL} class="sec-link">
-        view full resume →
-      </a>
-    </div>
-
-    <div class="project-grid">
-      {projects.map((p, i) => (
-        <div class={`project-card r d${(i % 4) + 1}${mobileFeatured.has(p.name) ? " proj-mobile" : " proj-desktop-only"}`}>
-          <div class="proj-thumb">
-            {p.img
-              ? <img src={p.img} alt={p.name} loading={i < 3 ? "eager" : "lazy"} decoding="async" />
-              : <div class="proj-placeholder"><span class="placeholder-emoji" aria-hidden="true">{p.emoji}</span></div>
-            }
+<Layout active="home" title="John Carlo Santos — Software & Systems Engineer" description="I build software across data, infrastructure, and the people who use it.">
+  <main id="main" class="stack-home">
+    <div class="shell">
+      <section class="page page-hero home-hero" aria-labelledby="home-title">
+        <div class="home-intro">
+          <p class="eyebrow">AVAILABLE — HACKATHON TEAMS, DATA AND DEVOPS ROLES</p>
+          <h1 id="home-title">Solder, servers,<br />and the people<br class="hero-break" /> in between.</h1>
+          <div class="hero-copy">
+            <p>I’m John Carlo Santos, a software and systems engineer and CTO at Seekers Guild. I study Computer Engineering at Bulacan State University.</p>
+            <p>I build dependable data systems, developer tooling, and agent workflows. I care about how the pieces meet the people using them.</p>
           </div>
-          <div class="proj-body">
-            <div class="proj-cat">{p.category}</div>
-            <div class="proj-name">
-              {p.name}
-              {p.live && <span class="live-dot" title="Live"></span>}
-              {p.private && <span class="proj-private">private</span>}
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">SEE THE WORK</a>
+            <a class="button button-secondary" href="/resume">RESUME</a>
+          </div>
+        </div>
+        <div class="hero-layers" aria-label="Layers of work">
+          {layers.map((layer) => (
+            <div class="hero-layer">
+              <span class="badge layer-badge">{String(layer.n).padStart(2, '0')}</span>
+              <span>{layer.name}</span>
             </div>
-            {(p.role || p.team || p.award) && (
-              <div class="proj-meta">
-                {p.role && <span>{p.role}</span>}
-                {p.team && <span>{p.team}</span>}
-                {p.award && <span class="proj-award">{p.award}</span>}
+          ))}
+        </div>
+      </section>
+    </div>
+
+    <!-- PROJECTS -->
+    <section id="work" class="page-section" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-heading">
+          <h2 class="section-title" id="work-title">01 Selected work</h2>
+          <a class="text-link" href="/resume">FULL RESUME →</a>
+        </div>
+
+        <div class="desktop-projects" role="region" aria-label="Selected projects">
+          <div class="data-table project-table" role="table" aria-label="Selected work">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">PROJECT</span>
+              <span role="columnheader">WHAT IT IS</span>
+              <span role="columnheader">01—06</span>
+              <span role="columnheader">LINKS</span>
+            </div>
+            {projects.map((project) => (
+              <div class="table-row project-row" role="row">
+                <strong role="cell">{project.name}</strong>
+                <span role="cell">{project.description}</span>
+                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
+                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
+                </span>
+                <span class="project-links" role="cell">
+                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer">SOURCE</a>}
+                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer">LIVE</a>}
+                  {project.internal && <a href={project.internal}>HOMELAB</a>}
+                </span>
               </div>
-            )}
-            <p class="proj-desc">{p.desc}</p>
-            <div class="proj-tags">
-              {p.tech.map(t => <span class="tag">{t}</span>)}
-            </div>
-            <div class="proj-links">
-              {p.private && !p.url
-                ? <span class="proj-private-note">Source private</span>
-                : p.url && (
-                  <a href={p.url} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-                )
-              }
-              {p.live && (
-                <a href={p.live} target="_blank" rel="noopener noreferrer">Live ↗</a>
-              )}
-              {p.writeup && (
-                <a href={p.writeup} target="_blank" rel="noopener noreferrer">Writeup ↗</a>
-              )}
-              {p.demo && (
-                <a href={p.demo} target="_blank" rel="noopener noreferrer">Demo ↗</a>
-              )}
+            ))}
+          </div>
+        </div>
+
+        <div class="phone-projects" data-phone-projects>
+          <div class="phone-project-list">
+            {phoneProjects.map((project) => (
+              <article class="cell phone-project-card">
+                <div class="phone-project-title">
+                  <h3>{project.name}</h3>
+                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${project.name}`}>SOURCE →</a>}
+                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" aria-label={`Live ${project.name}`}>LIVE →</a>}
+                  {project.internal && <a href={project.internal} aria-label={`About ${project.name}`}>OPEN →</a>}
+                </div>
+                <p>{project.description}</p>
+                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
+                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
+                </span>
+              </article>
+            ))}
+            {projects.filter((project) => !project.featuredOnPhone).map((project) => (
+              <article class="cell phone-project-card phone-project-extra" hidden>
+                <div class="phone-project-title">
+                  <h3>{project.name}</h3>
+                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${project.name}`}>SOURCE →</a>}
+                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" aria-label={`Live ${project.name}`}>LIVE →</a>}
+                </div>
+                <p>{project.description}</p>
+                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
+                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
+                </span>
+              </article>
+            ))}
+          </div>
+          <button class="button button-secondary expand-button" type="button" data-expand-projects data-count={projects.length} aria-expanded="false">
+            SHOW ALL {projects.length} PROJECTS
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HACKATHONS -->
+    <section class="page-section" aria-labelledby="hackathons-title">
+      <div class="shell">
+        <div class="section-heading">
+          <h2 class="section-title" id="hackathons-title">02 Hackathons</h2>
+        </div>
+        <div class="split hackathon-layout">
+          <div class="competition-list" aria-label="Competition results">
+            {hackathonContent.map((item) => (
+              <div class:list={["result-row", { podium: item.podium }]}>
+                <span class="result-place">{item.result}</span>
+                <strong>{item.project}</strong>
+                <span>{item.event}</span>
+              </div>
+            ))}
+          </div>
+          <aside class="stat-pair" aria-label={`${hackathonContent.length} competitions, ${podiums.length} podium finishes`}>
+            <div class="stat-cell"><strong>{hackathonContent.length}</strong><span>COMPETITIONS</span></div>
+            <div class="stat-cell stat-inverted"><strong>{podiums.length}</strong><span>PODIUMS</span></div>
+          </aside>
+        </div>
+        <div class="phone-competitions" data-phone-competitions>
+          <div class="phone-result-list">
+            {podiums.map((item) => (
+              <article class="cell phone-result-card podium">
+                <span class="result-place">{item.result}</span>
+                <strong>{item.project}</strong>
+                <span>{item.event}</span>
+              </article>
+            ))}
+            {otherCompetitions.map((item) => (
+              <article class="cell phone-result-card phone-result-extra" hidden>
+                <span class="result-place">{item.result}</span>
+                <strong>{item.project}</strong>
+                <span>{item.event}</span>
+              </article>
+            ))}
+          </div>
+          <button class="button button-secondary expand-button" type="button" data-expand-competitions data-count={hackathonContent.length} aria-expanded="false">
+            SHOW ALL {hackathonContent.length} COMPETITIONS
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOW -->
+    <section class="page-section" aria-labelledby="now-title">
+      <div class="shell">
+        <div class="section-heading"><h2 class="section-title" id="now-title">03 Now</h2></div>
+        <div class="now-grid">
+          <div class="cell now-cell"><span class="label">BUILDING</span><p>{nowContent.building}</p></div>
+          <div class="cell now-cell"><span class="label">LEARNING</span><p>{nowContent.learning}</p></div>
+          <div class="cell now-cell"><span class="label">EXPLORING</span><p>{nowContent.exploring}</p></div>
+          <div class="cell now-cell"><span class="label">OPEN FOR</span><p>{nowContent.openFor}</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact-section" aria-labelledby="contact-title">
+      <div class="shell">
+        <div class="section-heading"><h2 class="section-title" id="contact-title">04 Contact</h2></div>
+        <div class="contact-panel">
+          <div>
+            <h2>Pick one.<br />I’ll reply.</h2>
+            <p>{nowContent.openFor}</p>
+          </div>
+          <div class="contact-actions">
+            <a class="button button-on-ink" href="/book">BOOK A CALL</a>
+            <a class="button button-on-ink-secondary" href={`mailto:${site.email}`}>SEND AN EMAIL</a>
+            <div class="social-links" aria-label="Social links">
+              <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">GITHUB ↗</a>
+              <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>
+              <a href={site.devtoUrl} target="_blank" rel="noopener noreferrer">DEV.TO ↗</a>
             </div>
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-<!-- HACKATHONS -->
-<section class="section" id="hackathons">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">02</span>
-      <span class="sec-name">Hackathons & Competitions</span>
-      <span class="sec-rule"></span>
-    </div>
-
-    <div class="hack-list r d1">
-      {hackathons.map(h => {
-        const CardContent = (
-          <>
-            <div class="hack-place">{h.place}</div>
-            <div class="hack-name">{h.name}</div>
-            <span class="hack-proj">{h.proj}</span>
-            <p class="hack-desc">{h.desc}</p>
-          </>
-        );
-        return h.url ? (
-          <a href={h.url} target="_blank" rel="noopener noreferrer" class="hack-item" style="display:block;text-decoration:none;color:inherit;">
-            {CardContent}
-          </a>
-        ) : (
-          <div class="hack-item">
-            {CardContent}
-          </div>
-        );
-      })}
-    </div>
-    <p class="sec-count r">{counts.comps} comps · {counts.podiums} podiums</p>
-  </div>
-</section>
-
-
-{socialProof.enabled && socialProof.photos.length > 0 && (
-  <section class="section" id="photos">
-    <div class="wrap">
-      <div class="sec-label r">
-        <span class="sec-num">··</span>
-        <span class="sec-name">Photos</span>
-        <span class="sec-rule"></span>
       </div>
-      <div class="proof-strip r d1">
-        {socialProof.photos.map(ph => (
-          <figure class="proof-item">
-            <img src={ph.src} alt={ph.caption} loading="lazy" />
-            <figcaption>{ph.caption}</figcaption>
-          </figure>
-        ))}
-      </div>
+    </section>
+
+    <div class="shell">
+      <footer class="site-footer">
+        <span>© {new Date().getFullYear()} John Carlo Santos</span>
+          <span>{nowContent.tagline}</span>
+      </footer>
     </div>
-  </section>
-)}
-
-
-<!-- NOW -->
-<section class="section" id="now">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">03</span>
-      <span class="sec-name">Now</span>
-      <span class="sec-rule"></span>
-    </div>
-
-    <div class="now-block r d1">
-      {nowItems.map(item => (
-        <div class="now-row">
-          <span class="now-key">{item.label}:</span>
-          {item.href
-            ? <a href={item.href} class="now-val">{item.text}</a>
-            : <span class="now-val">{item.text}</span>
-          }
-        </div>
-      ))}
-      <div class="now-row">
-        <span class="now-key">open for:</span>
-        <span class="now-val">hackathon teams · data/DevOps roles · collabs</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- CONTACT -->
-<section class="section" id="contact">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">04</span>
-      <span class="sec-name">Contact</span>
-      <span class="sec-rule"></span>
-    </div>
-
-    <div class="contact-block r d1">
-      <p class="contact-lead">
-        Open for hackathon teams, data / DevOps roles, and collabs.
-      </p>
-      <p class="contact-tagline">{TAGLINE}</p>
-      <div class="contact-actions">
-        <a href="/book" class="btn btn-filled">Book a call</a>
-        <a href={emailMailto} class="btn btn-outline">Send an email</a>
-      </div>
-      <div class="social-icons">
-        <a href={site.githubUrl} target="_blank" rel="noopener" class="social-icon" aria-label="GitHub">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2 0-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.1 2.8.1 3.1.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
-          <span>kuyacarlo</span>
-        </a>
-        <a href={site.linkedinUrl} target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.23 0z"/></svg>
-          <span>in/kuyacarlo</span>
-        </a>
-        <a href={site.devtoUrl} target="_blank" rel="noopener" class="social-icon" aria-label="dev.to">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.42 10.05c-.17-.23-.36-.3-.56-.3H5.8v4.5h1.06c.2 0 .39-.07.56-.3.18-.22.27-.55.27-1 .01-.45-.09-.77-.27-1zM22.67.5H1.33C.6.5 0 1.1 0 1.83v20.34c0 .73.6 1.33 1.33 1.33h21.34c.73 0 1.33-.6 1.33-1.33V1.83c0-.73-.6-1.33-1.33-1.33zM8.9 14.48c-.36.66-1.06 1.01-1.97 1.01H4.75c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7c0 .53-.09.97-.27 1.31zm5.3-4.05h-2.4c0-.65.02-1.18.04-1.58.02-.4.05-.66.09-.8.08-.25.2-.37.37-.37.17 0 .29.12.37.37.04.14.07.4.09.8.02.4.04.93.04 1.58zm0 2.25h-2.4v1.52c0 .41-.02.7-.05.87-.05.25-.17.37-.37.37-.17 0-.29-.12-.36-.37a5.1 5.1 0 0 1-.09-.87v-4.9c.09-.8.4-1.2.94-1.2.3 0 .53.12.68.35.07.11.12.26.15.46.03.2.05.5.05.88v2.89zm6.75-1.58c0 .53-.09.97-.27 1.31-.36.66-1.06 1.01-1.97 1.01h-2.18c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7z"/></svg>
-          <span>dev.to/kuyacarlo</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<div class="wrap">
-  <footer class="footer">
-    <span>© 2026 John Carlo Santos</span>
-    <span>{TAGLINE}</span>
-    <span><a href="/resume" class="footer-link">resume →</a></span>
-  </footer>
-</div>
-
+  </main>
 </Layout>
+
+<script>
+  const expandList = (button: HTMLButtonElement | null, selector: string, label: string) => {
+    if (!button) return;
+    const count = Number(button.dataset.count ?? 0);
+    const items = Array.from(document.querySelectorAll<HTMLElement>(selector));
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      items.forEach((item) => { item.hidden = expanded; });
+      button.setAttribute('aria-expanded', String(!expanded));
+      button.textContent = expanded ? `SHOW ALL ${count} ${label}` : 'SHOW FEWER';
+    });
+  };
+
+  expandList(document.querySelector<HTMLButtonElement>('[data-expand-projects]'), '.phone-project-extra', 'PROJECTS');
+  expandList(document.querySelector<HTMLButtonElement>('[data-expand-competitions]'), '.phone-result-extra', 'COMPETITIONS');
+</script>
+
+<style>
+  .stack-home { color: var(--ink); }
+  .home-hero { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); padding-block: clamp(48px, 9vw, 112px); }
+  .home-intro { flex: 999 1 560px; min-width: 0; }
+  .home-intro h1 { max-width: 900px; margin: var(--space-3) 0 var(--space-4); font: 900 clamp(44px, 7vw, 104px)/.9 var(--font-display); letter-spacing: -.035em; text-transform: none; }
+  .hero-copy { max-width: 700px; font: 400 19px/1.5 var(--font-text); }
+  .hero-copy p + p { margin-top: var(--space-2); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+  .hero-layers { flex: 1 1 320px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: var(--rule); border-left: var(--rule); }
+  .hero-layer { min-height: 76px; display: flex; align-items: center; gap: 12px; padding: 10px; border-right: var(--rule); border-bottom: var(--rule); font: 700 15px/1 var(--font-mono); text-transform: uppercase; }
+  .layer-badge { width: 48px; height: 48px; display: grid; place-items: center; flex: none; }
+  .page-section { padding-block: var(--space-5); border-top: var(--rule); }
+  .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-3); }
+  .section-title { margin: 0; font: 900 40px/1 var(--font-display); letter-spacing: -.02em; text-transform: uppercase; }
+  .text-link, .project-links a, .phone-project-title a, .social-links a { color: var(--link); font: 600 12px/1.4 var(--font-mono); text-decoration: underline; text-underline-offset: 3px; }
+  .desktop-projects { display: block; }
+  .project-table .table-row { display: grid; grid-template-columns: minmax(170px, 1.2fr) minmax(220px, 2fr) 216px minmax(150px, 1fr); align-items: stretch; }
+  .table-head { font: 700 12px/1.4 var(--font-mono); }
+  .project-table .table-head > *, .project-row > * { padding: 14px var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
+  .project-table .table-head { border-top: var(--rule); border-left: var(--rule); background: var(--surface); }
+  .project-row { border-left: var(--rule); }
+  .project-row > :first-child { font: 800 20px/1.15 var(--font-display); }
+  .project-row > :nth-child(2) { font: 400 15px/1.5 var(--font-text); }
+  .coverage { display: grid; grid-template-columns: repeat(6, 1fr); min-width: 0; height: 48px; border: var(--rule); }
+  .project-row .coverage { align-self: center; margin: 0 var(--gutter); height: 36px; }
+  .coverage-cell { border-right: var(--rule); background: var(--paper); }
+  .coverage-cell:last-child { border-right: 0; }
+  .coverage-cell.filled { background: var(--ink); }
+  .project-links { display: flex; align-content: center; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+  .phone-projects, .phone-competitions { display: none; }
+  .split { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-3); }
+  .competition-list { flex: 999 1 560px; border-top: var(--rule); }
+  .result-row { min-height: 66px; display: grid; grid-template-columns: 150px minmax(150px, 1fr) minmax(180px, 1.4fr); align-items: center; gap: 16px; padding: 12px var(--gutter); border: var(--rule); border-top: 0; }
+  .result-row.podium { color: var(--paper); background: var(--ink); }
+  .result-place, .label { font: 700 12px/1.35 var(--font-mono); text-transform: uppercase; }
+  .result-row strong { font: 800 22px/1.1 var(--font-display); }
+  .result-row > span:last-child { color: var(--muted); font: 400 14px/1.4 var(--font-text); }
+  .result-row.podium > span:last-child { color: var(--paper); }
+  .stat-pair { flex: 1 1 300px; display: grid; grid-template-columns: 1fr 1fr; align-self: stretch; border-top: var(--rule); border-left: var(--rule); }
+  .stat-cell { display: flex; flex-direction: column; justify-content: space-between; min-height: 164px; padding: 16px; border-right: var(--rule); border-bottom: var(--rule); }
+  .stat-cell strong { font: 900 clamp(64px, 9vw, 120px)/.8 var(--font-display); letter-spacing: -.06em; }
+  .stat-cell span { font: 700 12px/1.2 var(--font-mono); }
+  .stat-inverted { color: var(--paper); background: var(--ink); }
+  .now-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: var(--rule); border-left: var(--rule); }
+  .now-cell { min-height: 160px; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
+  .now-cell p { margin: 0; font: 400 16px/1.55 var(--font-text); }
+  .contact-section { padding-block: var(--space-5); color: var(--paper); background: var(--ink); }
+  .contact-section .section-heading { border-bottom: 2px solid var(--paper); padding-bottom: 16px; }
+  .contact-panel { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-5); padding-block: var(--space-4); }
+  .contact-panel > div:first-child { flex: 999 1 560px; }
+  .contact-panel h2 { margin: 0 0 var(--space-2); font: 900 clamp(44px, 7vw, 104px)/.9 var(--font-display); letter-spacing: -.035em; }
+  .contact-panel p { font: 400 16px/1.5 var(--font-text); }
+  .contact-actions { flex: 1 1 300px; display: grid; gap: 12px; }
+  .button-on-ink, .button-on-ink-secondary { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border: 2px solid var(--paper); color: var(--ink); background: var(--paper); font: 800 15px/1.2 var(--font-display); text-align: center; text-decoration: none; }
+  .button-on-ink-secondary { color: var(--paper); background: transparent; }
+  .social-links { display: flex; flex-wrap: wrap; gap: 12px 20px; padding-top: 8px; }
+  .social-links a { color: var(--paper); }
+  .site-footer { min-height: 64px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: var(--rule); font: 500 12px/1.4 var(--font-mono); }
+  .phone-project-list, .phone-result-list { display: grid; }
+  .phone-project-card { display: grid; gap: 12px; padding: 16px; border-top: 0; }
+  .phone-project-title { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+  .phone-project-title h3 { margin: 0; font: 800 20px/1.1 var(--font-display); }
+  .phone-project-card p { margin: 0; font: 400 14px/1.5 var(--font-text); }
+  .expand-button { width: 100%; margin-top: 12px; }
+  .phone-result-card { display: grid; gap: 6px; padding: 16px; border-top: 0; }
+  .phone-result-card strong { font: 800 20px/1.1 var(--font-display); }
+  .phone-result-card > span:last-child { color: var(--muted); font: 400 14px/1.4 var(--font-text); }
+  .phone-result-card.podium { color: var(--paper); background: var(--ink); }
+  .phone-result-card.podium > span:last-child { color: var(--paper); }
+  [hidden] { display: none !important; }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .project-table .table-row { grid-template-columns: minmax(130px, 1fr) minmax(150px, 1.5fr) minmax(140px, .9fr) minmax(125px, .8fr); }
+    .project-table .table-head > *, .project-row > * { padding-inline: 10px; }
+    .project-row .coverage { margin-inline: 10px; }
+  }
+  @media (max-width: 767px) {
+    .home-hero { gap: var(--space-4); padding-block: 48px; }
+    .home-intro h1 { margin-block: 20px; font-size: 46px; }
+    .hero-copy { font-size: 16px; }
+    .hero-break { display: none; }
+    .hero-layers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+    .hero-layer { min-height: 64px; justify-content: center; flex-direction: column; gap: 6px; padding: 6px 2px; font-size: 9px; }
+    .layer-badge { width: 36px; height: 36px; }
+    .section-title { font-size: 28px; }
+    .desktop-projects { display: none; }
+    .phone-projects, .phone-competitions { display: block; }
+    .phone-project-card:first-child, .phone-result-card:first-child { border-top: var(--rule); }
+    .hackathon-layout { display: none; }
+    .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .now-cell { min-height: 140px; padding: 12px; }
+    .contact-panel { gap: var(--space-3); }
+    .contact-panel h2 { font-size: 46px; }
+    .contact-actions { flex-basis: 100%; }
+    .site-footer { padding-block: 16px; }
+    .site-footer span:last-child { flex-basis: 100%; }
+  }
+</style>

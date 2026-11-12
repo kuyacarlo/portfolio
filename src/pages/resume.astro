@@ -1,360 +1,184 @@
 ---
-import fs from 'node:fs';
-import path from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import { site } from '../lib/site';
-import {
-  TAGLINE,
-  experience,
-  talks,
-  certifications,
-  skillGroups,
-  resumeWork,
-  aboutBlurb,
-} from '../lib/portfolio-data';
+import resume from '../data/resume.json';
+import hackathonContent from '../data/hackathons.json';
 
-const pdfPath = '/resume/john-carlo-santos.pdf';
-const hasStaticPdf = fs.existsSync(
-  path.join(process.cwd(), 'public/resume/john-carlo-santos.pdf'),
-);
+const podiums = hackathonContent.filter((item) => item.podium).map((item) => ({ place: item.result, proj: item.project, name: item.event }));
+const layerSkills = Object.entries(resume.skills).sort(([a], [b]) => Number(b) - Number(a));
+const skillNames: Record<string, string> = {
+  '1': 'silicon', '2': 'firmware', '3': 'network',
+  '4': 'server', '5': 'app', '6': 'people',
+};
 ---
 
 <Layout
   active="resume"
   title="Resume — John Carlo Santos"
-  description={`Resume for John Carlo Santos. ${TAGLINE}`}
+  description={`${resume.positioning} Resume for John Carlo Santos.`}
 >
-  <div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
-    <article class="resume-page" style="flex:1;">
-
-      <!-- Header -->
-      <header class="resume-header r">
-        <h1 class="resume-name">John Carlo Santos</h1>
-        <p class="resume-tagline-line">
-          <em class="resume-tagline-em">{TAGLINE}</em>
-        </p>
-        <p class="resume-contact">
-          <a href={`mailto:${site.email}`}>{site.email}</a>
-          <span aria-hidden="true"> · </span>
-          <a href={site.linkedinUrl} target="_blank" rel="noopener">linkedin.com/in/kuyacarlo</a>
-          <span aria-hidden="true"> · </span>
-          <a href={site.githubUrl} target="_blank" rel="noopener">github.com/kuyacarlo</a>
-          <span aria-hidden="true"> · </span>
-          <span>Bulacan, PH</span>
-        </p>
-        <div class="resume-actions resume-screen-only r d1">
-          <button type="button" class="btn btn-outline" id="resume-print">⬇ Download PDF</button>
-          {hasStaticPdf && (
-            <a href={pdfPath} class="btn btn-outline" download>Static PDF</a>
-          )}
+  <main id="main" class="resume-redesign">
+    <section class="rr-hero">
+      <div class="rr-hero-copy">
+        <span class="rr-eyebrow">resume</span>
+        <h1>{resume.name}</h1>
+        <p>{resume.positioning}</p>
+      </div>
+      <aside class="rr-contact" aria-label="Resume links">
+        <button id="resume-print" class="rr-download" type="button">
+          <span>Download PDF</span><span class="rr-file">.pdf</span>
+        </button>
+        <div class="rr-links">
+          <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github <span aria-hidden="true">↗</span></a>
+          <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin <span aria-hidden="true">↗</span></a>
+          <a href={`mailto:${site.email}`}>email <span aria-hidden="true">↗</span></a>
         </div>
-      </header>
+      </aside>
+    </section>
 
-      <!-- About -->
-      <section class="resume-section r d1">
-        <h2>About</h2>
-        {aboutBlurb.map((p) => (
-          <p class="resume-about-p">{p}</p>
-        ))}
-      </section>
-
-      <!-- Skills -->
-      <section class="resume-section r d1">
-        <h2>Skills</h2>
-        <div class="resume-skills-grid resume-screen-only">
-          {skillGroups.map((g) => (
-            <div class="resume-skill-col">
-              <div class="resume-item-title">{g.label}</div>
-              <div class="skill-row">
-                {g.items.map((t) => <span class="tag">{t}</span>)}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div class="resume-skills-harvard">
-          {skillGroups.map((g) => (
-            <p class="resume-skill-line">
-              <strong>{g.label}:</strong> {g.items.join(", ")}
-            </p>
-          ))}
-        </div>
-      </section>
-
-      <!-- Selected Projects -->
-      <section class="resume-section r d2">
-        <h2>Projects</h2>
-        {resumeWork.map((p) => (
-          <div class="resume-item">
-            <div class="resume-item-head">
-              <span class="resume-item-title">{p.name}</span>
-              <span class="resume-item-meta">{p.category}</span>
-            </div>
-            <p>{p.desc}</p>
-            {p.meta && <p class="resume-item-meta resume-item-submeta">{p.meta}</p>}
+    <section class="rr-section" aria-labelledby="experience-heading">
+      <header class="rr-section-head"><h2 id="experience-heading">Experience</h2></header>
+      {resume.experience.map((entry) => (
+        <article class="rr-experience">
+          <div class="rr-role-meta">
+            <h3>{entry.org}</h3>
+            <p>{entry.role}</p>
+            <span>{entry.dates}</span>
           </div>
-        ))}
-      </section>
-
-      <!-- Experience -->
-      <section class="resume-section r d2">
-        <h2>Experience</h2>
-        {experience.map((org) => (
-          <div class="resume-item">
-            <div class="resume-item-head">
-              <span class="resume-item-title">{org.org}</span>
-              <span class="resume-item-meta">
-                {org.roles.length > 1
-                  ? `${org.roles[org.roles.length - 1]?.dates.split('—')[0]?.trim()} — ${org.roles[0]?.dates.split('—')[1]?.trim() ?? 'present'}`
-                  : org.roles[0]?.dates}
-              </span>
-            </div>
-            {org.roles.map((role) => (
-              <div class="resume-role">
-                <div class="resume-role-title">{role.title}{org.roles.length > 1 ? ` · ${role.dates}` : ''}</div>
-                {role.bullets && (
-                  <ul>
-                    {role.bullets.map((b) => <li>{b}</li>)}
-                  </ul>
-                )}
-              </div>
-            ))}
+          <div class="rr-role-work">
+            <ul>
+              {entry.bullets.slice(0, 2).map((bullet) => <li>{bullet}</li>)}
+            </ul>
+            {entry.bullets.length > 2 && (
+              <details class="rr-more" open>
+                <summary>more</summary>
+                <ul>{entry.bullets.slice(2).map((bullet) => <li>{bullet}</li>)}</ul>
+              </details>
+            )}
           </div>
-        ))}
-      </section>
+        </article>
+      ))}
+    </section>
 
-      <!-- Leadership & Talks -->
-      <section class="resume-section r d2">
-        <h2>Leadership & Talks</h2>
-        <ul class="resume-talk-list">
-          {talks.map((t) => (
-            <li><em>{t.title}</em> — {t.org}</li>
+    <div class="rr-pair">
+      <section class="rr-section rr-education" aria-labelledby="education-heading">
+        <header class="rr-section-head"><h2 id="education-heading">Education</h2></header>
+        <div class="rr-education-body">
+          <h3>{resume.education.degree}</h3>
+          <p>{resume.education.school}</p>
+          <span>{resume.education.year}</span>
+        </div>
+      </section>
+      <section class="rr-section rr-podiums" aria-labelledby="podiums-heading">
+        <header class="rr-section-head"><h2 id="podiums-heading">Podiums</h2></header>
+        <div>
+          {podiums.map((item) => (
+            <div class="rr-podium">
+              <span>{item.place}</span><p>{item.proj} · {item.name}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
+    </div>
 
-    </article>
+    <section class="rr-section rr-skills" aria-labelledby="skills-heading">
+      <header class="rr-section-head"><h2 id="skills-heading">Skills</h2></header>
+      {layerSkills.map(([layer, items]) => (
+        <div class="rr-skill-row">
+          <span class="rr-layer" aria-label={`Layer ${layer}: ${skillNames[layer]}`}>{layer.padStart(2, '0')}</span>
+          <p>{items}</p>
+        </div>
+      ))}
+    </section>
 
-    <footer class="footer resume-screen-only" style="margin-top:auto;">
+    <footer class="rr-footer">
       <span>© 2026 John Carlo Santos</span>
-      <span>{TAGLINE}</span>
-      <span><a href="/book" class="footer-link">let's talk →</a></span>
+      <span>Iterate fast, think deep, ship meaning.</span>
     </footer>
-  </div>
+  </main>
 
   <script>
-    document.getElementById('resume-print')?.addEventListener('click', () => window.print());
+    const resumePrint = document.getElementById('resume-print');
+    resumePrint?.addEventListener('click', () => window.print());
+
+    const resumeMobile = window.matchMedia('(max-width: 767px)');
+    const resumeDetails = [...document.querySelectorAll<HTMLDetailsElement>('.rr-more')];
+    const setResumeDisclosure = () => {
+      resumeDetails.forEach((details) => { details.open = !resumeMobile.matches; });
+    };
+    setResumeDisclosure();
+    resumeMobile.addEventListener('change', setResumeDisclosure);
   </script>
 </Layout>
 
 <style>
-  .resume-header {
-    padding-top: 120px;
-    padding-bottom: 40px;
-    text-align: center;
-  }
-  .resume-name {
-    font-size: clamp(2.8rem, 7vw, 6rem);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-    margin-bottom: 12px;
-  }
-  .resume-tagline-line {
-    font-size: 1.05rem;
-    color: var(--ink-2);
-    margin-bottom: 16px;
-  }
-  .resume-tagline-em {
-    font-style: italic;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .resume-contact {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--ink-3);
-    margin-bottom: 24px;
-  }
-  .resume-contact a {
-    color: var(--ink-2);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--b2);
-  }
-  .resume-actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+  .resume-redesign { max-width: var(--container, 1440px); margin: 0 auto; border-inline: var(--rule, 2px solid var(--ink)); color: var(--ink); background: var(--paper); }
+  .rr-hero { display:flex; flex-wrap:wrap; border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-hero-copy { flex:999 1 560px; min-width:0; padding:var(--space-5, 48px) var(--gutter, 24px); display:flex; flex-direction:column; gap:20px; }
+  .rr-eyebrow { font:700 13px/1.2 var(--font-mono, 'Red Hat Mono', monospace); text-transform:uppercase; }
+  .rr-hero h1 { margin:0; max-width:900px; font:900 clamp(48px, 7vw, 104px)/.88 var(--font-display, 'Red Hat Display', sans-serif); letter-spacing:-.035em; }
+  .rr-hero-copy > p { max-width:640px; margin:0; font:400 20px/1.5 var(--font-text, 'Red Hat Text', sans-serif); }
+  .rr-contact { flex:1 1 320px; min-width:0; border-left:var(--rule, 2px solid var(--ink)); display:flex; flex-direction:column; }
+  .rr-download { flex:1 1 auto; min-height:112px; padding:24px; background:var(--ink); color:var(--paper); border:0; text-align:left; display:flex; align-items:flex-end; justify-content:space-between; font:800 20px/1.2 var(--font-display, 'Red Hat Display', sans-serif); text-transform:uppercase; cursor:pointer; }
+  .rr-download:hover, .rr-download:focus-visible { background:var(--paper); color:var(--ink); outline:2px solid var(--ink); outline-offset:-4px; }
+  .rr-file { font:400 13px/1.3 var(--font-mono, 'Red Hat Mono', monospace); text-transform:none; }
+  .rr-links { padding:20px 24px; border-top:var(--rule, 2px solid var(--ink)); display:flex; flex-direction:column; gap:8px; font:400 14px/1.4 var(--font-mono, 'Red Hat Mono', monospace); }
+  .rr-links a { color:inherit; text-decoration:underline; text-underline-offset:3px; }
+  .rr-section { border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-section-head { padding:20px var(--gutter, 24px); border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-section-head h2 { margin:0; font:900 32px/1.1 var(--font-display, 'Red Hat Display', sans-serif); text-transform:uppercase; letter-spacing:-.02em; }
+  .rr-experience { display:flex; flex-wrap:wrap; border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-experience:last-child { border-bottom:0; }
+  .rr-role-meta { flex:1 1 280px; min-width:0; padding:24px; border-right:var(--rule, 2px solid var(--ink)); display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
+  .rr-role-meta h3, .rr-education-body h3 { margin:0; font:800 24px/1.2 var(--font-display, 'Red Hat Display', sans-serif); }
+  .rr-role-meta p, .rr-education-body p { margin:0; font:400 16px/1.5 var(--font-text, 'Red Hat Text', sans-serif); }
+  .rr-role-meta span, .rr-education-body span { font:400 13px/1.5 var(--font-mono, 'Red Hat Mono', monospace); color:var(--muted, #666); }
+  .rr-role-work { flex:2 1 420px; min-width:0; padding:24px; font:400 16px/1.55 var(--font-text, 'Red Hat Text', sans-serif); }
+  .rr-role-work ul { display:flex; flex-direction:column; gap:10px; margin:0; padding-left:20px; }
+  .rr-more summary { display:none; }
+  .rr-pair { display:flex; flex-wrap:wrap; border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-pair .rr-section { flex:1 1 420px; border-bottom:0; }
+  .rr-education { border-right:var(--rule, 2px solid var(--ink)); }
+  .rr-education-body { padding:24px; display:flex; flex-direction:column; gap:6px; }
+  .rr-podium { display:flex; flex-wrap:wrap; border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-podium:last-child { border-bottom:0; }
+  .rr-podium span { flex:0 0 180px; padding:16px 24px; font:700 13px/1.4 var(--font-mono, 'Red Hat Mono', monospace); text-transform:uppercase; }
+  .rr-podium p { flex:1 1 200px; margin:0; padding:16px 24px; font:400 16px/1.5 var(--font-text, 'Red Hat Text', sans-serif); }
+  .rr-skill-row { display:flex; flex-wrap:wrap; border-bottom:var(--rule, 2px solid var(--ink)); }
+  .rr-skill-row:last-child { border-bottom:0; }
+  .rr-layer { flex:0 0 64px; min-height:56px; display:grid; place-items:center; background:var(--ink); color:var(--paper); font:500 14px/1 var(--font-mono, 'Red Hat Mono', monospace); }
+  .rr-skill-row p { flex:1 1 400px; margin:0; padding:16px 24px; font:400 16px/1.5 var(--font-text, 'Red Hat Text', sans-serif); }
+  .rr-footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; padding:20px 24px; font:400 13px/1.5 var(--font-mono, 'Red Hat Mono', monospace); }
+  .resume-redesign a:focus-visible, .resume-redesign button:focus-visible, .resume-redesign summary:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+
+  @media (max-width:767px) {
+    .rr-hero-copy { padding:32px 16px; gap:16px; }
+    .rr-hero h1 { font-size:46px; line-height:.9; }
+    .rr-hero-copy > p { font-size:16px; line-height:1.55; }
+    .rr-contact { border-left:0; border-top:var(--rule, 2px solid var(--ink)); }
+    .rr-download { min-height:80px; }
+    .rr-section-head { padding:16px; }
+    .rr-section-head h2 { font-size:28px; }
+    .rr-role-meta { flex-basis:100%; padding:20px 16px 12px; border-right:0; }
+    .rr-role-work { flex-basis:100%; padding:8px 16px 20px; }
+    .rr-role-meta h3 { font-size:20px; }
+    .rr-more summary { display:list-item; margin:12px 0 0; width:max-content; cursor:pointer; font:700 12px/1.5 var(--font-mono, 'Red Hat Mono', monospace); text-decoration:underline; text-transform:uppercase; }
+    .rr-more ul { margin-top:10px; }
+    .rr-pair .rr-section { flex-basis:100%; }
+    .rr-education { border-right:0; border-bottom:var(--rule, 2px solid var(--ink)) !important; }
+    .rr-education-body { padding:20px 16px; }
+    .rr-podium span { flex-basis:140px; padding:14px 16px; }
+    .rr-podium p { padding:14px 16px; }
+    .rr-skill-row .rr-layer { flex-basis:48px; min-height:48px; }
+    .rr-skill-row p { flex-basis:calc(100% - 48px); padding:14px 16px; font-size:15px; }
+    .rr-footer { padding:20px 16px; }
   }
 
-  /* Centered content on desktop */
-  .resume-page {
-    padding-top: 0;
-    padding-bottom: 80px;
-    max-width: 720px;
-    margin-inline: auto;
-  }
-
-  @media (max-width: 768px) {
-    .resume-header {
-      text-align: left;
-      padding-top: 80px;
-    }
-    .resume-actions {
-      justify-content: flex-start;
-    }
-    .resume-page {
-      max-width: 100%;
-    }
-  }
-
-  /* ─── Print: compact single-page CV ─────────────────────────────── */
   @media print {
-    @page {
-      size: A4;
-      margin: 0.4in 0.55in;
-    }
-
-    .wrap {
-      display: block !important;
-      min-height: 0 !important;
-    }
-    .resume-page {
-      max-width: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 10pt;
-      line-height: 1.15;
-      color: #000;
-    }
-
-    .resume-screen-only,
-    .resume-actions,
-    .footer {
-      display: none !important;
-    }
-
-    .resume-header {
-      padding: 0 0 8pt;
-      text-align: center;
-    }
-    .resume-name {
-      font-size: 24pt;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 1.05;
-      margin: 0 0 2pt;
-    }
-    .resume-tagline-line {
-      font-size: 10pt;
-      color: #000;
-      margin: 0 0 2pt;
-    }
-    .resume-tagline-em {
-      font-style: italic;
-      font-weight: 400;
-      color: #000;
-    }
-    .resume-contact {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 9pt;
-      color: #000;
-      margin: 0 0 8pt;
-    }
-    .resume-contact a {
-      color: #000;
-      text-decoration: none;
-    }
-
-    .resume-section {
-      margin: 0 0 10pt;
-      padding: 0;
-      border-top: none;
-      break-inside: avoid;
-    }
-    .resume-section h2 {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 11pt;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-bottom: 1px solid #000;
-      padding-bottom: 2pt;
-      margin: 0 0 4pt;
-    }
-
-    .resume-about-p {
-      margin: 0 0 2pt;
-      line-height: 1.15;
-    }
-    .resume-about-p:last-child { margin-bottom: 0; }
-
-    .resume-item { margin: 0 0 6pt; }
-    .resume-item:last-child { margin-bottom: 0; }
-    .resume-item-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12pt;
-      margin-bottom: 0;
-    }
-    .resume-item-title {
-      font-size: 10.5pt;
-      font-weight: 700;
-      color: #000;
-    }
-    .resume-item-meta {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 9pt;
-      font-style: italic;
-      color: #000;
-      white-space: nowrap;
-    }
-    .resume-item-submeta { display: none; }
-    .resume-item p {
-      margin: 0;
-      line-height: 1.15;
-    }
-
-    .resume-role { margin: 2pt 0 0; }
-    .resume-role-title {
-      font-size: 10pt;
-      font-style: italic;
-      font-weight: 400;
-      color: #000;
-      margin: 0 0 1pt;
-    }
-    .resume-role ul {
-      margin: 0 0 0;
-      padding-left: 1.15em;
-    }
-    .resume-role li {
-      line-height: 1.15;
-      margin: 0;
-    }
-
-    .resume-skills-grid { display: none !important; }
-    .resume-skills-harvard { display: block; }
-    .resume-skill-line {
-      margin: 0;
-      line-height: 1.15;
-    }
-    .resume-skill-line strong { font-weight: 700; color: #000; }
-
-    .resume-talk-list { margin: 0; padding: 0; }
-    .resume-talk-list li {
-      margin: 0;
-      line-height: 1.15;
-    }
-    .resume-talk-list em {
-      font-weight: 700;
-      font-style: normal;
-      color: #000;
-    }
-
-    .r { opacity: 1 !important; transform: none !important; }
+    .rr-hero, .rr-section, .rr-pair, .rr-experience, .rr-podium, .rr-skill-row { break-inside:avoid; }
+    .rr-download { display:none; }
+    .rr-contact { border-left:0; }
+    .rr-more summary { display:none; }
+    .rr-more:not([open]) > ul { display:block; }
   }
-
 </style>

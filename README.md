@@ -4,7 +4,7 @@ Personal portfolio for John Carlo Santos (`kuyacarlo`) — data engineer, DevOps
 
 ## Stack
 
-- **Astro 5** — multi-page static output, zero client JS by default
+- **Astro** — multi-page static output, client JS only for interactions
 - **Vanilla CSS** — no Tailwind, no frameworks (tokens + components in `src/styles/global.css`)
 - **Cloudflare Workers (static assets)** — live at `kuyacarlo.dev`
 
@@ -28,12 +28,12 @@ pnpm dev -- --host 0.0.0.0 --port 4321
 
 ```
 src/
-  layouts/Layout.astro      # Shell — fixed nav, mobile drawer, scroll JS, ~ CLI, confetti
-  layouts/NoteLayout.astro  # Note variant — KaTeX, Mermaid, build-time TikZ
+  layouts/Layout.astro      # Document shell, skip link, responsive header/menu
+  layouts/NoteLayout.astro  # Note support — KaTeX, Mermaid, build-time TikZ
   pages/                    # Routes: /, /homelab, /notes[/:slug], /certs, /resume, /book
-  lib/portfolio-data.ts     # Single source of truth for page content
   lib/site.ts               # PUBLIC_* env-backed site links
   lib/cms.ts                # getPosts() over Astro content collections (notes)
+  data/*.json               # Page content and design tokens
   content/notes/*.md        # Notes (markdown)
   plugins/rehype-tikz.ts    # ```tikz / ```circuitikz → SVG at build time
   styles/global.css         # All CSS
@@ -41,7 +41,7 @@ src/
 
 ## Content
 
-- **Page data** lives in `src/lib/portfolio-data.ts` (projects, hackathons, experience, talks, certifications, skills, now, tagline). Add/edit a project there; optionally drop an image in `public/` and set `img` on the object.
+- **Page data** lives in `src/data/*.json`. Projects and layer mappings are in `projects.json`; other files hold hackathons, current work, homelab, resume, certifications, and layer names. Do not replace the layer guesses without Karlo's confirmation.
 - **Notes** are markdown in `src/content/notes/`. Slug = URL. Supports KaTeX math, Mermaid diagrams, and CircuiTikZ. Authoring guide: [`NOTES.md`](./NOTES.md).
 
 ## Deploy
@@ -61,7 +61,9 @@ Prerequisites (one-time):
 ## Docs
 
 - [`AGENTS.md`](./AGENTS.md) — guide for AI agents working on this codebase
-- [`HANDOFF.md`](./HANDOFF.md) — living handoff with current state and next steps
+- [`REDESIGN-SPEC.md`](./REDESIGN-SPEC.md) — supplied redesign brief and content decisions
+- [`HANDOFF.md`](./HANDOFF.md) — historical project handoff
+- [`INDEX.md`](./INDEX.md) — project documentation routing
 - [`NOTES.md`](./NOTES.md) — how to write notes
 
 ## License

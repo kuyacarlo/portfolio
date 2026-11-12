@@ -1,0 +1,78 @@
+/* kuyacarlo.dev design tokens. Source of truth: HANDOFF.md §2.
+   Fonts (one request):
+   https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400..900&family=Red+Hat+Text:wght@400..700&family=Red+Hat+Mono:wght@400..700&display=swap */
+
+:root {
+  /* color */
+  --ink: #000000;
+  --paper: #ffffff;
+  --surface: #f2f2f2;
+  --muted: #666666;
+  --link: #0000ee;
+
+  /* line + shape */
+  --rule-w: 2px;
+  --rule: var(--rule-w) solid var(--ink);
+  --rule-on-ink: var(--rule-w) solid var(--paper);
+  --radius: 0;
+
+  /* type families */
+  --font-display: "Red Hat Display", system-ui, sans-serif;
+  --font-text: "Red Hat Text", system-ui, sans-serif;
+  --font-mono: "Red Hat Mono", ui-monospace, monospace;
+
+  /* spacing */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --gutter: var(--space-3);
+
+  /* layout */
+  --container: 1440px;
+  --header-h: 64px;
+  --touch: 44px;
+
+  /* type scale (desktop) */
+  --type-page-title: 900 clamp(56px, 9vw, 136px) / 0.85 var(--font-display);
+  --type-hero: 900 clamp(44px, 7vw, 104px) / 0.9 var(--font-display);
+  --type-article-title: 900 clamp(40px, 6vw, 88px) / 0.92 var(--font-display);
+  --type-section: 900 40px / 1 var(--font-display);
+  --type-card: 800 22px / 1.2 var(--font-display);
+  --type-lead: 400 20px / 1.5 var(--font-text);
+  --type-body: 400 16px / 1.6 var(--font-text);
+  --type-article: 400 18px / 1.7 var(--font-text);
+  --type-label: 500 13px / 1.4 var(--font-mono);
+  --type-code: 400 15px / 1.7 var(--font-mono);
+
+  --track-tight: -0.035em;
+  --track-section: -0.02em;
+  --track-label: 0.04em;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --gutter: var(--space-2);
+    --header-h: 56px;
+    --type-page-title: 900 56px / 0.85 var(--font-display);
+    --type-hero: 900 46px / 0.92 var(--font-display);
+    --type-article-title: 900 36px / 0.95 var(--font-display);
+    --type-section: 900 28px / 1 var(--font-display);
+    --type-card: 800 19px / 1.2 var(--font-display);
+    --type-lead: 400 16px / 1.55 var(--font-text);
+    --type-body: 400 15px / 1.55 var(--font-text);
+    --type-article: 400 16px / 1.65 var(--font-text);
+    --type-label: 500 12px / 1.4 var(--font-mono);
+    --type-code: 400 14px / 1.7 var(--font-mono);
+  }
+}
+
+/* global rules the whole site follows */
+*, *::before, *::after { border-radius: 0; box-shadow: none; }
+html { background: var(--paper); color: var(--ink); font: var(--type-body); }
+a { color: var(--link); text-decoration: underline; }
+a:hover { color: var(--ink); }
+:focus-visible { outline: var(--rule-w) solid var(--ink); outline-offset: 2px; }
+.on-ink :focus-visible { outline-color: var(--paper); }

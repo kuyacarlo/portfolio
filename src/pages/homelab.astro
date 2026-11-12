@@ -1,180 +1,305 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../lib/site';
-import { homelabServices, homelabHardware, homelabStack } from '../lib/portfolio-data';
+import homelab from '../data/homelab.json';
+import { getCollection } from 'astro:content';
 
-/** Catalog of what's hosted. Live up/down comes from Uptime Kuma only. */
-// Uptime Kuma's URL is env-driven (PUBLIC_STATUS_URL), so keep it sourced from site config.
-const services = homelabServices.map((s) =>
-  s.name === "Uptime Kuma" ? { ...s, url: site.statusUrl } : s,
-);
-const hardware = homelabHardware;
-const stack = homelabStack;
-
-const statusApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/default`;
-const heartbeatApi = `${site.statusUrl.replace(/\/$/, "")}/api/status-page/heartbeat/default`;
+const layerNames: Record<string, string> = {
+  '3': 'network',
+  '4': 'server',
+  '5': 'app',
+};
+const services = Object.entries(homelab.services).sort(([a], [b]) => Number(b) - Number(a));
+const noteIds = new Set((await getCollection('notes')).map((note) => note.id));
 ---
 
-<Layout active="homelab" title="Homelab — John Carlo Santos" navStickyId="services">
-<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
+<Layout
+  active="homelab"
+  title="Homelab — John Carlo Santos"
+  description="What runs on Andromeda, my small self-hosted server."
+  navStickyId="services"
+>
+  <main id="main" class="page homelab-page">
+    <section class="page-hero split homelab-hero" aria-labelledby="page-title">
+      <div class="page-hero-main">
+        <p class="eyebrow">homelab</p>
+        <h1 class="homelab-title" id="page-title">ANDROMEDA</h1>
+        <p class="homelab-lead">{homelab.intro}</p>
+      </div>
 
-  <!-- header -->
-  <section style="padding-top:120px;padding-bottom:60px;">
-    <h1 class="r" style="font-size:clamp(2.8rem,7vw,6rem);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:20px;">
-      Homelab<span style="color:var(--ink-3);">.</span>
-    </h1>
-    <p class="r d1" style="font-size:0.92rem;color:var(--ink-2);max-width:520px;line-height:1.75;margin-bottom:32px;">
-      One machine. Twelve services. Constant tinkering.<br/>
-      Everything self-hosted, everything on Podman, everything monitored.
-    </p>
-    <a href={site.statusUrl} target="_blank" rel="noopener"
-       class="avail-badge r d2" id="uptime-badge">
-      <span class="hero-status-dot"></span>
-      <span id="uptime-text">live status → Uptime Kuma</span>
-    </a>
-  </section>
-
-  <!-- Services grid -->
-  <section class="section" id="services">
-    <div class="sec-label r">
-      <span class="sec-num">01</span>
-      <span class="sec-name">Services</span>
-      <span class="sec-rule"></span>
-      <a href={site.statusUrl} target="_blank" rel="noopener" class="sec-link" id="services-summary">
-        via Uptime Kuma ↗
-      </a>
-    </div>
-    <div class="homelab-grid r d1">
-      {services.map(s => (
-        s.url ? (
-          <a href={s.url} target="_blank" rel="noopener noreferrer" class="service-card" data-service-name={s.name.toLowerCase()}>
-            <div class="service-status">
-              <span class="status-dot status-unknown"></span>
-              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">—</span>
-            </div>
-            <div class="service-name">{s.name}</div>
-            <div class="service-desc">{s.desc}</div>
-          </a>
-        ) : (
-          <div class="service-card" data-service-name={s.name.toLowerCase()}>
-            <div class="service-status">
-              <span class="status-dot status-unknown"></span>
-              <span class="status-text" style="font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);">—</span>
-            </div>
-            <div class="service-name">{s.name}</div>
-            <div class="service-desc">{s.desc}</div>
+      <dl class="spec-sheet" aria-label="Andromeda specifications">
+        {homelab.spec.map((item) => (
+          <div class="spec-row">
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
           </div>
-        )
-      ))}
-    </div>
-    <p class="sec-count r" style="margin-top:16px;">
-      Dots sync from <a href={site.statusUrl} target="_blank" rel="noopener" class="footer-link">Uptime Kuma</a> when a monitor exists. Unmonitored services stay as —.
-    </p>
-  </section>
+        ))}
+      </dl>
+    </section>
 
-  <script define:vars={{ statusApi, heartbeatApi, statusUrl: site.statusUrl }}>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const cards = document.querySelectorAll('.service-card');
-      const summary = document.getElementById('services-summary');
-      const setCard = (card, state, label) => {
-        const dot = card.querySelector('.status-dot');
-        const text = card.querySelector('.status-text');
-        if (dot) dot.className = `status-dot status-${state}`;
-        if (text) text.textContent = label;
-      };
+    <section class="page-section homelab-services" id="services" aria-labelledby="services-title">
+      <header class="homelab-section-heading">
+        <p class="eyebrow">01 — what runs</p>
+        <h2 class="section-title" id="services-title">What runs</h2>
+      </header>
 
-      try {
-        const [pageRes, hbRes] = await Promise.all([
-          fetch(statusApi),
-          fetch(heartbeatApi),
-        ]);
-        if (!pageRes.ok || !hbRes.ok) throw new Error('status api unavailable');
+      <div class="layer-service-list">
+        {services.map(([layer, entries]) => (
+          <section class="layer-service-row" aria-labelledby={`layer-${layer}-title`}>
+            <div class="layer-service-label">
+              <span class="badge layer-badge" aria-hidden="true">0{layer}</span>
+              <h3 id={`layer-${layer}-title`}>{layerNames[layer]}</h3>
+            </div>
+            <ul class="service-grid">
+              {entries.map((service) => (
+                <li class="service-cell">
+                  <div class="service-cell-title">
+                    {service.link ? (
+                      <a href={service.link} target="_blank" rel="noopener noreferrer">{service.name}</a>
+                    ) : (
+                      <span>{service.name}</span>
+                    )}
+                  </div>
+                  <p>{service.note}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </section>
 
-        const page = await pageRes.json();
-        const hb = await hbRes.json();
-        const heartbeats = hb.heartbeatList || {};
+    <section class="page-section homelab-incidents" aria-labelledby="incidents-title">
+      <header class="homelab-section-heading">
+        <p class="eyebrow">02 — what broke</p>
+        <h2 class="section-title" id="incidents-title">What broke</h2>
+      </header>
 
-        const monitors = [];
-        (page.publicGroupList || []).forEach((group) => {
-          (group.monitorList || []).forEach((m) => monitors.push(m));
-        });
-
-        let up = 0;
-        let tracked = 0;
-
-        cards.forEach((card) => {
-          const name = (card.getAttribute('data-service-name') || '').toLowerCase();
-          // Skip matching the status page itself as a generic catch-all
-          const monitor = monitors.find((m) => {
-            const mn = (m.name || '').toLowerCase();
-            return mn === name;
-          });
-
-          if (!monitor) {
-            setCard(card, 'unknown', '—');
-            return;
-          }
-
-          tracked++;
-          const beats = heartbeats[String(monitor.id)] || [];
-          const latest = beats.length ? beats[beats.length - 1] : null;
-          // Uptime Kuma: 1 = up, 0 = down, 2 = pending, 3 = maintenance
-          const isUp = latest ? latest.status === 1 : false;
-          if (isUp) up++;
-          setCard(card, isUp ? 'up' : 'down', isUp ? 'up' : 'down');
-        });
-
-        if (summary) {
-          summary.textContent = tracked
-            ? `${up}/${tracked} monitored ↗`
-            : 'via Uptime Kuma ↗';
-          summary.setAttribute('href', statusUrl);
-        }
-      } catch (e) {
-        console.warn('Could not update live status', e);
-        if (summary) summary.textContent = 'status page ↗';
-      }
-    });
-  </script>
-
-  <!-- Hardware -->
-  <section class="section">
-    <div class="sec-label r">
-      <span class="sec-num">02</span>
-      <span class="sec-name">Hardware</span>
-      <span class="sec-rule"></span>
-    </div>
-    <div class="hw-grid r d1">
-      {hardware.map(([label, val]) => (
-        <div class="hw-row">
-          <span class="hw-label">{label}</span>
-          <span class="hw-val">{val}</span>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Stack decisions -->
-  <section class="section">
-    <div class="sec-label r">
-      <span class="sec-num">03</span>
-      <span class="sec-name">Stack decisions</span>
-      <span class="sec-rule"></span>
-    </div>
-    <div class="r d1" style="border:1px solid var(--b1);border-radius:6px;overflow:hidden;">
-      {stack.map(([label, val], i) => (
-        <div style={`display:grid;grid-template-columns:180px 1fr;gap:16px;padding:14px 20px;border-bottom:${i < stack.length-1 ? '1px solid var(--b1)' : 'none'};font-size:0.83rem;`}>
-          <span style="font-family:var(--mono);color:var(--ink-3);font-size:0.72rem;padding-top:2px;">{label}</span>
-          <span style="color:var(--ink-2);">{val}</span>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer" style="margin-top:auto;">
+      <div class="incident-list">
+        {homelab.incidents.map((incident) => (
+          <a class="incident-row" href={noteIds.has(incident.slug) ? `/notes/${incident.slug}` : '/notes'}>
+            <span class="incident-title">{incident.title}</span>
+            <span class="incident-summary">{incident.summary}</span>
+            <span class="incident-link">{noteIds.has(incident.slug) ? 'Read note' : 'Browse notes'} <span aria-hidden="true">→</span></span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
     <span>© 2026 John Carlo Santos</span>
+    <span>Iterate fast, think deep, ship meaning.</span>
   </footer>
-
-</div>
 </Layout>
+
+<style>
+  .homelab-page {
+    width: min(100%, var(--container, 1440px));
+    margin-inline: auto;
+    padding-inline: var(--gutter, 24px);
+    border-inline: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .homelab-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-5, 48px);
+    padding-block: clamp(56px, 8vw, 112px) var(--space-6, 64px);
+  }
+
+  .page-hero-main {
+    flex: 999 1 560px;
+    min-width: 0;
+  }
+
+  .homelab-title {
+    margin: var(--space-2, 16px) 0 var(--space-3, 24px);
+    font: 900 clamp(56px, 9vw, 136px)/0.85 var(--font-display, sans-serif);
+    letter-spacing: -0.04em;
+  }
+
+  .homelab-lead {
+    max-width: 650px;
+    margin: 0;
+    font: 400 19px/1.5 var(--font-text, sans-serif);
+  }
+
+  .spec-sheet {
+    flex: 1 1 360px;
+    min-width: 300px;
+    margin: 0;
+    border-block-start: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: var(--space-2, 16px);
+    padding: var(--space-2, 16px) 0;
+    border-block-end: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .spec-row dt,
+  .layer-service-label h3,
+  .incident-link,
+  .homelab-page .eyebrow {
+    font: 600 12px/1.4 var(--font-mono, monospace);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .spec-row dt { color: var(--muted, #666); }
+  .spec-row dd { margin: 0; font: 400 15px/1.5 var(--font-text, sans-serif); }
+
+  .homelab-page .eyebrow { margin: 0; }
+
+  .page-section {
+    padding-block: var(--space-5, 48px);
+    border-block-start: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .homelab-section-heading {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2, 16px);
+    margin-block-end: var(--space-4, 32px);
+  }
+
+  .homelab-section-heading .eyebrow { flex: 0 0 auto; }
+
+  .layer-service-row {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: var(--space-3, 24px);
+    padding-block: var(--space-3, 24px);
+    border-block-start: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .layer-service-label {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2, 16px);
+  }
+
+  .layer-badge {
+    display: grid;
+    flex: 0 0 56px;
+    aspect-ratio: 1;
+    place-items: center;
+    padding: 0;
+    background: var(--ink, #000);
+    color: var(--paper, #fff);
+    font: 600 14px/1 var(--font-mono, monospace);
+  }
+
+  .layer-service-label h3 { margin: 5px 0 0; }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-inline-start: var(--rule, 2px solid var(--ink, #000));
+    border-block-start: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .service-cell {
+    min-width: 0;
+    padding: var(--space-3, 24px);
+    border-inline-end: var(--rule, 2px solid var(--ink, #000));
+    border-block-end: var(--rule, 2px solid var(--ink, #000));
+  }
+
+  .service-cell-title {
+    margin-block-end: var(--space-1, 8px);
+    font: 800 clamp(18px, 2vw, 22px)/1.15 var(--font-display, sans-serif);
+  }
+
+  .service-cell-title a,
+  .incident-row { color: inherit; }
+
+  .service-cell-title a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .service-cell p { margin: 0; font: 400 15px/1.55 var(--font-text, sans-serif); }
+
+  .incident-list { border-block-start: var(--rule, 2px solid var(--ink, #000)); }
+
+  .incident-row {
+    display: grid;
+    grid-template-columns: minmax(190px, 1fr) minmax(0, 2fr) auto;
+    align-items: start;
+    gap: var(--space-3, 24px);
+    padding: var(--space-3, 24px) 0;
+    border-block-end: var(--rule, 2px solid var(--ink, #000));
+    text-decoration: none;
+  }
+
+  .incident-row:hover .incident-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .incident-title { font: 800 22px/1.15 var(--font-display, sans-serif); }
+  .incident-summary { font: 400 15px/1.55 var(--font-text, sans-serif); }
+  .incident-link { white-space: nowrap; }
+
+  .homelab-page a:focus-visible {
+    outline: 2px solid var(--ink, #000);
+    outline-offset: 3px;
+  }
+
+  .site-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2, 16px);
+    width: min(100%, var(--container, 1440px));
+    margin-inline: auto;
+    padding: var(--space-3, 24px);
+    border: var(--rule, 2px solid var(--ink, #000));
+    font: 500 12px/1.5 var(--font-mono, monospace);
+  }
+
+  @media (max-width: 767px) {
+    .homelab-page { padding-inline: var(--gutter, 16px); }
+    .homelab-hero { display: block; padding-block: 48px; }
+    .homelab-title { font-size: 56px; }
+    .homelab-lead { font-size: 16px; }
+    .spec-sheet {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-width: 0;
+      margin-block-start: var(--space-4, 32px);
+      border-inline-start: var(--rule, 2px solid var(--ink, #000));
+    }
+    .spec-row {
+      display: block;
+      min-width: 0;
+      padding: var(--space-2, 16px);
+      border-inline-end: var(--rule, 2px solid var(--ink, #000));
+      border-block-end: var(--rule, 2px solid var(--ink, #000));
+    }
+    .spec-row dt { margin-block-end: var(--space-1, 8px); }
+    .homelab-section-heading { display: block; }
+    .homelab-section-heading .section-title { margin-block-start: var(--space-1, 8px); }
+    .layer-service-row { grid-template-columns: 1fr; gap: var(--space-2, 16px); }
+    .layer-service-label { align-items: center; }
+    .layer-badge { flex-basis: 48px; }
+    .service-grid {
+      display: block;
+      border: 0;
+      font: 400 15px/1.55 var(--font-text, sans-serif);
+    }
+    .service-cell,
+    .service-cell-title {
+      display: inline;
+      padding: 0;
+      border: 0;
+      font: inherit;
+    }
+    .service-cell-title { font-weight: 600; }
+    .service-cell p { display: none; }
+    .service-cell + .service-cell::before { content: ', '; }
+    .incident-row { display: block; padding-block: var(--space-3, 24px); }
+    .incident-title { display: block; font-size: 20px; }
+    .incident-summary,
+    .incident-link { display: none; }
+    .site-footer { flex-direction: column; padding: var(--space-2, 16px); }
+  }
+</style>

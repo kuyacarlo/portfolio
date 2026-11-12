@@ -1,0 +1,38 @@
+{
+  "_note": "Public page. Never add hostnames, ports, internal URLs, IPs or container counts.",
+  "intro": "One mini PC under my desk. My git forge, CI, monitoring, files and model routing all run here, rootless, and I can move them to another box without rewriting anything.",
+  "spec": [
+    { "label": "hardware", "value": "Lenovo ThinkCentre M710q" },
+    { "label": "os", "value": "Fedora" },
+    { "label": "runtime", "value": "Rootless Podman, quadlets" },
+    { "label": "storage", "value": "btrfs + snapper" },
+    { "label": "mesh", "value": "Netbird" },
+    { "label": "ingress", "value": "Cloudflare Tunnel → Nginx Proxy Manager" }
+  ],
+  "services": {
+    "5": [
+      { "name": "Nextcloud + Collabora", "note": "Files and docs. WebDAV feeds my e-reader." },
+      { "name": "Karakeep", "note": "Bookmarks, tagged by a local model." },
+      { "name": "Open WebUI", "note": "Chat front end over the model router." },
+      { "name": "n8n", "note": "Workflows, including a summarization pipeline." }
+    ],
+    "4": [
+      { "name": "Forgejo + runner", "note": "Git and CI, on its own network.", "link": "https://forge.kuyacarlo.dev" },
+      { "name": "Anubis", "note": "Keeps scrapers off the forge." },
+      { "name": "Authentik", "note": "SSO for everything. Slow; looking for something lighter." },
+      { "name": "Grafana · Loki · Alloy · Prometheus", "note": "Metrics and logs for all of the above." },
+      { "name": "LiteLLM", "note": "One endpoint, routed to Groq, Cerebras and OpenRouter." }
+    ],
+    "3": [
+      { "name": "Netbird", "note": "Private mesh between my machines." },
+      { "name": "Cloudflare Tunnel", "note": "Public ingress without port forwarding." },
+      { "name": "Nginx Proxy Manager", "note": "HTTP routing, plus a TCP stream for git over SSH." }
+    ]
+  },
+  "incidents": [
+    { "title": "Disk full, with free space showing", "summary": "btrfs threw ENOSPC while df looked fine. 206 snapper snapshots had used up the metadata chunks. Bulk-deleted them, rebalanced, and tightened retention.", "slug": "disk-full-with-free-space" },
+    { "title": "Containers lost DNS after reboot", "summary": "A race between Podman's network namespace and service start. Added a small unit that waits for the netns before anything else starts.", "slug": "containers-lost-dns-after-reboot" },
+    { "title": "Forgejo forgot everything on restart", "summary": "Wrong mount path in the volume quadlet. Fixed the path and moved config into FORGEJO__section__key environment variables.", "slug": "forgejo-forgot-everything" },
+    { "title": "Everyone was a Grafana viewer", "summary": "SSO logins came through without roles. Added the entitlements scope in Authentik and corrected the role attribute path.", "slug": "everyone-was-a-grafana-viewer" }
+  ]
+}

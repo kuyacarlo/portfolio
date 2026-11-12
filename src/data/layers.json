@@ -1,0 +1,8 @@
+[
+  { "n": 1, "name": "silicon" },
+  { "n": 2, "name": "firmware" },
+  { "n": 3, "name": "network" },
+  { "n": 4, "name": "server" },
+  { "n": 5, "name": "app" },
+  { "n": 6, "name": "people" }
+]

@@ -1,84 +1,95 @@
 ---
 import NoteLayout from '../../layouts/NoteLayout.astro';
 import { getCollection, render } from 'astro:content';
-import { getPosts } from '../../lib/cms';
+import layers from '../../data/layers.json';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('notes', (e: any) => {
-    const hidden = e.data.draft || e.data.hide;
-    // In dev, still build hidden notes so you can preview at their URL.
-    return import.meta.env.DEV ? true : !hidden;
+  const entries = await getCollection('notes', ({ data }) => !data.draft && !data.hide);
+  entries.sort((a, b) => {
+    const aTime = Date.parse(a.data.date);
+    const bTime = Date.parse(b.data.date);
+    if (!Number.isFinite(aTime)) return 1;
+    if (!Number.isFinite(bTime)) return -1;
+    return bTime - aTime;
   });
-  return entries.map((entry: any) => ({
-    params: { slug: entry.id.replace(/\.md$/, '') },
-    props:  { entry },
+  return entries.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, previous: entries[index + 1] ?? null, next: entries[index - 1] ?? null },
   }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
-const { title, date, tags } = entry.data;
-const minutes = Math.max(1, Math.ceil((entry.body || '').split(/\s+/).length / 200));
-const body = entry.body || '';
-const hasMath = /\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\begin\{/.test(body);
-const hasTikz = /```(?:tikz|circuitikz)/i.test(body);
-const hasMermaid = /```mermaid/i.test(body);
-
-const slug = entry.id.replace(/\.md$/, '');
-const posts = await getPosts(); // newest → oldest
-const idx = posts.findIndex((p) => p.slug === slug);
-const newer = idx > 0 ? posts[idx - 1] : null;
-const older = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null;
+const { entry, previous, next } = Astro.props;
+const { Content, headings } = await render(entry);
+const toc = headings.filter((heading) => heading.depth === 2);
+const words = entry.body.trim().split(/\s+/).filter(Boolean).length;
+const readMinutes = Math.max(1, Math.ceil(words / 225));
+const layerNames = (entry.data.layers ?? []).map((number) => layers.find((layer) => layer.n === number)?.name).filter(Boolean);
+const editUrl = `https://github.com/kuyacarlo/portfolio/edit/main/src/content/notes/${entry.id}.md`;
+const hasMath = /\$\$?|\\\(|\\\[/.test(entry.body);
+const hasTikz = /```(?:tikz|circuitikz)/i.test(entry.body);
+const hasMermaid = /```mermaid/i.test(entry.body);
 ---
+<NoteLayout title={`${entry.data.title} — John Carlo Santos`} description={entry.data.dek ?? entry.data.desc ?? entry.data.title} hasMath={hasMath} hasTikz={hasTikz} hasMermaid={hasMermaid}>
+  <main id="main" class="note-page page">
+    <div class="note-crumb"><a href="/notes">NOTES</a><span aria-hidden="true">/</span><span>{entry.id}</span></div>
+    <header class="note-header" id="note-title">
+      <p class="eyebrow">{entry.id}</p>
+      <h1>{entry.data.title}</h1>
+      {(entry.data.dek ?? entry.data.desc) && <p class="note-dek">{entry.data.dek ?? entry.data.desc}</p>}
+      <div class="note-meta">
+        <span>{entry.data.date}</span><span>{readMinutes} MIN READ</span>
+        {layerNames.map((name, index) => <span class="tag">{String(entry.data.layers[index]).padStart(2, '0')} {name}</span>)}
+        {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    </header>
 
-<NoteLayout
-  title={`${title} — John Carlo Santos`}
-  description={entry.data.desc}
-  noteTitle={title}
-  hasMath={hasMath}
-  hasTikz={hasTikz}
-  hasMermaid={hasMermaid}
->
-<div class="wrap">
-
-  <article class="note-article">
-    <div class="note-tags r">
-      {tags.map((t: string) => <span class="tag">{t}</span>)}
+    <div class="note-reading-layout">
+      {toc.length > 0 && <nav class="note-toc" aria-label="On this page"><p class="label">ON THIS PAGE</p><ul>{toc.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ul></nav>}
+      <article class="note-body"><Content /></article>
     </div>
 
-    <h1 class="r d1" id="note-title">{title}</h1>
-    <div class="note-meta r d2">
-      <time datetime={date}>{date}</time>
-      <span class="note-meta-sep">·</span>
-      <span>{minutes} min read</span>
-    </div>
-
-    <div class="body r d3">
-      <Content />
-    </div>
-
-    <nav class="note-footer" aria-label="Note pagination">
-      <div class="note-footer-side note-footer-prev">
-        {newer ? (
-          <a class="note-footer-link" href={`/notes/${newer.slug}`}>
-            <span class="note-footer-arrow" aria-hidden="true">←</span>
-            <span class="note-footer-link-title">{newer.title}</span>
-          </a>
-        ) : null}
-      </div>
-      <div class="note-footer-center">
-        <a href="/notes">all notes</a>
-      </div>
-      <div class="note-footer-side note-footer-next">
-        {older ? (
-          <a class="note-footer-link" href={`/notes/${older.slug}`}>
-            <span class="note-footer-link-title">{older.title}</span>
-            <span class="note-footer-arrow" aria-hidden="true">→</span>
-          </a>
-        ) : null}
-      </div>
+    <nav class="note-next-prev" aria-label="Adjacent notes">
+      {previous ? <a href={`/notes/${previous.id}`} class="note-adjacent"><span>PREVIOUS</span><strong>{previous.data.title}</strong></a> : <span class="note-adjacent note-adjacent-empty"></span>}
+      {next ? <a href={`/notes/${next.id}`} class="note-adjacent note-adjacent-next"><span>NEXT</span><strong>{next.data.title}</strong></a> : <span class="note-adjacent note-adjacent-next note-adjacent-empty"></span>}
     </nav>
-  </article>
-
-</div>
+    <footer class="site-footer"><span>© {new Date().getFullYear()} John Carlo Santos</span><a href={editUrl} target="_blank" rel="noopener noreferrer">EDIT ON GITHUB ↗</a></footer>
+  </main>
 </NoteLayout>
+
+<style>
+  .note-crumb { display:flex; gap:10px; padding-top:var(--space-3); color:var(--muted); font:var(--type-label); }
+  .note-crumb a { color:var(--ink); }
+  .note-header { padding-block:var(--space-5); border-bottom:var(--rule); }
+  .note-header h1 { max-width:1000px; margin:0 0 var(--space-3); font:var(--type-article-title); letter-spacing:-.04em; }
+  .note-dek { max-width:760px; margin:0 0 var(--space-3); font:var(--type-lead); }
+  .note-meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font:var(--type-label); }
+  .note-reading-layout { display:grid; grid-template-columns:minmax(160px, 240px) minmax(0,720px); justify-content:space-between; gap:var(--space-5); padding-block:var(--space-5); }
+  .note-toc { align-self:start; }
+  .note-toc ul { display:grid; gap:10px; margin:0; padding:0; list-style:none; }
+  .note-toc a { color:var(--ink); font:var(--type-body); }
+  .note-body { min-width:0; font:var(--type-article); overflow-wrap:anywhere; }
+  .note-body :global(h2) { margin:1.8em 0 .6em; font:var(--type-section); }
+  .note-body :global(h3) { margin:1.6em 0 .5em; font:var(--type-card); }
+  .note-body :global(p), .note-body :global(ul), .note-body :global(ol) { line-height:1.7; }
+  .note-body :global(pre) { max-width:100%; overflow-x:auto; padding:16px; border:var(--rule); background:var(--surface) !important; color:var(--ink) !important; font:var(--type-code); }
+  .note-body :global(pre span) { color:var(--ink) !important; }
+  .note-body :global(code) { font-family:var(--font-mono); }
+  .note-body :global(:not(pre) > code) { padding:2px 4px; background:var(--surface); }
+  .note-next-prev { display:grid; grid-template-columns:1fr 1fr; margin-bottom:var(--space-5); border:var(--rule); }
+  .note-adjacent { min-height:104px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; padding:16px; color:var(--ink); text-decoration:none; }
+  .note-adjacent + .note-adjacent { border-left:var(--rule); }
+  .note-adjacent > span { font:var(--type-label); }
+  .note-adjacent strong { font:var(--type-card); }
+  .note-adjacent-next { background:var(--ink); color:var(--paper); }
+  .note-adjacent-empty { min-height:0; }
+  .note-page .site-footer { margin-inline:calc(-1 * var(--gutter)); }
+  @media(max-width:767px) {
+    .note-header { padding-block:var(--space-4); }
+    .note-dek { font-size:16px; }
+    .note-reading-layout { display:block; padding-block:var(--space-4); }
+    .note-toc { display:none; }
+    .note-next-prev { grid-template-columns:1fr; }
+    .note-adjacent + .note-adjacent { border-left:0; border-top:var(--rule); }
+    .note-adjacent-empty { display:none; }
+  }
+</style>

@@ -1,0 +1,28 @@
+{
+  "_note": "Bracketed values wait on Karlo (HANDOFF.md §9.3). Do not fill them in.",
+  "name": "John Carlo Santos",
+  "positioning": "Software and systems engineer. ETL pipelines, DevSecOps guardrails, agent harnesses. Open to data and DevOps roles.",
+  "pdf": "[existing resume PDF path]",
+  "experience": [
+    {
+      "org": "Seekers Guild", "role": "Chief Technology Officer", "dates": "[start] — present",
+      "bullets": [
+        "Rewrote the org constitution into six governance documents with a staged amendment process.",
+        "Set enforceable CI coverage targets by tier: core 85, cogs 80, gears 70, experimental 50.",
+        "Run the org platform on Next.js and TypeScript with event-based routing."
+      ]
+    },
+    { "org": "PyTorch student chapter", "role": "Chapter lead", "dates": "[start] — present", "bullets": ["[What you run: sessions, workshops, members reached]"] },
+    { "org": "CompSciety BulSU", "role": "External officer", "dates": "[start] — present", "bullets": ["[Partnerships or events you handled]"] },
+    { "org": "Freelance", "role": "Infrastructure commissions", "dates": "ongoing", "bullets": ["Built a self-hosted library server for books and comics, reachable from phones behind pfSense."] }
+  ],
+  "education": { "degree": "BS Computer Engineering", "school": "Bulacan State University", "year": "class of 2028" },
+  "skills": {
+    "6": "Org leadership, governance writing, running student chapters",
+    "5": "Python, FastAPI, Go, TypeScript, React, Next.js",
+    "4": "Rootless Podman, PostgreSQL, GitHub Actions and Forgejo CI, Grafana and Loki, secrets management",
+    "3": "Netbird mesh, Cloudflare Tunnel, reverse proxies, pfSense",
+    "2": "C/C++, ESP32, Arduino, LoRa (SX1278), Linux kernel module packaging",
+    "1": "Digital logic, perfboard builds, Raspberry Pi"
+  }
+}

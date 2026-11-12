@@ -21,13 +21,16 @@ src/content/notes/
 ```yaml
 ---
 title: "Your Note Title"
-date: "2026-07-19"          # YYYY-MM-DD
-tags: ["tag1", "tag2"]      # optional, shows as pills
-desc: "Short blurb."        # optional, shows in listings and SEO
+dek: "A one-sentence summary for the note index and article header."
+date: "2026-07-19"          # YYYY-MM-DD; use an owner-supplied date
+layers: [4]                  # layer numbers 1–6; do not guess
+tags: ["tag1", "tag2"]
 hide: true                  # hide from listings (+ prod routes)
 # draft: true               # alias of hide — either works
 ---
 ```
+
+`title`, `date`, `tags`, and `layers` are schema fields. `dek` is optional for older notes. Keep a supplied `[date]` placeholder visible until Karlo provides the real date.
 
 ## What renders
 
@@ -42,7 +45,7 @@ hide: true                  # hide from listings (+ prod routes)
 
 ## Code blocks
 
-Fenced with triple backticks + language name → syntax highlighted (Shiki, dark theme):
+Fenced with triple backticks + language name → syntax highlighted (Shiki):
 
 ````
 ```python
