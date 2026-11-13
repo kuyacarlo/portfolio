@@ -57,7 +57,7 @@ const nowCells = [
       </ul>
       <ul class="layer-cells phone">
         {layers.map((layer) => (
-          <li><b>{pad(layer.n)}</b>{layer.name}</li>
+          <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
       </ul>
     </section>
@@ -304,11 +304,12 @@ const nowCells = [
     .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
     .hero-actions .button { font-size: 14px; }
 
-    .layer-cells { display: grid; flex: 1 1 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: var(--rule); font: 400 12px/1 var(--font-mono); }
-    .layer-cells li { display: flex; align-items: center; gap: var(--space-1); height: 44px; padding: 0 10px; }
-    .layer-cells li:not(:nth-child(3n)) { border-right: var(--rule); }
-    .layer-cells li:nth-child(-n + 3) { border-bottom: var(--rule); }
-    .layer-cells b { font-weight: 700; }
+    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
+    .layer-cells li { display: contents; }
+    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
+    .layer-cells li > b { border-bottom: var(--rule); font-weight: 700; }
+    .layer-cells li > span { border-bottom: var(--rule); }
+    .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
 
     .phone-project-card { border-bottom: var(--rule); }
     .card-body { display: flex; flex-direction: column; gap: 6px; padding: var(--space-2) var(--gutter) 12px; }
