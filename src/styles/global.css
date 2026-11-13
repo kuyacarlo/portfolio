@@ -105,3 +105,6 @@ h1, h2, h3, p { margin-top: 0; }
 
 /* Mermaid appends a tooltip div to <body>; keep it out of the flow. */
 .mermaidTooltip { position: absolute; }
+
+/* Wide display math scrolls inside its own box instead of the page. */
+.katex-display { overflow-x: auto; overflow-y: hidden; }
