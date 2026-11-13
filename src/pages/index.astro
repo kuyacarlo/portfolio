@@ -67,7 +67,7 @@ const nowCells = [
         ))}
       </ul>
       <ul class="layer-cells phone">
-        {[...layers].reverse().map((layer) => (
+        {layers.map((layer) => (
           <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
       </ul>
@@ -84,7 +84,7 @@ const nowCells = [
         <div class="work-row work-head" role="row">
           <span class="c-name" role="columnheader">project</span>
           <span class="c-desc" role="columnheader">what it is</span>
-          <span class="c-strip c-nums" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span class="c-strip c-nums" role="columnheader" aria-label="layers 01 to 06">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
           <span class="c-links" role="columnheader">links</span>
         </div>
         {selectedWork.map((project) => (
@@ -256,8 +256,9 @@ const nowCells = [
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
   .layer-col { display: flex; flex-direction: column; font: 400 14px/1.2 var(--font-mono); }
-  .layer-col li { display: flex; min-height: 56px; border-bottom: var(--rule); }
-  .layer-col li:last-child { flex-grow: 1; border-bottom: 0; }
+  /* Equal steps: the column fills the hero height without one layer swallowing the slack. */
+  .layer-col li { display: flex; flex: 1 1 0; min-height: 56px; border-bottom: var(--rule); }
+  .layer-col li:last-child { border-bottom: 0; }
   .layer-col .layer-badge { height: auto; align-self: stretch; font: inherit; }
   .layer-name { display: flex; align-items: center; padding: 0 var(--space-2); }
 

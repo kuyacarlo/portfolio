@@ -19,7 +19,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <h1 id="projects-title">Projects</h1>
       </div>
       <ul class="project-layer-grid" aria-label="Project layers">
-        {[...layers].reverse().map((layer) => (
+        {layers.map((layer) => (
           <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
       </ul>
@@ -30,7 +30,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <div class="project-row project-head" role="row">
           <span role="columnheader">project</span>
           <span role="columnheader">writeup</span>
-          <span class="project-layers" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span class="project-layers" role="columnheader" aria-label="layers 01 to 06">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
           <span role="columnheader">links</span>
         </div>
         {projects.map((project) => (
@@ -73,10 +73,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .project-title-link:hover { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
   .project-title-link:focus-visible { outline-offset: 3px; }
   .project-row p { font: var(--type-body); }
-  .project-coverage { display: flex; padding: 0; }
-  .project-coverage :global(.coverage) { width: 100%; height: 48px; gap: 2px; border: 0; }
-  .project-coverage :global(.coverage-cell) { border: var(--rule); }
-  .project-coverage :global(.coverage-cell + .coverage-cell) { border-left: var(--rule); }
+  .project-row > .project-coverage { display: flex; padding: 0; }
+  .project-head > .project-layers { padding-inline: 0; }
+  .project-coverage :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
   .project-links { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; font: 400 14px/1.4 var(--font-mono); }
   @media (min-width: 768px) and (max-width: 1023px) {
     .projects-hero { flex-direction: column; align-items: stretch; gap: var(--space-3); }
@@ -90,12 +89,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   @media (max-width: 767px) {
     .projects-hero { flex-direction: column; gap: var(--space-3); padding-block: var(--space-4); }
+    /* In a column the 500px basis becomes a height; let the title size to its content. */
+    .projects-title-copy { flex-basis: auto; }
     .projects-hero > ul.project-layer-grid { flex: none; width: 100%; grid-template-rows: 40px 40px; }
     .project-head { display: none; }
     .project-row { grid-template-columns: 1fr; gap: 0; padding: var(--space-2) 0; }
     .project-row > * { padding: var(--space-1) var(--gutter); }
     .project-row h2 { font-size: 20px; }
-    .project-coverage :global(.coverage) { height: 14px; min-height: 14px; }
+    .project-row > .project-coverage { padding: var(--space-1) var(--gutter); }
+    .project-coverage :global(.coverage) { height: 14px; min-height: 14px; border: var(--rule); }
     .project-links { min-height: 44px; align-items: center; }
   }
 </style>

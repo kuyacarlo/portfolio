@@ -40,6 +40,9 @@ h1, h2, h3, p { margin-top: 0; }
 .talk-link { display: flex; align-items: center; justify-content: center; flex: 1 0 auto; max-width: 220px; margin-left: auto; padding: 0 28px; background: var(--solid); color: var(--solid-text); text-decoration: none; font: 800 15px/1 var(--font-display); text-transform: uppercase; }
 .talk-link:hover { color: var(--solid-text); text-decoration: underline; }
 .talk-link:focus-visible { outline-color: var(--solid-text); outline-offset: -6px; }
+/* Already inverted, so the current page flips back to paper and keeps a rule on its left. */
+.talk-link[aria-current="page"] { background: var(--paper); color: var(--ink); border-left: var(--rule); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.talk-link[aria-current="page"]:focus-visible { outline-color: var(--ink); }
 .theme-toggle { flex: none; min-width: 72px; padding: 0 14px; border: 0; background: var(--paper); color: var(--ink); font: 400 12px/1 var(--font-mono); text-transform: uppercase; }
 .theme-toggle[aria-pressed="true"] { background: var(--solid); color: var(--solid-text); }
 .theme-toggle:hover { text-decoration: underline; text-underline-offset: 4px; }
