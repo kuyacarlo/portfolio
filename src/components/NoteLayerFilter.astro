@@ -1,0 +1,33 @@
+---
+/**
+ * LayerFilter for /notes: `all` + 01–06 as toggle buttons with aria-pressed.
+ * The accessible name is the number ("04"); the layer name is shown and read
+ * as the button's description, so the name stays short and stable.
+ */
+import { layers } from '../lib/layers';
+---
+<div class="note-filter" role="group" aria-label="Filter by layer">
+  <button type="button" data-layer-filter="all" aria-pressed="true">all</button>
+  {layers.map((layer) => {
+    const id = `layer-filter-name-${layer.n}`;
+    return (
+      <button type="button" data-layer-filter={layer.n} aria-pressed="false" aria-describedby={id}>
+        {String(layer.n).padStart(2, '0')}<span id={id} aria-hidden="true"> {layer.name}</span>
+      </button>
+    );
+  })}
+</div>
+
+<style>
+  .note-filter { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  button { flex: none; min-height: 52px; padding: 0 20px; border: 0; border-right: var(--rule); background: var(--paper); color: var(--ink); font: 400 14px/1 var(--font-mono); white-space: nowrap; }
+  button:hover { text-decoration: underline; }
+  button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  button:focus-visible { outline-offset: -6px; }
+  button[aria-pressed="true"]:focus-visible { outline-color: var(--paper); }
+
+  @media (max-width: 767px) {
+    .note-filter { flex-wrap: nowrap; overflow-x: auto; }
+    button { min-height: 48px; padding: 0 var(--gutter); font-size: 13px; }
+  }
+</style>
