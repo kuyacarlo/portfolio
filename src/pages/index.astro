@@ -56,7 +56,7 @@ const nowCells = [
         ))}
       </ul>
       <ul class="layer-cells phone">
-        {layers.map((layer) => (
+        {[...layers].reverse().map((layer) => (
           <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
       </ul>
@@ -307,7 +307,7 @@ const nowCells = [
     .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
     .layer-cells li { display: contents; }
     .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
-    .layer-cells li > b { border-bottom: var(--rule); font-weight: 700; }
+    .layer-cells li > b { border-bottom: var(--rule); background: var(--ink); color: var(--paper); font-weight: 700; }
     .layer-cells li > span { border-bottom: var(--rule); }
     .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
 
