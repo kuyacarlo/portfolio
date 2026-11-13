@@ -1,0 +1,71 @@
+---
+/** One experience entry: org / role / dates on the left, bullets on the right.
+    Phone shows the first `phoneLimit` bullets; the rest sit behind a "more" toggle. */
+interface Props {
+  org: string;
+  role: string;
+  dates: string;
+  bullets: string[];
+  id: string;
+  phoneLimit?: number;
+}
+
+const { org, role, dates, bullets, id, phoneLimit = 2 } = Astro.props;
+const hasMore = bullets.length > phoneLimit;
+const listId = `${id}-bullets`;
+---
+<article class="resume-entry" data-resume-entry data-open="false">
+  <div class="resume-entry-meta">
+    <h3>{org}</h3>
+    <p>{role}</p>
+    <p class="resume-entry-dates">{dates}</p>
+  </div>
+  <div class="resume-entry-work">
+    <ul id={listId}>
+      {bullets.map((bullet, index) => <li class:list={{ 'resume-entry-extra': index >= phoneLimit }}>{bullet}</li>)}
+    </ul>
+    {hasMore && (
+      <button class="resume-entry-more" type="button" aria-expanded="false" aria-controls={listId} data-resume-more>more</button>
+    )}
+  </div>
+</article>
+
+<style>
+  .resume-entry { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .resume-entry:last-child { border-bottom: 0; }
+  .resume-entry-meta { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: var(--gutter); border-right: var(--rule); }
+  .resume-entry-meta h3 { margin: 0; font: 800 24px/1.2 var(--font-display); }
+  .resume-entry-meta p { margin: 0; font: 400 16px/1.5 var(--font-text); }
+  .resume-entry-meta .resume-entry-dates { color: var(--muted); font: 400 13px/1.5 var(--font-mono); }
+  .resume-entry-work { flex: 2 1 420px; min-width: 0; padding: var(--gutter); }
+  .resume-entry-work ul { display: flex; flex-direction: column; gap: 10px; margin: 0; padding-left: 20px; font: 400 16px/1.55 var(--font-text); }
+  .resume-entry-more { display: none; }
+
+  @media (max-width: 767px) {
+    .resume-entry-meta { flex-basis: 100%; padding-bottom: var(--space-1); border-right: 0; }
+    .resume-entry-meta h3 { font: var(--type-card); }
+    .resume-entry-work { flex-basis: 100%; padding-top: var(--space-1); }
+    .resume-entry-work ul { font: var(--type-body); }
+    .resume-entry[data-open="false"] .resume-entry-extra { display: none; }
+    .resume-entry-more { display: inline-flex; align-items: center; min-width: 88px; min-height: 44px; margin-top: var(--space-2); padding: 0 var(--space-2); border: var(--rule); background: var(--paper); color: var(--ink); font: 700 12px/1 var(--font-mono); text-transform: uppercase; }
+    .resume-entry-more:hover { background: var(--ink); color: var(--paper); }
+  }
+
+  @media print {
+    .resume-entry { break-inside: avoid; }
+    .resume-entry .resume-entry-extra { display: list-item !important; }
+    .resume-entry-more { display: none !important; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-resume-more]').forEach((button) => {
+    const entry = button.closest<HTMLElement>('[data-resume-entry]');
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      button.setAttribute('aria-expanded', String(open));
+      button.textContent = open ? 'less' : 'more';
+      if (entry) entry.dataset.open = String(open);
+    });
+  });
+</script>
