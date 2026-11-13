@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import Mark from '../components/Mark.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -14,10 +16,10 @@ const {
 } = Astro.props;
 
 const links = [
-  { href: '/homelab', label: 'Homelab', key: 'homelab' },
-  { href: '/notes', label: 'Notes', key: 'notes' },
-  { href: '/certs', label: 'Certs', key: 'certs' },
-  { href: '/resume', label: 'Resume', key: 'resume' },
+  { href: '/homelab', label: 'homelab', key: 'homelab' },
+  { href: '/notes', label: 'notes', key: 'notes' },
+  { href: '/certs', label: 'certs', key: 'certs' },
+  { href: '/resume', label: 'resume', key: 'resume' },
 ];
 ---
 <!doctype html>
@@ -32,7 +34,7 @@ const links = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://kuyacarlo.dev" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site ?? 'https://kuyacarlo.dev')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400..900&family=Red+Hat+Text:wght@400..700&family=Red+Hat+Mono:wght@400..700&display=swap" rel="stylesheet" />
@@ -42,26 +44,25 @@ const links = [
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="header-inner">
+    <div class="frame">
+      <header class="site-header">
         <a href="/" class="brand" aria-label="kuyacarlo home">
-          <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true" shape-rendering="crispEdges">
-            <path fill="currentColor" d="M2 31h5v-5h5v-5h5v-5h5v-5h5V6h7v25H2z" />
-          </svg>
+          <Mark class="brand-mark" />
           <span>kuyacarlo</span>
         </a>
         <nav class="main-nav" aria-label="Main">
           {links.map((link) => <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>{link.label}</a>)}
-          <a href="/book" class="talk-link" aria-current={active === 'book' ? 'page' : undefined}>Let’s talk →</a>
         </nav>
+        <a href="/book" class="talk-link" aria-current={active === 'book' ? 'page' : undefined}>Let’s talk</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">Menu</button>
-      </div>
-    </header>
-    <nav id="mobile-menu" class="mobile-menu" aria-label="Main mobile" hidden>
-      {links.map((link) => <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>{link.label}</a>)}
-      <a href="/book" aria-current={active === 'book' ? 'page' : undefined}>Let’s talk →</a>
-    </nav>
-    <slot />
+      </header>
+      <nav id="mobile-menu" class="mobile-menu" aria-label="Main mobile" hidden>
+        {links.map((link) => <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>{link.label}</a>)}
+        <a href="/book" class="mobile-talk" aria-current={active === 'book' ? 'page' : undefined}>Let’s talk →</a>
+      </nav>
+      <slot />
+      <Footer><slot name="footer" /></Footer>
+    </div>
     <script>
       const button = document.querySelector<HTMLButtonElement>('.menu-toggle');
       const menu = document.querySelector<HTMLElement>('#mobile-menu');

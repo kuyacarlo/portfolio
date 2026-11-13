@@ -52,7 +52,6 @@ const hasMermaid = /```mermaid/i.test(entry.body);
       {previous ? <a href={`/notes/${previous.id}`} class="note-adjacent"><span>PREVIOUS</span><strong>{previous.data.title}</strong></a> : <span class="note-adjacent note-adjacent-empty"></span>}
       {next ? <a href={`/notes/${next.id}`} class="note-adjacent note-adjacent-next"><span>NEXT</span><strong>{next.data.title}</strong></a> : <span class="note-adjacent note-adjacent-next note-adjacent-empty"></span>}
     </nav>
-    <footer class="site-footer"><span>© {new Date().getFullYear()} John Carlo Santos</span><a href={editUrl} target="_blank" rel="noopener noreferrer">EDIT ON GITHUB ↗</a></footer>
   </main>
 </NoteLayout>
 

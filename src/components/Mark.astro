@@ -1,0 +1,25 @@
+---
+/** Six-step staircase on a 6×6 grid. `missingStep` draws that step as a dashed outline (404). */
+interface Props {
+  size?: number;
+  missingStep?: number;
+  label?: string;
+  class?: string;
+}
+const { size = 28, missingStep, label, class: className } = Astro.props;
+const steps = [1, 2, 3, 4, 5, 6];
+---
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 6 6"
+  shape-rendering="crispEdges"
+  {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' })}
+>
+  {steps.map((n) =>
+    n === missingStep
+      ? <rect x={n - 1 + 0.05} y={6 - n + 0.05} width="0.9" height={n - 0.1} fill="none" stroke="currentColor" stroke-width="0.1" stroke-dasharray="0.25 0.15" />
+      : <rect x={n - 1} y={6 - n} width="1" height={n} fill="currentColor" />
+  )}
+</svg>

@@ -40,8 +40,8 @@ test('every nav link resolves and marks the current page', async ({ page }, info
   for (const route of navRoutes) {
     await page.goto('/');
     if (isPhone(info.project.name)) await page.getByRole('button', { name: 'Menu' }).click();
-    const nav = page.getByRole('navigation', { name: isPhone(info.project.name) ? 'Main mobile' : 'Main' });
-    await nav.locator(`a[href="${route}"]`).click();
+    const scope = isPhone(info.project.name) ? page.locator('#mobile-menu') : page.locator('.site-header');
+    await scope.locator(`a[href="${route}"]`).click();
     await expect(page).toHaveURL(new RegExp(`${route}$`));
     const current = page.locator(`a[href="${route}"][aria-current="page"]`);
     await expect(current.first()).toBeAttached();
