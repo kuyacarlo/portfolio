@@ -1,5 +1,5 @@
 ---
-/** One row of the notes index. The whole row is a single link. */
+/** One note index row with a linked title area and static topic tags. */
 import CoverageStrip from './CoverageStrip.astro';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 const { slug, title, date, dek, cover, layers, tags } = Astro.props;
 ---
-<article class="note-list-item" data-note-layers={layers.join(',')} data-note-tags={tags.join(',')}>
+<article class="note-list-item" data-note-layers={layers.join(',')}>
   <a class="note-list-main" href={`/notes/${slug}`}>
     {cover && <span class="note-thumb"><img src={cover} alt="" loading="lazy" decoding="async" /></span>}
     <span class="note-date">{date}</span>
@@ -24,8 +24,8 @@ const { slug, title, date, dek, cover, layers, tags } = Astro.props;
     </span>
     <CoverageStrip layers={layers} class="note-strip" />
   </a>
-  <div class="note-list-tags" aria-label={`Tags for ${title}`}>
-    {tags.map((tag) => <a class="tag" href={`/notes?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
+  <div class="note-list-tags" role="group" aria-label={`Tags for ${title}`}>
+    {tags.map((tag) => <span class="tag">{tag}</span>)}
   </div>
 </article>
 

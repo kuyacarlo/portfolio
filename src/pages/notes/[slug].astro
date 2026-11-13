@@ -40,7 +40,7 @@ const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFro
         <span class="tag">{entry.data.date}</span>
         <span class="tag">{readMinutes} min read</span>
         {noteLayers.map((n) => <span class="tag tag-inverted">{String(n).padStart(2, '0')} {layerName(n)}</span>)}
-        {entry.data.tags.map((tag) => <a class="tag note-tag-link" href={`/notes?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
+        {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
       </div>
     </section>
 
@@ -78,8 +78,6 @@ const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFro
   /* Joined tags that also stay joined when the row wraps. */
   .note-tags { padding: 0 0 var(--rule-w) var(--rule-w); }
   .note-tags .tag { border-left: var(--rule); margin: 0 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)); }
-  .note-tags .note-tag-link { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-  .note-tags .note-tag-link:hover { background: var(--ink); color: var(--paper); }
 
   .note-body { display: flex; border-bottom: var(--rule); }
   .note-toc { flex: 1 1 240px; padding: var(--gutter); border-right: var(--rule); }
