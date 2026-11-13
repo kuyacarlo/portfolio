@@ -1,0 +1,56 @@
+---
+/**
+ * Two-cell prev/next under a note. The right cell is inverted. When there is
+ * no previous or next note, that cell links back to the index instead.
+ */
+type Link = { slug: string; title: string } | null;
+
+interface Props {
+  previous: Link;
+  next: Link;
+}
+
+const { previous, next } = Astro.props;
+const index = { href: '/notes', title: 'Back to the index' };
+
+const left = previous
+  ? { href: `/notes/${previous.slug}`, label: '← previous', title: previous.title }
+  : { ...index, label: '← all notes' };
+const right = next
+  ? { href: `/notes/${next.slug}`, label: 'next →', title: next.title }
+  : previous
+    ? { ...index, label: 'all notes →' }
+    : null;
+---
+<nav class="note-adjacent" aria-label="More notes">
+  <a href={left.href} class="adjacent">
+    <span class="adjacent-label">{left.label}</span>
+    <span class="adjacent-title">{left.title}</span>
+  </a>
+  {right && (
+    <a href={right.href} class="adjacent adjacent-next">
+      <span class="adjacent-label">{right.label}</span>
+      <span class="adjacent-title">{right.title}</span>
+    </a>
+  )}
+</nav>
+
+<style>
+  .note-adjacent { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .adjacent { flex: 1 1 320px; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4) var(--gutter); color: var(--ink); text-decoration: none; }
+  .adjacent:hover { color: var(--ink); }
+  .adjacent:hover .adjacent-title { text-decoration: underline; }
+  .adjacent:focus-visible { outline-offset: -6px; }
+  .adjacent + .adjacent { border-left: var(--rule); }
+  .adjacent-next { background: var(--ink); color: var(--paper); text-align: right; }
+  .adjacent-next:hover { color: var(--paper); }
+  .adjacent-next:focus-visible { outline-color: var(--paper); }
+  .adjacent-label { font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .adjacent-title { font: var(--type-card); }
+
+  @media (max-width: 767px) {
+    .note-adjacent { flex-direction: column; }
+    .adjacent { flex: none; padding: var(--space-3) var(--gutter); }
+    .adjacent + .adjacent { border-left: 0; border-top: var(--rule); }
+  }
+</style>
