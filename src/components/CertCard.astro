@@ -1,0 +1,37 @@
+---
+export type Cert = { name: string; issuer: string; year: string | number; layer: string | number; verifyUrl?: string };
+
+interface Props {
+  cert: Cert;
+}
+
+const { cert } = Astro.props;
+const layer = String(cert.layer).padStart(2, '0');
+---
+<article class="cert-card">
+  <div class="cert-card-bar"><span>{layer}</span><span class="cert-card-year">{cert.year}</span></div>
+  <div class="cert-card-body">
+    <h2>{cert.name}</h2>
+    <p>{cert.issuer}<span class="cert-card-year-inline"> · {cert.year}</span></p>
+  </div>
+  <a href={cert.verifyUrl} target="_blank" rel="noopener noreferrer">verify<span class="sr-only"> {cert.name} with {cert.issuer}</span></a>
+</article>
+
+<style>
+  .cert-card { display: flex; flex-direction: column; min-width: 0; margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; border-right: var(--rule); border-bottom: var(--rule); }
+  .cert-card-bar { display: flex; justify-content: space-between; gap: var(--space-2); padding: 12px var(--gutter); border-bottom: var(--rule); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .cert-card-body { flex-grow: 1; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--gutter); }
+  .cert-card-body h2 { margin: 0; font: 800 24px/1.15 var(--font-display); }
+  .cert-card-body p { margin: 0; font: var(--type-body); }
+  .cert-card-year-inline { display: none; }
+  .cert-card > a { display: flex; align-items: center; min-height: 48px; padding: 0 var(--gutter); border-top: var(--rule); font: 400 14px/1.4 var(--font-mono); }
+
+  @media (max-width: 767px) {
+    .cert-card-bar { padding-block: var(--space-1); }
+    .cert-card-year { display: none; }
+    .cert-card-year-inline { display: inline; }
+    .cert-card-body { gap: 4px; padding-block: var(--space-2); }
+    .cert-card-body h2 { font: var(--type-card); }
+    .cert-card > a { min-height: 44px; }
+  }
+</style>

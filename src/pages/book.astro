@@ -2,65 +2,60 @@
 import Layout from '../layouts/Layout.astro';
 import { displayHost, site } from '../lib/site';
 
-const choices = ['Hackathon team', 'Data or DevOps role', 'Collaboration', 'Just talk shop'];
+// The board's reasons, shown as rows. Length, time and contact details are picked in the
+// Cal.com embed (site.bookingUrl): there is no slot API, so availability is never drawn here.
+const reasons = ['Hackathon team', 'Data or DevOps role', 'Collaboration', 'Just talk shop'];
 ---
 <Layout active="book" title="Let’s talk — John Carlo Santos" description="Choose a time to talk with John Carlo Santos. Times are shown in Manila time, UTC+8.">
-  <main id="main" class="book-page page">
-    <header class="book-hero">
-      <p class="eyebrow">BOOK / CONTACT</p>
-      <h1>Pick one.<br />I’ll reply.</h1>
-      <p>Three choices and your email. Times are in Manila, UTC+8.</p>
-    </header>
+  <main id="main">
+    <section class="book-hero region">
+      <p class="eyebrow">book a call</p>
+      <h1>Pick one. I'll reply.</h1>
+      <p class="book-lead">Three choices and your email. Times are in Manila, UTC+8.</p>
+    </section>
 
-    <div class="book-layout">
-      <section class="book-context" aria-labelledby="book-context-title">
-        <h2 id="book-context-title">Good fits</h2>
-        <ul>{choices.map((choice) => <li>{choice}</li>)}</ul>
-        <div class="book-duration">
-          <h2>When</h2>
-          <p>Choose an open time in the scheduler. Duration and availability come from Cal.com.</p>
-        </div>
-        <div class="book-contact">
-          <p class="label">Prefer email?</p>
-          <a href={`mailto:${site.email}`}>{site.email}</a>
-        </div>
+    <div class="book-cells region">
+      <section class="book-reasons" aria-labelledby="book-about">
+        <h2 id="book-about" class="book-step">1 · what about</h2>
+        <ul>{reasons.map((reason) => <li>{reason}</li>)}</ul>
       </section>
 
-      <section class="book-provider" aria-labelledby="book-when-title">
-        <div class="provider-heading"><h2 id="book-when-title">When</h2><a href={site.bookingUrl} target="_blank" rel="noopener noreferrer">OPEN IN {displayHost(site.bookingUrl)} ↗</a></div>
+      <section class="book-embed" aria-labelledby="book-when">
+        <div class="book-step-row">
+          <h2 id="book-when" class="book-step">2 · when</h2>
+          <a href={site.bookingUrl} target="_blank" rel="noopener noreferrer">open {displayHost(site.bookingUrl)}</a>
+        </div>
         <iframe src={site.bookingUrl} title="Choose a time to talk with John Carlo Santos" loading="lazy"></iframe>
-        <p class="provider-note">Available times and booking details are supplied by the scheduler.</p>
       </section>
     </div>
-
   </main>
+  <Fragment slot="footer"> · rather email? <a href={`mailto:${site.email}`}>{site.email}</a></Fragment>
 </Layout>
 
 <style>
-  .book-hero { padding-block:clamp(48px,8vw,96px); border-bottom:var(--rule); }
-  .book-hero h1 { margin:0 0 var(--space-3); font:var(--type-hero); letter-spacing:-.035em; }
-  .book-hero > p:last-child { max-width:620px; margin:0; font:var(--type-lead); }
-  .book-layout { display:grid; grid-template-columns:minmax(250px, .75fr) minmax(0, 1.5fr); gap:var(--space-4); padding-block:var(--space-4); }
-  .book-context, .book-provider { min-width:0; border:var(--rule); }
-  .book-context { padding:var(--space-3); }
-  .book-context h2, .provider-heading h2 { margin:0; font:var(--type-section); }
-  .book-context ul { margin:var(--space-3) 0 var(--space-4); padding:0; list-style:none; border-top:var(--rule); }
-  .book-context li { padding:14px 0; border-bottom:var(--rule); font:var(--type-card); }
-  .book-duration { padding-top:var(--space-3); border-top:var(--rule); }
-  .book-duration p { margin:var(--space-2) 0 0; font:var(--type-body); }
-  .book-contact { margin-top:var(--space-4); padding-top:var(--space-3); border-top:var(--rule); }
-  .book-contact p { margin-bottom:8px; }
-  .provider-heading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; padding:16px; border-bottom:var(--rule); }
-  .provider-heading a { font:var(--type-label); }
-  .book-provider iframe { display:block; width:100%; min-height:720px; border:0; background:var(--paper); }
-  .provider-note { margin:0; padding:12px 16px; border-top:var(--rule); color:var(--muted); font:var(--type-label); }
-  .book-page .site-footer { margin-inline:calc(-1 * var(--gutter)); }
-  @media(max-width:767px) {
-    .book-hero { padding-block:var(--space-5); }
-    .book-hero > p:last-child { font-size:16px; }
-    .book-layout { display:flex; flex-direction:column; padding-block:var(--space-3); }
-    .book-context { padding:var(--space-2); }
-    .book-context li { font-size:18px; }
-    .book-provider iframe { min-height:650px; }
+  .book-hero { display: flex; flex-direction: column; gap: 20px; padding: var(--space-5) var(--gutter); }
+  .book-hero .eyebrow { margin: 0; color: var(--ink); font: 400 13px/1.4 var(--font-mono); letter-spacing: 0; }
+  .book-hero h1 { margin: 0; font: var(--type-hero); line-height: .88; letter-spacing: var(--track-tight); }
+  .book-lead { max-width: 640px; margin: 0; font: var(--type-lead); }
+
+  /* Both cells carry a left rule; the -2px shift lays the first over the frame rule,
+     so the embed never doubles a rule when it wraps under the reasons. */
+  .book-cells { display: flex; flex-wrap: wrap; margin-left: calc(-1 * var(--rule-w)); }
+  .book-reasons { flex: 1 1 360px; min-width: 0; border-left: var(--rule); }
+  .book-embed { flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; border-left: var(--rule); }
+  .book-step { margin: 0; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .book-reasons > .book-step, .book-step-row { padding: var(--space-2) var(--gutter); border-bottom: var(--rule); }
+  .book-step-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .book-step-row a { font: 400 13px/1.4 var(--font-mono); }
+  .book-reasons ul { margin: 0; padding: 0; list-style: none; }
+  .book-reasons li { display: flex; align-items: center; min-height: 60px; padding: 0 var(--gutter); border-bottom: var(--rule); font: 800 19px/1.2 var(--font-display); }
+  .book-embed iframe { display: block; flex: 1 0 auto; width: 100%; min-height: 720px; border: 0; background: var(--paper); }
+
+  @media (max-width: 767px) {
+    .book-hero { gap: var(--space-2); padding-block: var(--space-4); }
+    .book-cells { margin-left: 0; }
+    .book-reasons, .book-embed { flex-basis: 100%; border-left: 0; }
+    .book-reasons li { min-height: 56px; font-size: 18px; }
+    .book-embed iframe { min-height: 650px; }
   }
 </style>
