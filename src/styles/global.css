@@ -3,7 +3,10 @@
 /* ── Base ─────────────────────────────────────────────────────────────── */
 :root { color-scheme: light; }
 *, *::before, *::after { box-sizing: border-box; border-radius: 0 !important; box-shadow: none !important; transition: none !important; animation: none !important; }
-html { min-width: 320px; background: var(--paper); color: var(--ink); font: var(--type-body); }
+html { min-width: 320px; background: var(--paper); color: var(--ink); font: var(--type-body); scrollbar-color: var(--ink) var(--paper); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { border: 2px solid var(--paper); background: var(--ink); }
 body { margin: 0; background: var(--paper); color: var(--ink); }
 body, button, input, select, textarea { font-family: var(--font-text); }
 a { color: var(--link); text-decoration: underline; text-underline-offset: .14em; }
@@ -25,7 +28,7 @@ h1, h2, h3, p { margin-top: 0; }
 
 /* ── Header (desktop 64px) ────────────────────────────────────────────── */
 .site-header { display: flex; align-items: stretch; min-height: 64px; border-bottom: var(--rule); background: var(--paper); }
-.brand { display: flex; align-items: center; gap: 12px; padding: 0 var(--gutter); border-right: var(--rule); color: var(--ink); text-decoration: none; font: 900 20px/1 var(--font-display); letter-spacing: -.02em; }
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 var(--gutter); color: var(--ink); text-decoration: none; font: 900 20px/1 var(--font-display); letter-spacing: -.02em; }
 .brand:hover { color: var(--ink); }
 .brand-mark { display: block; flex: none; }
 .main-nav { display: flex; flex: 999 1 420px; min-width: 0; overflow-x: auto; font: 400 14px/1 var(--font-mono); }
