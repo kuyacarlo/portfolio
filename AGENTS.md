@@ -11,15 +11,21 @@
 
 ```text
 src/
-  layouts/Layout.astro       # Semantic document shell, skip link, responsive header/menu
+  layouts/Layout.astro       # Ruled 1440 frame: skip link, cell header, phone menu, footer slot
   layouts/NoteLayout.astro   # Markdown math, Mermaid, and TikZ support
   pages/                     # /, /homelab, /notes, /notes/[slug], /certs, /resume, /book, 404
-  data/*.json                # Handoff page content and design tokens
+  components/                # Mark, CoverageStrip, Footer, Note*, ResumeEntry, CertCard
+  data/*.json                # Handoff page content; data/tokens.css holds the tokens
   content/notes/*.md         # Notes collection
+  lib/layers.ts              # Layer names, strip labels, note filter, phone-featured list
   lib/site.ts                # PUBLIC_* links and booking URL
   lib/cms.ts                 # Notes collection adapter
-  styles/global.css          # Shared rules and page primitives
+  plugins/                   # remark-tikz, remark-note-features (asset flags), rehype-note-a11y
+  styles/global.css          # Base, shell, and shared primitives only
+tests/unit, tests/e2e        # Vitest; Playwright + axe at 1440x900 and 390x844
 ```
+
+Layout is one ruled frame; every region inside it is an edge-to-edge cell. Pages render `<main id="main">` with their regions and keep their own rules in a scoped `<style>`. Shared primitives (`.region`, `.region-head`, `.button-*`, `.tag`, `.status-*`, `.layer-badge`, `.coverage`, `.code-block`) live in `global.css`; add to it only what two pages share.
 
 `src/data/*.json` is the source of truth for projects, hackathons, current work, homelab, resume, certifications, and layer names. Notes remain Markdown in `src/content/notes/`. `src/lib/site.ts` owns environment-backed external links only.
 
@@ -40,13 +46,13 @@ The phone homepage shows only `featuredOnPhone` projects and the two podium resu
 - Treat bracketed values in the handoff data as placeholders. Keep them visible where required; do not guess dates, resume details, certificates, booking information, project layers, or handles.
 - Project layer assignments are guesses; preserve them until Karlo confirms them.
 - Keep the existing GitHub account links unless the owner resolves the handle question.
-- No RSS feed: the unused `rss` dependency must not be wired up or documented.
+- No RSS feed. Do not add one.
 - Read `NOTES.md` before authoring or editing note content.
 
 ## Workflow
 
 - Verify the repository, branch, and worktree before editing.
-- Create a `feat/` or `fix/` branch. Use pnpm, run `pnpm build`, and make a reviewable commit. Never push unless the user explicitly asks. Do not deploy manually; GitHub Actions deploys on merge to `main`.
+- Create a `feat/` or `fix/` branch. Use pnpm. Before committing, run `pnpm build`, `pnpm test`, and `pnpm test:e2e` (axe, no sideways scroll from 360 to 1280, one h1 per page). Make reviewable commits. Never push unless the user explicitly asks. Do not deploy manually; GitHub Actions deploys on merge to `main`.
 - Do not add a CSS framework or unrelated third-party scripts.
 
 ## Owner details
