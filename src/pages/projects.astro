@@ -69,8 +69,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .project-head > * { padding-block: 10px; }
   .project-head .project-layers { display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; }
   .project-row h2 { font: var(--type-card); overflow-wrap: anywhere; }
-  .project-title-link { color: inherit; text-decoration: none; }
-  .project-title-link:hover { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+  .project-title-link { text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .project-title-link:hover { text-decoration-thickness: 2px; }
   .project-title-link:focus-visible { outline-offset: 3px; }
   .project-row p { font: var(--type-body); }
   .project-row > .project-coverage { display: flex; padding: 0; }
