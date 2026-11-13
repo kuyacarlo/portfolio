@@ -27,8 +27,13 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
 </Layout>
 
 <script>
+  import { filterByLayer } from '../../lib/layers';
+
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-layer-filter]')];
-  const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')];
+  const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')].map((el) => ({
+    el,
+    layers: (el.dataset.noteLayers ?? '').split(',').filter(Boolean).map(Number),
+  }));
   const empty = document.querySelector<HTMLElement>('.notes-empty');
   const isLayer = (value: string | null): value is string => !!value && buttons.some((button) => button.dataset.layerFilter === value);
   const fromUrl = () => {
@@ -36,14 +41,10 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
     return isLayer(layer) ? layer : 'all';
   };
   const applyFilter = (layer: string, push = false) => {
-    let visible = 0;
-    for (const item of items) {
-      const matches = layer === 'all' || (item.dataset.noteLayers ?? '').split(',').includes(layer);
-      item.hidden = !matches;
-      if (matches) visible += 1;
-    }
+    const visible = new Set(filterByLayer(items, layer));
+    for (const item of items) item.el.hidden = !visible.has(item);
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layerFilter === layer)));
-    if (empty) empty.hidden = visible !== 0;
+    if (empty) empty.hidden = visible.size !== 0;
     if (push) {
       const next = new URL(location.href);
       if (layer === 'all') next.searchParams.delete('layer');
