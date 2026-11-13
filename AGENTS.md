@@ -31,7 +31,7 @@ Layout is one ruled frame; every region inside it is an edge-to-edge cell. Pages
 
 ## Design contract
 
-Follow `REDESIGN-SPEC.md` and the supplied redesign files. `HANDOFF.md` is a historical record; do not rewrite it. The site uses a strict black-and-white system: `--ink #000`, `--paper #fff`, `--surface #f2f2f2`, `--muted #666`, and `--link #00e`. Use the tokens in `src/data/tokens.css`; fonts are Red Hat Display, Red Hat Text, and Red Hat Mono. Every cell uses a 2px black rule and square corners. No shadows, gradients, blur, decorative color, pills, or animations. Emphasis is inversion; blue is reserved for links.
+Follow [`docs/REDESIGN-SPEC.md`](docs/REDESIGN-SPEC.md) where it agrees with this current contract. `HANDOFF.md` is a historical record; do not rewrite it. The site uses a strict black-and-white system: `--ink #000`, `--paper #fff`, `--surface #f2f2f2`, `--muted #666`, and `--link #00e`. Use the tokens in `src/data/tokens.css`; fonts are Red Hat Display, Red Hat Text, and Red Hat Mono. Every cell uses a 2px black rule and square corners. No shadows, gradients, blur, decorative color, pills, or animations. Emphasis is inversion; blue is reserved for links.
 
 The staircase mark and layer numbers carry the “stack” idea. Do not explain that idea in copy, add a coverage legend, or add hostnames, ports, internal URLs, IPs, or service counts to the homelab page. Only `forge.kuyacarlo.dev` may be linked from that page.
 
@@ -47,7 +47,7 @@ The phone homepage shows only `featuredOnPhone` projects and the two podium resu
 - Project layer assignments are guesses; preserve them until Karlo confirms them.
 - Keep the existing GitHub account links unless the owner resolves the handle question.
 - No RSS feed. Do not add one.
-- Read `NOTES.md` before authoring or editing note content.
+- Read [`docs/NOTES.md`](docs/NOTES.md) before authoring or editing note content.
 
 ## Workflow
 

@@ -1,6 +1,6 @@
-# Handoff: kuyacarlo.dev redesign
+# Original brief: kuyacarlo.dev redesign
 
-Build the redesigned kuyacarlo.dev from the design in this folder. Read this file first, then `ISSUES.md`. Open the files in `reference/` only when you need exact markup for a component.
+This is the original redesign brief, retained for historical design context. The implementation has since changed and the companion `ISSUES.md`, `reference/`, and supplied design files are not present in this repository. For current architecture and binding project rules, use the root `AGENTS.md`; for the current open-issue review, see `issue-triage.md`. Where this brief conflicts with current code or `AGENTS.md`, the current contract takes precedence.
 
 Design canvas (owner access): https://claude.ai/artifact/AVh3CMAhMkF5kf7HEDjay3. It has two pages: **Brand** (identity, foundations, components) and **Website** (desktop row and phone row).
 
@@ -72,7 +72,7 @@ The font stylesheet is one Google Fonts request (see `tokens.css`). Self-host th
 
 ## 4. Components
 
-Build these once and reuse them. The source to match is `reference/brand/03-components.dc.html` plus the page files.
+The original component source files are not included in this repository; use the current implementation and `AGENTS.md` for shipped behavior.
 
 | Component | Variants / props | Behavior and notes |
 |---|---|---|
@@ -104,7 +104,7 @@ Build these once and reuse them. The source to match is `reference/brand/03-comp
 
 ## 5. Pages
 
-Each page's reference markup is in `reference/desktop/<Page>.dc.html`. The phone references exist only for **Home** and **Homelab**. For every other page, apply the phone rules listed under it.
+The original page reference markup is not included in this repository. Treat the following page descriptions as historical intent and follow `AGENTS.md` for current behavior.
 
 ### `/` Home
 - **Hero:** an availability badge (outlined, mono caps: "Available — hackathon teams, data and DevOps roles"), the `type-hero` headline **"Solder, servers, and the people in between."**, a bio paragraph, and two buttons (See the work / Resume). The right column is the six layers as rows, each a `LayerBadge` + name. That column has no heading.
@@ -129,7 +129,7 @@ Each page's reference markup is in `reference/desktop/<Page>.dc.html`. The phone
 - **Filter:** a `LayerFilter` that filters the list on the client. Mirror the selected layer in the URL (`?layer=4`) so filtered views can be shared.
 - **List:** `NoteListItem`s, newest first.
 - **Empty state:** "Nothing at this layer yet." in mono, in its own cell.
-- **Footer** has an RSS link. Generate `/notes/rss.xml`, or keep the existing feed if one exists.
+- The current project contract does not include an RSS feed.
 - **Phone:** the filter scrolls sideways. List items drop the dek: date, title, then the strip.
 
 ### `/notes/[slug]`
