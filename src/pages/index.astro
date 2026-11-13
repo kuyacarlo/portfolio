@@ -4,15 +4,12 @@ import { site } from '../lib/site';
 import projectContent from '../data/projects.json';
 import hackathonContent from '../data/hackathons.json';
 import nowContent from '../data/now.json';
-import layers from '../data/layers.json';
-
-const layerName = (n: number) => layers.find((layer) => layer.n === n)?.name ?? '';
-const coverageLabel = (values: number[]) => `Layers: ${values.map(layerName).filter(Boolean).join(', ')}`;
+import CoverageStrip from '../components/CoverageStrip.astro';
+import { layers } from '../lib/layers';
 const projects = projectContent.projects.map((project) => {
   const links = project.links as { source?: string; live?: string; internal?: string };
   return { ...project, source: links.source, live: links.live, internal: links.internal };
 });
-const phoneProjects = projects.filter((project) => project.featuredOnPhone);
 const podiums = hackathonContent.filter((item) => item.podium);
 const otherCompetitions = hackathonContent.filter((item) => !item.podium);
 ---
@@ -64,9 +61,7 @@ const otherCompetitions = hackathonContent.filter((item) => !item.podium);
               <div class="table-row project-row" role="row">
                 <strong role="cell">{project.name}</strong>
                 <span role="cell">{project.description}</span>
-                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
-                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
-                </span>
+                <span class="coverage-cell-wrap" role="cell"><CoverageStrip layers={project.layers} /></span>
                 <span class="project-links" role="cell">
                   {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer">SOURCE</a>}
                   {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer">LIVE</a>}
@@ -79,31 +74,16 @@ const otherCompetitions = hackathonContent.filter((item) => !item.podium);
 
         <div class="phone-projects" data-phone-projects>
           <div class="phone-project-list">
-            {phoneProjects.map((project) => (
-              <article class="cell phone-project-card">
+            {projects.map((project) => (
+              <article class:list={['cell', 'phone-project-card', { 'phone-project-extra': !project.featuredOnPhone }]} hidden={!project.featuredOnPhone}>
                 <div class="phone-project-title">
                   <h3>{project.name}</h3>
                   {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${project.name}`}>SOURCE →</a>}
                   {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" aria-label={`Live ${project.name}`}>LIVE →</a>}
-                  {project.internal && <a href={project.internal} aria-label={`About ${project.name}`}>OPEN →</a>}
+                  {project.internal && <a href={project.internal} aria-label={`Open ${project.name}`}>OPEN →</a>}
                 </div>
                 <p>{project.description}</p>
-                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
-                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
-                </span>
-              </article>
-            ))}
-            {projects.filter((project) => !project.featuredOnPhone).map((project) => (
-              <article class="cell phone-project-card phone-project-extra" hidden>
-                <div class="phone-project-title">
-                  <h3>{project.name}</h3>
-                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${project.name}`}>SOURCE →</a>}
-                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" aria-label={`Live ${project.name}`}>LIVE →</a>}
-                </div>
-                <p>{project.description}</p>
-                <span class="coverage" role="img" aria-label={coverageLabel(project.layers)}>
-                  {layers.map((layer) => <span class:list={["coverage-cell", { filled: project.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
-                </span>
+                <CoverageStrip layers={project.layers} />
               </article>
             ))}
           </div>
@@ -243,11 +223,9 @@ const otherCompetitions = hackathonContent.filter((item) => !item.podium);
   .project-row { border-left: var(--rule); }
   .project-row > :first-child { font: 800 20px/1.15 var(--font-display); }
   .project-row > :nth-child(2) { font: 400 15px/1.5 var(--font-text); }
-  .coverage { display: grid; grid-template-columns: repeat(6, 1fr); min-width: 0; height: 48px; border: var(--rule); }
-  .project-row .coverage { align-self: center; margin: 0 var(--gutter); height: 36px; }
-  .coverage-cell { border-right: var(--rule); background: var(--paper); }
-  .coverage-cell:last-child { border-right: 0; }
-  .coverage-cell.filled { background: var(--ink); }
+  .coverage-cell-wrap { display: flex; align-items: center; }
+  .phone-project-card :global(.coverage) { width: 100%; height: 14px; }
+  .coverage-cell-wrap :global(.coverage) { width: 100%; }
   .project-links { display: flex; align-content: center; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
   .phone-projects, .phone-competitions { display: none; }
   .split { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-3); }
@@ -289,12 +267,10 @@ const otherCompetitions = hackathonContent.filter((item) => !item.podium);
   .phone-result-card > span:last-child { color: var(--muted); font: 400 14px/1.4 var(--font-text); }
   .phone-result-card.podium { color: var(--paper); background: var(--ink); }
   .phone-result-card.podium > span:last-child { color: var(--paper); }
-  [hidden] { display: none !important; }
   @media (min-width: 768px) and (max-width: 1023px) {
     .project-table .table-row { grid-template-columns: minmax(130px, 1fr) minmax(150px, 1.5fr) minmax(140px, .9fr) minmax(125px, .8fr); }
     .project-table .table-head > *, .project-row > * { padding-inline: 10px; }
-    .project-row .coverage { margin-inline: 10px; }
-  }
+    }
   @media (max-width: 767px) {
     .home-hero { gap: var(--space-4); padding-block: 48px; }
     .home-intro h1 { margin-block: 20px; font-size: 46px; }

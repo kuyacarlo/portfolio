@@ -1,11 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getPosts } from '../../lib/cms';
-import layers from '../../data/layers.json';
+import CoverageStrip from '../../components/CoverageStrip.astro';
+import { layers } from '../../lib/layers';
 
 const posts = await getPosts();
-const layerName = (n: number) => layers.find((layer) => layer.n === n)?.name ?? '';
-const labelFor = (values: number[]) => `Layers: ${values.map(layerName).filter(Boolean).join(', ')}`;
 ---
 <Layout active="notes" title="Notes — John Carlo Santos" description="Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.">
   <main id="main" class="notes-page page">
@@ -28,9 +27,7 @@ const labelFor = (values: number[]) => `Layers: ${values.map(layerName).filter(B
               <strong>{post.title}</strong>
               {post.desc && <span>{post.desc}</span>}
             </span>
-            <span class="coverage" role="img" aria-label={labelFor(post.layers)}>
-              {layers.map((layer) => <span class:list={['coverage-cell', { filled: post.layers.includes(layer.n) }]} aria-hidden="true"></span>)}
-            </span>
+            <CoverageStrip layers={post.layers} />
           </a>
         ))}
         <p class="notes-empty" hidden>Nothing at this layer yet.</p>
@@ -89,7 +86,7 @@ const labelFor = (values: number[]) => `Layers: ${values.map(layerName).filter(B
     .notes-hero { padding-block: var(--space-5); }
     .notes-hero > p:last-child { font-size: 16px; }
     .note-list-item { grid-template-columns: minmax(0,1fr); gap: 8px; }
-    .note-list-item .coverage { width: 100%; height: 14px; }
+    .note-list-item :global(.coverage) { width: 100%; height: 14px; }
     .note-list-date { font-size: 11px; }
   }
 </style>

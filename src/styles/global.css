@@ -25,7 +25,7 @@ h1, h2, h3, p { margin-top: 0; }
 .main-nav .talk-link { background: var(--ink); color: var(--paper); margin-left: 8px; min-height: 44px; padding-inline: 16px; }
 .menu-toggle { display: none; min-height: 44px; border: var(--rule); background: var(--paper); padding: 0 14px; font: var(--type-label); text-transform: uppercase; }
 .mobile-menu { display: none; }
-.mobile-menu[hidden] { display: none; }
+[hidden] { display: none !important; }
 .container { width: min(100%, var(--container)); margin-inline: auto; padding-inline: var(--gutter); border-left: var(--rule); border-right: var(--rule); }
 .shell { width: min(100%, var(--container)); margin-inline: auto; padding-inline: var(--gutter); border-left: var(--rule); border-right: var(--rule); }
 .page-shell { min-height: calc(100vh - var(--header-h)); }
@@ -60,9 +60,11 @@ h1, h2, h3, p { margin-top: 0; }
 .tag { display: inline-flex; min-height: 30px; align-items: center; border: var(--rule); padding: 3px 8px; font: var(--type-label); }
 .tag + .tag { border-left: 0; }
 .badge { display: inline-flex; min-width: 52px; min-height: 52px; align-items: center; justify-content: center; background: var(--ink); color: var(--paper); font: 700 17px/1 var(--font-mono); }
-.coverage { display: grid; grid-template-columns: repeat(6, 1fr); min-width: 150px; min-height: 28px; border: var(--rule); }
-.coverage span + span { border-left: var(--rule); }
-.coverage .covered { background: var(--ink); }
+/* CoverageStrip: six equal cells, filled = ink. No legend, ever. */
+.coverage { display: grid; grid-template-columns: repeat(6, 1fr); width: 216px; max-width: 100%; height: 48px; border: var(--rule); }
+.coverage-cell { background: var(--paper); }
+.coverage-cell + .coverage-cell { border-left: var(--rule); }
+.coverage-cell.filled { background: var(--ink); }
 .layer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: var(--rule); }
 .layer-grid > * { min-height: 64px; display: flex; align-items: center; gap: 12px; padding: 8px 12px; }
 .layer-grid > *:nth-child(3n+2), .layer-grid > *:nth-child(3n+3) { border-left: var(--rule); }
