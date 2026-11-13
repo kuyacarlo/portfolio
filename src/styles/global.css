@@ -29,10 +29,11 @@ h1, h2, h3, p { margin-top: 0; }
 .brand:hover { color: var(--ink); }
 .brand-mark { display: block; flex: none; }
 .main-nav { display: flex; flex: 999 1 420px; min-width: 0; overflow-x: auto; font: 400 14px/1 var(--font-mono); }
-.main-nav a { display: flex; align-items: center; min-height: 64px; padding: 0 20px; border-right: var(--rule); color: var(--ink); text-decoration: none; }
-.main-nav a:hover, .main-nav a[aria-current="page"] { background: var(--ink); color: var(--paper); }
+.main-nav a { display: flex; align-items: center; min-height: 64px; padding: 0 20px; color: var(--ink); text-decoration: none; text-underline-offset: 4px; }
+.main-nav a:hover { background: transparent; color: var(--ink); text-decoration: underline; }
+.main-nav a[aria-current="page"] { background: var(--ink); color: var(--paper); }
 .main-nav a:focus-visible { outline-offset: -4px; }
-.main-nav a[aria-current="page"]:focus-visible, .main-nav a:hover:focus-visible { outline-color: var(--paper); }
+.main-nav a[aria-current="page"]:focus-visible { outline-color: var(--paper); }
 .talk-link { display: flex; align-items: center; justify-content: center; flex: 1 0 auto; max-width: 220px; margin-left: auto; padding: 0 28px; background: var(--ink); color: var(--paper); text-decoration: none; font: 800 15px/1 var(--font-display); text-transform: uppercase; }
 .talk-link:hover { color: var(--paper); text-decoration: underline; }
 .talk-link:focus-visible { outline-color: var(--paper); outline-offset: -6px; }
