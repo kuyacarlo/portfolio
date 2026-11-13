@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CoverageStrip from '../components/CoverageStrip.astro';
+import { layers } from '../lib/layers';
+import projectContent from '../data/projects.json';
+
+type Links = { source?: string; live?: string; internal?: string };
+const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Layout title="Projects — John Carlo Santos" description="Software, systems, and open source projects by John Carlo Santos.">
+  <main id="main">
+    <section class="region projects-hero" aria-labelledby="projects-title">
+      <p class="eyebrow">01 Selected work / all</p>
+      <h1 id="projects-title">Projects</h1>
+    </section>
+
+    <section class="region" aria-label="All projects">
+      <div class="project-table" role="table" aria-label="Projects">
+        <div class="project-row project-head" role="row">
+          <span role="columnheader">project</span>
+          <span role="columnheader">what it is</span>
+          <span class="project-layers" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span role="columnheader">links</span>
+        </div>
+        {projects.map((project) => (
+          <article class="project-row" role="row">
+            <h2 role="cell">{project.name}</h2>
+            <p role="cell">{project.description}</p>
+            <span class="project-coverage" role="cell"><CoverageStrip layers={project.layers} /></span>
+            <span class="project-links" role="cell">
+              {project.links.source && <a href={project.links.source} target="_blank" rel="noopener noreferrer">source</a>}
+              {project.links.live && <a href={project.links.live} target="_blank" rel="noopener noreferrer">live</a>}
+              {project.links.internal && <a href={project.links.internal}>homelab</a>}
+            </span>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .projects-hero { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5) var(--gutter); }
+  .eyebrow { margin: 0; color: var(--muted); font: var(--type-label); text-transform: uppercase; }
+  h1 { margin: 0; font: var(--type-page-title); letter-spacing: var(--track-tight); }
+  .project-row { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(260px, 1.5fr) 216px minmax(130px, .7fr); align-items: stretch; border-bottom: var(--rule); }
+  .project-row:last-child { border-bottom: 0; }
+  .project-row > * { min-width: 0; margin: 0; padding: var(--space-3) var(--gutter); }
+  .project-head { color: var(--muted); font: var(--type-label); text-transform: uppercase; }
+  .project-head > * { padding-block: 10px; }
+  .project-head .project-layers { display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; }
+  .project-row h2 { font: var(--type-card); overflow-wrap: anywhere; }
+  .project-row p { font: var(--type-body); }
+  .project-coverage { display: flex; padding: 0; }
+  .project-coverage :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+  .project-links { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; font: 400 14px/1.4 var(--font-mono); }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .project-row { grid-template-columns: minmax(130px, 1fr) minmax(180px, 1.5fr) 160px minmax(90px, .7fr); }
+    .project-row > * { padding-inline: var(--space-2); }
+  }
+  @media (max-width: 767px) {
+    .project-head { display: none; }
+    .project-row { grid-template-columns: 1fr; gap: 0; padding: var(--space-2) 0; }
+    .project-row > * { padding: var(--space-1) var(--gutter); }
+    .project-row h2 { font-size: 20px; }
+    .project-coverage :global(.coverage) { min-height: 14px; border: 0; border-top: var(--rule); }
+    .project-links { min-height: 44px; align-items: center; }
+  }
+</style>
