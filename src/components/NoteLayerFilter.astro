@@ -22,9 +22,9 @@ import { layers } from '../lib/layers';
   .note-filter { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
   button { flex: none; min-height: 52px; padding: 0 20px; border: 0; border-right: var(--rule); background: var(--paper); color: var(--ink); font: 400 14px/1 var(--font-mono); white-space: nowrap; }
   button:hover { text-decoration: underline; }
-  button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  button[aria-pressed="true"] { background: var(--solid); color: var(--solid-text); }
   button:focus-visible { outline-offset: -6px; }
-  button[aria-pressed="true"]:focus-visible { outline-color: var(--paper); }
+  button[aria-pressed="true"]:focus-visible { outline-color: var(--solid-text); }
 
   @media (max-width: 767px) {
     .note-filter { flex-wrap: nowrap; overflow-x: auto; }
