@@ -1,7 +1,7 @@
 ---
 title: "Building MCP Servers That Actually Work"
 date: "2026-06-04"
-tags: ["mcp", "ai", "python", "agentic"]
+tags: ["agents", "ai", "mcp", "python"]
 desc: "What I learned building SAGE and FerretOPS — the non-obvious parts of wiring LLMs to real APIs via MCP."
 ---
 

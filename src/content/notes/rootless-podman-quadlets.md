@@ -1,7 +1,7 @@
 ---
 title: "Why We Run Rootless Podman Quadlets Instead of Root Docker"
 date: "2026-10-06"
-tags: ["linux", "containers", "podman", "devops", "homelab"]
+tags: ["containers", "devops", "homelab", "linux", "podman"]
 desc: "How systemd Quadlet units eliminate the privileged Docker daemon, automate boot lifecycle, and secure homelab services."
 ---
 

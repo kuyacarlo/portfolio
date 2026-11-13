@@ -40,7 +40,6 @@ const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFro
         <span class="tag">{entry.data.date}</span>
         <span class="tag">{readMinutes} min read</span>
         {noteLayers.map((n) => <span class="tag tag-inverted">{String(n).padStart(2, '0')} {layerName(n)}</span>)}
-        {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
       </div>
     </section>
 

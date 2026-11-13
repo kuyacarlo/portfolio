@@ -48,6 +48,7 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
       const next = new URL(location.href);
       if (layer === 'all') next.searchParams.delete('layer');
       else next.searchParams.set('layer', layer);
+      next.searchParams.delete('tag');
       history.pushState({}, '', next);
     }
   };

@@ -1,7 +1,7 @@
 ---
 title: "QC for Devs & Data Pros — Your Pre-Push Safety Net"
 date: "2026-03-18"
-tags: ["devops", "git", "quality"]
+tags: ["devops", "git", "quality", "security"]
 desc: "A checklist-driven approach to catching bugs, secrets, and broken pipelines before they hit remote."
 ---
 

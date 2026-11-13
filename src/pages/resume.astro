@@ -86,7 +86,7 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
 
     <div class="resume-print">
       <header class="print-header">
-        <h1>{resume.name}</h1>
+        <p class="print-name">{resume.name}</p>
         <p>{resume.positioning}</p>
         <nav aria-label="Contact links">
           <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -234,7 +234,7 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
     .resume-print { display: block; color: #000; font: 10pt/1.18 "Times New Roman", Georgia, serif; }
     .resume-print * { box-sizing: border-box; }
     .print-header { margin: 0 0 5pt; padding: 0 0 5pt; border-bottom: 0.75pt solid #000; text-align: center; }
-    .print-header h1 { margin: 0 0 2pt; font: bold 17pt/1.05 "Times New Roman", Georgia, serif; text-transform: uppercase; }
+    .print-header .print-name { margin: 0 0 2pt; font: bold 17pt/1.05 "Times New Roman", Georgia, serif; text-transform: uppercase; }
     .print-header p { margin: 0 0 3pt; font: 9.5pt/1.15 "Times New Roman", Georgia, serif; }
     .print-header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 9pt; font: 9pt/1.1 "Times New Roman", Georgia, serif; }
     .print-header a { color: #000; text-decoration: none; }
