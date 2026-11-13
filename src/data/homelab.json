@@ -1,32 +1,36 @@
 {
   "_note": "Public page. Never add hostnames, ports, internal URLs, IPs or container counts.",
-  "intro": "One mini PC under my desk. My git forge, CI, monitoring, files and model routing all run here, rootless, and I can move them to another box without rewriting anything.",
+  "intro": "One mini PC under my desk. My git forge, files, local models and a shelf of small tools all run here, rootless, and I can move them to another box without rewriting anything.",
   "spec": [
     { "label": "hardware", "value": "Lenovo ThinkCentre M710q" },
     { "label": "os", "value": "Fedora" },
     { "label": "runtime", "value": "Rootless Podman, quadlets" },
     { "label": "storage", "value": "btrfs + snapper" },
     { "label": "mesh", "value": "Netbird" },
-    { "label": "ingress", "value": "Cloudflare Tunnel → Nginx Proxy Manager" }
+    { "label": "ingress", "value": "Nginx Proxy Manager" }
   ],
   "services": {
     "5": [
-      { "name": "Nextcloud + Collabora", "note": "Files and docs. WebDAV feeds my e-reader." },
-      { "name": "Karakeep", "note": "Bookmarks, tagged by a local model." },
-      { "name": "Open WebUI", "note": "Chat front end over the model router." },
-      { "name": "n8n", "note": "Workflows, including a summarization pipeline." }
+      { "name": "Home Assistant", "note": "Home automation, running on its own." },
+      { "name": "Actual", "note": "Envelope budgeting, kept local." },
+      { "name": "Memos", "note": "Quick notes and a running log." },
+      { "name": "Excalidraw + Drawio", "note": "Diagrams and whiteboarding." },
+      { "name": "IT-Tools · CyberChef · ConvertX", "note": "A shelf of small converters and encoders." },
+      { "name": "Folding@home", "note": "Donates idle cycles to protein research." }
     ],
     "4": [
-      { "name": "Forgejo + runner", "note": "Git and CI, on its own network.", "link": "https://forge.kuyacarlo.dev" },
-      { "name": "Anubis", "note": "Keeps scrapers off the forge." },
-      { "name": "Authentik", "note": "SSO for everything. Slow; looking for something lighter." },
-      { "name": "Grafana · Loki · Alloy · Prometheus", "note": "Metrics and logs for all of the above." },
-      { "name": "LiteLLM", "note": "One endpoint, routed to Groq, Cerebras and OpenRouter." }
+      { "name": "Forgejo", "note": "My git forge.", "link": "https://forge.kuyacarlo.dev" },
+      { "name": "Ollama", "note": "Local model runtime for the tools that need one." },
+      { "name": "PostgreSQL", "note": "Shared database on its own network." },
+      { "name": "Vaultwarden", "note": "Password vault for the household." },
+      { "name": "Uptime Kuma", "note": "Watches everything and pings me when it stops." },
+      { "name": "ntfy", "note": "Push notifications for scripts and alerts." },
+      { "name": "Homarr", "note": "One dashboard over all of it." }
     ],
     "3": [
       { "name": "Netbird", "note": "Private mesh between my machines." },
-      { "name": "Cloudflare Tunnel", "note": "Public ingress without port forwarding." },
-      { "name": "Nginx Proxy Manager", "note": "HTTP routing, plus a TCP stream for git over SSH." }
+      { "name": "Nginx Proxy Manager", "note": "HTTP routing, plus a stream for git over SSH." },
+      { "name": "dufs", "note": "WebDAV share that feeds my e-reader." }
     ]
   },
   "incidents": [
