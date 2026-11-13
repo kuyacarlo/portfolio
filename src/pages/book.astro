@@ -2,26 +2,27 @@
 import Layout from '../layouts/Layout.astro';
 import { displayHost, site } from '../lib/site';
 
-// The board's reasons, shown as rows. Length, time and contact details are picked in the
-// Cal.com embed (site.bookingUrl): there is no slot API, so availability is never drawn here.
+// Reasons people book, shown as a plain list (not choices). Length, time and contact details
+// are picked in the Cal.com embed (site.bookingUrl): there is no slot API, so availability is
+// never drawn here.
 const reasons = ['Hackathon team', 'Data or DevOps role', 'Collaboration', 'Just talk shop'];
 ---
 <Layout active="book" title="Let’s talk — John Carlo Santos" description="Choose a time to talk with John Carlo Santos. Times are shown in Manila time, UTC+8.">
   <main id="main">
     <section class="book-hero region">
       <h1>Pick one. I'll reply.</h1>
-      <p class="book-lead">Three choices and your email. Times are in Manila, UTC+8.</p>
+      <p class="book-lead">Pick a length and a time in the calendar, then leave your name and email. Times are in Manila, UTC+8.</p>
     </section>
 
     <div class="book-cells region">
       <section class="book-reasons" aria-labelledby="book-about">
-        <h2 id="book-about" class="book-step">1 · what about</h2>
+        <h2 id="book-about" class="book-step">good reasons to book</h2>
         <ul>{reasons.map((reason) => <li>{reason}</li>)}</ul>
       </section>
 
       <section class="book-embed" aria-labelledby="book-when">
         <div class="book-step-row">
-          <h2 id="book-when" class="book-step">2 · when</h2>
+          <h2 id="book-when" class="book-step">pick a time</h2>
           <a href={site.bookingUrl} target="_blank" rel="noopener noreferrer">open {displayHost(site.bookingUrl)}</a>
         </div>
         <iframe src={site.bookingUrl} title="Choose a time to talk with John Carlo Santos" loading="lazy"></iframe>
@@ -46,14 +47,15 @@ const reasons = ['Hackathon team', 'Data or DevOps role', 'Collaboration', 'Just
   .book-step-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
   .book-step-row a { font: 400 13px/1.4 var(--font-mono); }
   .book-reasons ul { margin: 0; padding: 0; list-style: none; }
-  .book-reasons li { display: flex; align-items: center; min-height: 60px; padding: 0 var(--gutter); border-bottom: var(--rule); font: 800 19px/1.2 var(--font-display); }
+  /* Plain text rows, not display-weight cells: these are reasons, not choices. */
+  .book-reasons li { display: flex; align-items: center; min-height: 56px; padding: 0 var(--gutter); border-bottom: var(--rule); font: var(--type-body); }
   .book-embed iframe { display: block; flex: 1 0 auto; width: 100%; min-height: 720px; border: 0; background: var(--paper); }
 
   @media (max-width: 767px) {
     .book-hero { gap: var(--space-2); padding-block: var(--space-4); }
     .book-cells { margin-left: 0; }
     .book-reasons, .book-embed { flex-basis: 100%; border-left: 0; }
-    .book-reasons li { min-height: 56px; font-size: 18px; }
+    .book-reasons li { min-height: 52px; }
     .book-embed iframe { min-height: 650px; }
   }
 </style>
