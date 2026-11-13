@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import hackathons from '../data/hackathons.json';
+
+const podiums = hackathons.filter((item) => item.podium);
+const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
+---
+
+<Layout title="Hackathons — John Carlo Santos" description="Hackathon projects and results by John Carlo Santos.">
+  <main id="main">
+    <section class="region hackathons-hero" aria-labelledby="hackathons-title">
+      <p class="eyebrow">02 Hackathons / all</p>
+      <h1 id="hackathons-title">Competitions</h1>
+    </section>
+
+    <section class="region" aria-label="All hackathon results">
+      <ul class="results">
+        {results.map((item) => (
+          <li class:list={['result', { podium: item.podium }]}>
+            <span class="r-place">{item.result}</span>
+            <span class="r-project-copy">
+              {item.source ? <a class="r-project" href={item.source} target="_blank" rel="noopener noreferrer">{item.project}</a> : <span class="r-project">{item.project}</span>}
+              {item.description && <span class="r-writeup">{item.description}</span>}
+            </span>
+            <span class="r-event">{item.event}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .hackathons-hero { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5) var(--gutter); }
+  .eyebrow { margin: 0; color: var(--muted); font: var(--type-label); text-transform: uppercase; }
+  h1 { margin: 0; font: var(--type-page-title); letter-spacing: var(--track-tight); }
+  ul { margin: 0; padding: 0; list-style: none; }
+  .result { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .result:last-child { border-bottom: 0; }
+  .result > * { min-width: 0; padding: var(--space-3) var(--gutter); }
+  .result .r-place { flex: 0 0 200px; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .result .r-project-copy { flex: 1.5 1 300px; display: flex; flex-direction: column; gap: 3px; }
+  .result .r-project { width: fit-content; color: inherit; font: 800 18px/1.3 var(--font-display); text-decoration: none; }
+  .result a.r-project:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .result a.r-project:focus-visible { outline-color: var(--ink); }
+  .result.podium a.r-project:focus-visible { outline-color: var(--paper); }
+  .result .r-writeup { font: 400 14px/1.4 var(--font-text); }
+  .result .r-event { flex: 1 1 180px; font: 400 15px/1.4 var(--font-text); }
+  .podium { background: var(--ink); color: var(--paper); }
+  .result.podium .r-place { font-weight: 700; }
+  .result.podium + .result.podium { border-top: var(--rule-on-ink); }
+  @media (max-width: 767px) {
+    .result { display: block; padding-block: var(--space-1); }
+    .result > * { display: block; padding: var(--space-1) var(--gutter); }
+    .result .r-place { font-size: 11px; }
+    .result .r-project-copy { padding-top: 0; }
+    .result .r-project { font-size: 18px; }
+    .result .r-writeup, .result .r-event { font-size: 14px; }
+  }
+</style>

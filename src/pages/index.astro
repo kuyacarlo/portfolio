@@ -135,9 +135,12 @@ const nowCells = [
     <!-- 02 Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
     <section class="region hacks" aria-labelledby="hacks-title">
       <div class="hacks-main">
-        <div class="region-head"><h2 id="hacks-title">02 Hackathons</h2></div>
+        <div class="region-head">
+          <h2 id="hacks-title">02 Hackathons</h2>
+          <a class="notes-all" href="/hackathons">all</a>
+        </div>
         <ul class="results desk">
-          {results.map((item) => (
+          {podiums.map((item) => (
             <li class:list={['result', { podium: item.podium }]}>
               <span class="r-place">{item.result}</span>
               <span class="r-project-copy">
@@ -202,7 +205,7 @@ const nowCells = [
     <!-- 04 Contact -->
     <section id="contact" class="contact on-ink" aria-labelledby="contact-title">
       <span class="contact-label">05 Contact</span>
-      <h2 id="contact-title">Let's talk.</h2>
+      <h2 id="contact-title">Say hi.</h2>
       <div class="contact-actions">
         <a class="button button-on-ink" href="/book">Book a call</a>
         <a class="button button-on-ink-outline" href={`mailto:${site.email}`}>Send an email</a>
