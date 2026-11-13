@@ -1,0 +1,123 @@
+{
+  "_note": "Order is display order. 'layers' values are design guesses awaiting Karlo's confirmation (HANDOFF.md §9.5). Link URLs: reuse the ones on the current kuyacarlo.dev; do not invent.",
+  "projects": [
+    {
+      "name": "ComplyAIgent",
+      "description": "Agentic DevSecOps compliance engine. AMD Hackathon 2026.",
+      "layers": [
+        4,
+        5
+      ],
+      "links": {
+        "source": "https://github.com/liitkud/complyaigent",
+        "live": "https://ferretops.kuyacarlo.workers.dev/"
+      },
+      "featuredOnPhone": true
+    },
+    {
+      "name": "andromeda",
+      "description": "My homelab. Rootless Podman, a private mesh, my own forge and monitoring.",
+      "layers": [
+        3,
+        4
+      ],
+      "links": {
+        "internal": "/homelab"
+      },
+      "featuredOnPhone": true
+    },
+    {
+      "name": "git-profile + ssh-profile",
+      "description": "Go CLI for switching Git identities, GPG keys and SSH remotes.",
+      "layers": [
+        5
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/git-profile"
+      },
+      "featuredOnPhone": false
+    },
+    {
+      "name": "WorkSight",
+      "description": "Agentic engine for workforce burnout and productivity insights.",
+      "layers": [
+        4,
+        5
+      ],
+      "links": {
+        "source": "https://github.com/4sightorg/worksight"
+      },
+      "featuredOnPhone": false
+    },
+    {
+      "name": "Kasigla",
+      "description": "Offline-first hypertension follow-up MVP.",
+      "layers": [
+        5,
+        6
+      ],
+      "links": {
+        "source": "https://github.com/Phasmanastasis/PhasmaFrame"
+      },
+      "featuredOnPhone": false
+    },
+    {
+      "name": "BetterBulakan",
+      "description": "Civic portal for Bulakan, Bulacan.",
+      "layers": [
+        5,
+        6
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/betterbulakan"
+      },
+      "featuredOnPhone": true
+    },
+    {
+      "name": "room-tba",
+      "description": "Schedule and room finder for BulSU students.",
+      "layers": [
+        5,
+        6
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/room-tba"
+      },
+      "featuredOnPhone": false
+    },
+    {
+      "name": "awesome-freestack",
+      "description": "Curated list of free developer tools.",
+      "layers": [
+        6
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/awesome-freestack",
+        "live": "https://freestack.kuyacarlo.dev"
+      },
+      "featuredOnPhone": false
+    },
+    {
+      "name": "v4l2loopback-fedora",
+      "description": "Fedora packaging and DKMS automation for a kernel module.",
+      "layers": [
+        2
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/v4l2loopback-fedora"
+      },
+      "featuredOnPhone": true
+    },
+    {
+      "name": "nutrition-api",
+      "description": "FastAPI service over a nutrition dataset.",
+      "layers": [
+        4
+      ],
+      "links": {
+        "source": "https://github.com/kuyacarlo/nutrition-api"
+      },
+      "featuredOnPhone": false
+    }
+  ]
+}

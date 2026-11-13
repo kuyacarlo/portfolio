@@ -1,6 +1,6 @@
 <!--
   Copy into github.com/kuyacarlo/kuyacarlo README.md — source of truth for profile landing.
-  Keep in sync with src/lib/portfolio-data.ts on the portfolio site.
+  Keep in sync with the relevant JSON files in src/data/ on the portfolio site.
 -->
 
 # kuyacarlo

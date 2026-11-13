@@ -1,35 +1,70 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import NoteLayerFilter from '../../components/NoteLayerFilter.astro';
+import NoteListItem from '../../components/NoteListItem.astro';
 import { getPosts } from '../../lib/cms';
+
 const posts = await getPosts();
+const lead = "Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.";
 ---
+<Layout active="notes" title="Notes — John Carlo Santos" description={lead}>
+  <main id="main">
+    <section class="notes-hero">
+      <h1>Notes</h1>
+      <p class="notes-lead">{lead}</p>
+    </section>
 
-<Layout active="notes" title="Notes — John Carlo Santos">
-<div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
+    <NoteLayerFilter />
 
-  <section style="padding-top:120px;padding-bottom:48px;">
-    <h1 class="r" style="font-size:clamp(2.2rem,6vw,4.5rem);font-weight:700;letter-spacing:-0.04em;margin-bottom:10px;">Notes.</h1>
-    <p class="r d1" style="font-size:0.88rem;color:var(--ink-2);max-width:440px;">
-      Occasional writing on data engineering, DevOps, MCP, and building things in the Philippines.
-    </p>
-  </section>
-
-  <div class="r d2" style="padding-bottom:80px;flex:1;">
-    {posts.length === 0 && (
-      <p style="font-size:0.88rem;color:var(--ink-3);padding:24px 0;border-top:1px solid var(--b1);">No notes yet.</p>
-    )}
-    {posts.map(p => (
-      <a href={`/notes/${p.slug}`} class="note-row">
-        <span class="note-date">{p.date}</span>
-        <span class="note-title">{p.title}</span>
-        <span class="note-arrow">↗</span>
-      </a>
-    ))}
-  </div>
-
-  <footer class="footer" style="margin-top:auto;">
-    <span>© 2026 John Carlo Santos</span>
-  </footer>
-
-</div>
+    <div class="notes-list" aria-live="polite">
+      {posts.map((post) => (
+        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} cover={post.cover} layers={post.layers} />
+      ))}
+      <p class="notes-empty" hidden={posts.length > 0}>Nothing at this layer yet.</p>
+    </div>
+  </main>
 </Layout>
+
+<script>
+  import { filterByLayer } from '../../lib/layers';
+
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-layer-filter]')];
+  const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')].map((el) => ({
+    el,
+    layers: (el.dataset.noteLayers ?? '').split(',').filter(Boolean).map(Number),
+  }));
+  const empty = document.querySelector<HTMLElement>('.notes-empty');
+  const isLayer = (value: string | null): value is string => !!value && buttons.some((button) => button.dataset.layerFilter === value);
+  const fromUrl = () => {
+    const layer = new URLSearchParams(location.search).get('layer');
+    return isLayer(layer) ? layer : 'all';
+  };
+  const applyFilter = (layer: string, push = false) => {
+    const visible = new Set(filterByLayer(items, layer));
+    for (const item of items) item.el.hidden = !visible.has(item);
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layerFilter === layer)));
+    if (empty) empty.hidden = visible.size !== 0;
+    if (push) {
+      const next = new URL(location.href);
+      if (layer === 'all') next.searchParams.delete('layer');
+      else next.searchParams.set('layer', layer);
+      history.pushState({}, '', next);
+    }
+  };
+  applyFilter(fromUrl());
+  buttons.forEach((button) => button.addEventListener('click', () => applyFilter(button.dataset.layerFilter ?? 'all', true)));
+  window.addEventListener('popstate', () => applyFilter(fromUrl()));
+</script>
+
+<style>
+  .notes-hero { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--gutter); border-bottom: var(--rule); }
+  .notes-hero > * { margin: 0; }
+  h1 { font: var(--type-page-title); letter-spacing: -0.04em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .notes-lead { max-width: 640px; font: var(--type-lead); }
+  .notes-empty { margin: 0; padding: var(--space-5) var(--gutter); border-bottom: var(--rule); font: 400 15px/1.4 var(--font-mono); }
+
+  @media (max-width: 767px) {
+    .notes-hero { gap: var(--space-2); padding: var(--space-4) var(--gutter); }
+    .notes-empty { padding: var(--space-4) var(--gutter); font-size: 14px; }
+  }
+</style>

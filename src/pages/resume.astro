@@ -1,360 +1,259 @@
 ---
-import fs from 'node:fs';
-import path from 'node:path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import Layout from '../layouts/Layout.astro';
+import ResumeEntry from '../components/ResumeEntry.astro';
 import { site } from '../lib/site';
-import {
-  TAGLINE,
-  experience,
-  talks,
-  certifications,
-  skillGroups,
-  resumeWork,
-  aboutBlurb,
-} from '../lib/portfolio-data';
+import { layerName } from '../lib/layers';
+import resume from '../data/resume.json';
+import hackathons from '../data/hackathons.json';
+import printResume from '../data/resume-print.json';
 
+// Link the PDF only when the file is actually in public/ (see public/resume/README.md);
+// until then the button falls back to print / save as PDF.
 const pdfPath = '/resume/john-carlo-santos.pdf';
-const hasStaticPdf = fs.existsSync(
-  path.join(process.cwd(), 'public/resume/john-carlo-santos.pdf'),
-);
+const hasPdf = existsSync(join(process.cwd(), 'public', pdfPath));
+
+const podiums = hackathons.filter((item) => item.podium);
+const skills = Object.entries(resume.skills)
+  .map(([layer, items]) => ({ n: Number(layer), items }))
+  .sort((a, b) => b.n - a.n);
+const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 ---
 
 <Layout
   active="resume"
   title="Resume — John Carlo Santos"
-  description={`Resume for John Carlo Santos. ${TAGLINE}`}
+  description={`${resume.positioning} Resume for John Carlo Santos.`}
 >
-  <div class="wrap" style="display:flex;flex-direction:column;min-height:100vh;">
-    <article class="resume-page" style="flex:1;">
-
-      <!-- Header -->
-      <header class="resume-header r">
-        <h1 class="resume-name">John Carlo Santos</h1>
-        <p class="resume-tagline-line">
-          <em class="resume-tagline-em">{TAGLINE}</em>
-        </p>
-        <p class="resume-contact">
+  <main id="main">
+    <section class="resume-hero region">
+      <div class="resume-hero-copy">
+        <h1>{resume.name}</h1>
+        <p class="resume-lead">{resume.positioning}</p>
+      </div>
+      <div class="resume-hero-side">
+        {hasPdf ? (
+          <a class="resume-download" href={pdfPath} download>Download PDF</a>
+        ) : (
+          <button class="resume-download" type="button" data-resume-print>Download PDF</button>
+        )}
+        <div class="resume-links">
+          <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
+          <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
-          <span aria-hidden="true"> · </span>
-          <a href={site.linkedinUrl} target="_blank" rel="noopener">linkedin.com/in/kuyacarlo</a>
-          <span aria-hidden="true"> · </span>
-          <a href={site.githubUrl} target="_blank" rel="noopener">github.com/kuyacarlo</a>
-          <span aria-hidden="true"> · </span>
-          <span>Bulacan, PH</span>
-        </p>
-        <div class="resume-actions resume-screen-only r d1">
-          <button type="button" class="btn btn-outline" id="resume-print">⬇ Download PDF</button>
-          {hasStaticPdf && (
-            <a href={pdfPath} class="btn btn-outline" download>Static PDF</a>
-          )}
         </div>
+      </div>
+    </section>
+
+    <section class="region" aria-labelledby="experience-heading">
+      <div class="resume-head"><h2 id="experience-heading">Experience</h2></div>
+      {resume.experience.map((entry) => (
+        <ResumeEntry id={`role-${slug(entry.org)}`} org={entry.org} role={entry.role} dates={entry.dates} bullets={entry.bullets} />
+      ))}
+    </section>
+
+    <div class="resume-pair region">
+      <section class="resume-pair-cell" aria-labelledby="education-heading">
+        <div class="resume-head"><h2 id="education-heading">Education</h2></div>
+        <div class="resume-education">
+          <h3>{resume.education.degree}</h3>
+          <p>{resume.education.school}</p>
+          <p class="resume-muted">{resume.education.year}</p>
+        </div>
+      </section>
+      <section class="resume-pair-cell" aria-labelledby="podiums-heading">
+        <div class="resume-head"><h2 id="podiums-heading">Podiums</h2></div>
+        <ul class="resume-podiums">
+          {podiums.map((item) => (
+            <li><span class="resume-podium-result">{item.result}</span><span class="resume-podium-what">{item.project} · {item.event}</span></li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <section class="region" aria-labelledby="skills-heading">
+      <div class="resume-head"><h2 id="skills-heading">Skills</h2></div>
+      <dl class="resume-skills">
+        {skills.map((skill) => (
+          <div class="resume-skill">
+            <dt>{String(skill.n).padStart(2, '0')}<span class="resume-layer-name"> {layerName(skill.n)}</span></dt>
+            <dd>{skill.items}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <div class="resume-print">
+      <header class="print-header">
+        <h1>{resume.name}</h1>
+        <p>{resume.positioning}</p>
+        <nav aria-label="Contact links">
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <a href={site.linkedinUrl}>{site.linkedinUrl.replace(/^https?:\/\//, '')}</a>
+          <a href={site.githubUrl}>{site.githubUrl.replace(/^https?:\/\//, '')}</a>
+        </nav>
       </header>
 
-      <!-- About -->
-      <section class="resume-section r d1">
-        <h2>About</h2>
-        {aboutBlurb.map((p) => (
-          <p class="resume-about-p">{p}</p>
-        ))}
-      </section>
-
-      <!-- Skills -->
-      <section class="resume-section r d1">
+      <section class="print-section">
         <h2>Skills</h2>
-        <div class="resume-skills-grid resume-screen-only">
-          {skillGroups.map((g) => (
-            <div class="resume-skill-col">
-              <div class="resume-item-title">{g.label}</div>
-              <div class="skill-row">
-                {g.items.map((t) => <span class="tag">{t}</span>)}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div class="resume-skills-harvard">
-          {skillGroups.map((g) => (
-            <p class="resume-skill-line">
-              <strong>{g.label}:</strong> {g.items.join(", ")}
-            </p>
-          ))}
+        <div class="print-skills">
+          {printResume.skills.map((skill) => <p><strong>{skill.label}:</strong> {skill.text}</p>)}
         </div>
       </section>
 
-      <!-- Selected Projects -->
-      <section class="resume-section r d2">
-        <h2>Projects</h2>
-        {resumeWork.map((p) => (
-          <div class="resume-item">
-            <div class="resume-item-head">
-              <span class="resume-item-title">{p.name}</span>
-              <span class="resume-item-meta">{p.category}</span>
-            </div>
-            <p>{p.desc}</p>
-            {p.meta && <p class="resume-item-meta resume-item-submeta">{p.meta}</p>}
-          </div>
-        ))}
-      </section>
-
-      <!-- Experience -->
-      <section class="resume-section r d2">
+      <section class="print-section">
         <h2>Experience</h2>
-        {experience.map((org) => (
-          <div class="resume-item">
-            <div class="resume-item-head">
-              <span class="resume-item-title">{org.org}</span>
-              <span class="resume-item-meta">
-                {org.roles.length > 1
-                  ? `${org.roles[org.roles.length - 1]?.dates.split('—')[0]?.trim()} — ${org.roles[0]?.dates.split('—')[1]?.trim() ?? 'present'}`
-                  : org.roles[0]?.dates}
-              </span>
-            </div>
-            {org.roles.map((role) => (
-              <div class="resume-role">
-                <div class="resume-role-title">{role.title}{org.roles.length > 1 ? ` · ${role.dates}` : ''}</div>
-                {role.bullets && (
-                  <ul>
-                    {role.bullets.map((b) => <li>{b}</li>)}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        ))}
+        <div class="print-experience">
+          {printResume.experience.map((entry) => (
+            <article class="print-entry">
+              <header><strong>{entry.org}</strong><span>{entry.dates}</span><em>{entry.role}</em></header>
+              {entry.bullets.length > 0 && <ul>{entry.bullets.map((bullet) => <li>{bullet}</li>)}</ul>}
+            </article>
+          ))}
+        </div>
       </section>
 
-      <!-- Leadership & Talks -->
-      <section class="resume-section r d2">
-        <h2>Leadership & Talks</h2>
-        <ul class="resume-talk-list">
-          {talks.map((t) => (
-            <li><em>{t.title}</em> — {t.org}</li>
+      <section class="print-section">
+        <h2>Hackathons</h2>
+        <ul class="print-list">
+          {printResume.hackathons.map((item) => (
+            <li>
+              <strong>{item.title}</strong> <span>({item.event})</span>
+              <p><em>Tech Stack:</em> {item.stack}</p>
+              <ul>{item.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+            </li>
           ))}
         </ul>
       </section>
 
-    </article>
+      <section class="print-section">
+        <h2>Selected Projects</h2>
+        <ul class="print-list">
+          {printResume.projects.slice(0, 2).map((project) => <li><strong>{project.title}</strong> - {project.text}</li>)}
+        </ul>
+      </section>
 
-    <footer class="footer resume-screen-only" style="margin-top:auto;">
-      <span>© 2026 John Carlo Santos</span>
-      <span>{TAGLINE}</span>
-      <span><a href="/book" class="footer-link">let's talk →</a></span>
-    </footer>
-  </div>
+      <div class="print-page-two">
+        <section class="print-section">
+          <h2>Selected Projects (continued)</h2>
+          <ul class="print-list">
+            {printResume.projects.slice(2).map((project) => <li><strong>{project.title}</strong> - {project.text}</li>)}
+          </ul>
+        </section>
+
+      <section class="print-section">
+        <h2>Speaking Engagements</h2>
+        <ul class="print-list">{printResume.speaking.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="print-section">
+        <h2>Leadership and Involvement</h2>
+        <ul class="print-list">{printResume.leadership.map((item) => <li>{item}</li>)}</ul>
+      </section>
+
+      <section class="print-section print-education">
+        <h2>Education</h2>
+        <p><strong>{printResume.education.school}</strong>, {printResume.education.location} - {printResume.education.degree}, {printResume.education.year}</p>
+      </section>
+
+      <section class="print-section">
+        <h2>Certifications and Trainings</h2>
+        <ul class="print-list">{printResume.certifications.map((item) => <li>{item}</li>)}</ul>
+      </section>
+      </div>
+    </div>
+  </main>
 
   <script>
-    document.getElementById('resume-print')?.addEventListener('click', () => window.print());
+    document.querySelector('[data-resume-print]')?.addEventListener('click', () => window.print());
   </script>
 </Layout>
 
 <style>
-  .resume-header {
-    padding-top: 120px;
-    padding-bottom: 40px;
-    text-align: center;
-  }
-  .resume-name {
-    font-size: clamp(2.8rem, 7vw, 6rem);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-    margin-bottom: 12px;
-  }
-  .resume-tagline-line {
-    font-size: 1.05rem;
-    color: var(--ink-2);
-    margin-bottom: 16px;
-  }
-  .resume-tagline-em {
-    font-style: italic;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .resume-contact {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--ink-3);
-    margin-bottom: 24px;
-  }
-  .resume-contact a {
-    color: var(--ink-2);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--b2);
-  }
-  .resume-actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+  /* Hero: both cells carry a left rule; the -2px shift lays the first over the frame rule,
+     so the side panel never doubles a rule when it wraps (768–880). */
+  .resume-hero { display: flex; flex-wrap: wrap; margin-left: calc(-1 * var(--rule-w)); }
+  .resume-hero-copy { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: var(--space-5) var(--gutter); border-left: var(--rule); }
+  .resume-hero h1 { margin: 0; font: var(--type-hero); line-height: .88; letter-spacing: var(--track-tight); }
+  .resume-lead { max-width: 640px; margin: 0; font: var(--type-lead); }
+  .resume-hero-side { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; border-left: var(--rule); }
+  .resume-download { flex: 1 1 0; display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-2); min-height: 80px; padding: var(--gutter); border: 0; background: var(--ink); color: var(--paper); text-align: left; text-decoration: none; font: 800 20px/1.2 var(--font-display); text-transform: uppercase; }
+  .resume-download:hover { background: var(--paper); color: var(--ink); }
+  .resume-download:focus-visible { outline: var(--rule-w) solid var(--paper); outline-offset: -6px; }
+  .resume-download:hover:focus-visible { outline-color: var(--ink); }
+  .resume-links { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding: 20px var(--gutter); border-top: var(--rule); font: 400 14px/1.4 var(--font-mono); overflow-wrap: anywhere; }
+
+  .resume-head { padding: 20px var(--gutter); border-bottom: var(--rule); }
+  .resume-head h2 { margin: 0; font: 900 32px/1.3 var(--font-display); letter-spacing: var(--track-section); text-transform: uppercase; }
+
+  .resume-pair { display: flex; flex-wrap: wrap; margin-left: calc(-1 * var(--rule-w)); }
+  .resume-pair-cell { flex: 1 1 420px; min-width: 0; border-left: var(--rule); }
+  .resume-education { display: flex; flex-direction: column; gap: 6px; padding: var(--gutter); }
+  .resume-education h3 { margin: 0; font: 800 22px/1.2 var(--font-display); }
+  .resume-education p { margin: 0; font: 400 16px/1.5 var(--font-text); }
+  .resume-education .resume-muted { color: var(--muted); font: 400 13px/1.5 var(--font-mono); }
+  .resume-podiums { margin: 0; padding: 0; list-style: none; }
+  .resume-podiums li { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .resume-podiums li:last-child { border-bottom: 0; }
+  .resume-podium-result { flex: 0 0 180px; box-sizing: content-box; padding: var(--space-2) var(--gutter); font: 700 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .resume-podium-what { flex: 1 1 200px; padding: var(--space-2) var(--gutter); font: 400 16px/1.5 var(--font-text); }
+
+  .resume-skills { margin: 0; }
+  .resume-skill { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .resume-skill:last-child { border-bottom: 0; }
+  .resume-skill dt { box-sizing: border-box; flex: 0 0 128px; display: flex; align-items: center; gap: 8px; min-height: 56px; padding-inline: 16px; background: var(--ink); color: var(--paper); font: 400 14px/1 var(--font-mono); }
+  .resume-skill dd { flex: 1 1 400px; min-width: 0; margin: 0; padding: var(--space-2) var(--gutter); font: 400 16px/1.5 var(--font-text); }
+  .resume-layer-name { white-space: nowrap; }
+  .resume-print { display: none; }
+
+  @media (max-width: 767px) {
+    .resume-hero, .resume-pair { margin-left: 0; }
+    .resume-hero-copy { flex-basis: 100%; gap: var(--space-2); padding-block: var(--space-4); border-left: 0; }
+    .resume-hero-side { flex-basis: 100%; border-left: 0; border-top: var(--rule); }
+    .resume-download { flex: none; width: 100%; min-height: 64px; align-items: center; font-size: 18px; }
+    .resume-head { padding: var(--space-2) var(--gutter); }
+    .resume-head h2 { font: var(--type-section); letter-spacing: var(--track-section); }
+    .resume-pair-cell { flex-basis: 100%; border-left: 0; }
+    .resume-pair-cell + .resume-pair-cell { border-top: var(--rule); }
+    .resume-education h3 { font: var(--type-card); }
+    .resume-podium-result { flex-basis: 100%; box-sizing: border-box; padding-bottom: 0; }
+    .resume-podium-what { flex-basis: 100%; padding-top: 4px; font: var(--type-body); }
+    .resume-skill { flex-wrap: nowrap; }
+    .resume-skill dt { flex-basis: 128px; min-height: 48px; padding-inline: 12px; }
+    .resume-skill dd { flex: 1 1 auto; padding-block: 12px; font: var(--type-body); }
   }
 
-  /* Centered content on desktop */
-  .resume-page {
-    padding-top: 0;
-    padding-bottom: 80px;
-    max-width: 720px;
-    margin-inline: auto;
-  }
-
-  @media (max-width: 768px) {
-    .resume-header {
-      text-align: left;
-      padding-top: 80px;
-    }
-    .resume-actions {
-      justify-content: flex-start;
-    }
-    .resume-page {
-      max-width: 100%;
-    }
-  }
-
-  /* ─── Print: compact single-page CV ─────────────────────────────── */
   @media print {
-    @page {
-      size: A4;
-      margin: 0.4in 0.55in;
-    }
-
-    .wrap {
-      display: block !important;
-      min-height: 0 !important;
-    }
-    .resume-page {
-      max-width: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 10pt;
-      line-height: 1.15;
-      color: #000;
-    }
-
-    .resume-screen-only,
-    .resume-actions,
-    .footer {
-      display: none !important;
-    }
-
-    .resume-header {
-      padding: 0 0 8pt;
-      text-align: center;
-    }
-    .resume-name {
-      font-size: 24pt;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 1.05;
-      margin: 0 0 2pt;
-    }
-    .resume-tagline-line {
-      font-size: 10pt;
-      color: #000;
-      margin: 0 0 2pt;
-    }
-    .resume-tagline-em {
-      font-style: italic;
-      font-weight: 400;
-      color: #000;
-    }
-    .resume-contact {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 9pt;
-      color: #000;
-      margin: 0 0 8pt;
-    }
-    .resume-contact a {
-      color: #000;
-      text-decoration: none;
-    }
-
-    .resume-section {
-      margin: 0 0 10pt;
-      padding: 0;
-      border-top: none;
-      break-inside: avoid;
-    }
-    .resume-section h2 {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 11pt;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-bottom: 1px solid #000;
-      padding-bottom: 2pt;
-      margin: 0 0 4pt;
-    }
-
-    .resume-about-p {
-      margin: 0 0 2pt;
-      line-height: 1.15;
-    }
-    .resume-about-p:last-child { margin-bottom: 0; }
-
-    .resume-item { margin: 0 0 6pt; }
-    .resume-item:last-child { margin-bottom: 0; }
-    .resume-item-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12pt;
-      margin-bottom: 0;
-    }
-    .resume-item-title {
-      font-size: 10.5pt;
-      font-weight: 700;
-      color: #000;
-    }
-    .resume-item-meta {
-      font-family: "Times New Roman", Times, Georgia, serif;
-      font-size: 9pt;
-      font-style: italic;
-      color: #000;
-      white-space: nowrap;
-    }
-    .resume-item-submeta { display: none; }
-    .resume-item p {
-      margin: 0;
-      line-height: 1.15;
-    }
-
-    .resume-role { margin: 2pt 0 0; }
-    .resume-role-title {
-      font-size: 10pt;
-      font-style: italic;
-      font-weight: 400;
-      color: #000;
-      margin: 0 0 1pt;
-    }
-    .resume-role ul {
-      margin: 0 0 0;
-      padding-left: 1.15em;
-    }
-    .resume-role li {
-      line-height: 1.15;
-      margin: 0;
-    }
-
-    .resume-skills-grid { display: none !important; }
-    .resume-skills-harvard { display: block; }
-    .resume-skill-line {
-      margin: 0;
-      line-height: 1.15;
-    }
-    .resume-skill-line strong { font-weight: 700; color: #000; }
-
-    .resume-talk-list { margin: 0; padding: 0; }
-    .resume-talk-list li {
-      margin: 0;
-      line-height: 1.15;
-    }
-    .resume-talk-list em {
-      font-weight: 700;
-      font-style: normal;
-      color: #000;
-    }
-
-    .r { opacity: 1 !important; transform: none !important; }
+    @page { size: A4 portrait; margin: 0.4in 0.45in; }
+    :global(html), :global(body) { background: #fff !important; color: #000 !important; font: 9pt/1.16 "Times New Roman", Georgia, serif !important; }
+    :global(.frame) { display: block; min-height: 0; max-width: none; border: 0; }
+    :global(.site-header), :global(.site-footer), :global(.skip-link) { display: none !important; }
+    #main { max-width: none; border: 0; color: #000; }
+    #main > :not(.resume-print) { display: none !important; }
+    .resume-print { display: block; color: #000; font: 10pt/1.18 "Times New Roman", Georgia, serif; }
+    .resume-print * { box-sizing: border-box; }
+    .print-header { margin: 0 0 5pt; padding: 0 0 5pt; border-bottom: 0.75pt solid #000; text-align: center; }
+    .print-header h1 { margin: 0 0 2pt; font: bold 17pt/1.05 "Times New Roman", Georgia, serif; text-transform: uppercase; }
+    .print-header p { margin: 0 0 3pt; font: 9.5pt/1.15 "Times New Roman", Georgia, serif; }
+    .print-header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 9pt; font: 9pt/1.1 "Times New Roman", Georgia, serif; }
+    .print-header a { color: #000; text-decoration: none; }
+    .print-section { margin: 0 0 7pt; break-inside: auto; }
+    .print-page-two { break-before: page; }
+    .print-section h2 { margin: 0 0 2pt; padding: 0 0 1pt; border-bottom: 0.5pt solid #000; font: bold 10.5pt/1.15 "Times New Roman", Georgia, serif; text-align: center; text-transform: uppercase; }
+    .print-skills p { margin: 0 0 1pt; }
+    .print-entry { display: block; margin: 0 0 3pt; break-inside: avoid; }
+    .print-entry header { display: block; }
+    .print-entry header strong { font-weight: bold; }
+    .print-entry header span { margin-left: 6pt; color: #333; font-size: 8.5pt; }
+    .print-entry header em { display: block; font-style: italic; }
+    .print-entry ul { margin: 0; padding-left: 11pt; }
+    .print-entry li { margin: 0 0 1pt; }
+    .print-list { margin: 0; padding-left: 12pt; }
+    .print-list li { margin: 0 0 1.5pt; break-inside: avoid; }
+    .print-list span { color: #333; }
+    .print-list p { margin: 0 0 1pt; }
+    .print-education p { margin: 0; }
+    a { color: #000 !important; }
   }
-
 </style>

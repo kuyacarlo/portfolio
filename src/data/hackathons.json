@@ -1,0 +1,10 @@
+[
+  { "result": "Top 3 finalist", "project": "WorkSight", "event": "BPI DataWave 2025", "podium": true, "description": "Multi-agent workplace analytics predicting burnout and balancing workloads.", "source": "https://github.com/4sightorg/worksight" },
+  { "result": "1st runner up", "project": "BetterTranspo", "event": "LPU Innoverse 2025", "podium": true, "description": "Transit tracking with fare estimates and passenger sensors." },
+  { "result": "Participant", "project": "ComplyAIgent", "event": "AMD Developer Hackathon 2026", "podium": false, "description": "Regulatory text compiled into fail-closed DevSecOps hooks.", "source": "https://github.com/liitkud/complyaigent" },
+  { "result": "Participant", "project": "Bantay", "event": "Auth0 for AI Agents 2026", "podium": false, "description": "Pre-push secret scanning with phone-based approval.", "source": "https://github.com/kuyacarlo/bantay" },
+  { "result": "Participant", "project": "Kasigla", "event": "Healthcare Telemetry Hackathon 2026", "podium": false, "description": "Offline blood-pressure tracking and device-to-device handoffs.", "source": "https://github.com/Phasmanastasis/PhasmaFrame" },
+  { "result": "Participant", "project": "SAGE", "event": "MLH Notion MCP Challenge 2026", "podium": false, "description": "MCP co-pilot turns verified curricula into Notion workspaces.", "source": "https://github.com/kuyacarlo/sage-mcp" },
+  { "result": "Participant", "project": "KLIMA", "event": "PJDSC 2025", "podium": false, "description": "Rainfall and river data drive localized flood alerts.", "source": "https://github.com/Signal-No-5/klima" },
+  { "result": "Participant", "project": "SARAI-SABI", "event": "UPLB Innovation Lab × UP Data Science Society", "podium": false }
+]

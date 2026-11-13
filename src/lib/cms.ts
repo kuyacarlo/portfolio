@@ -21,6 +21,9 @@ export interface Post {
   date:  string;
   tags:  string[];
   desc?: string;
+  dek?: string;
+  cover?: string;
+  layers: number[];
 }
 
 function isPublicNote(e: { data: { draft?: boolean; hide?: boolean } }) {
@@ -38,9 +41,17 @@ export async function getPosts(): Promise<Post[]> {
       title: e.data.title,
       date:  e.data.date,
       tags:  e.data.tags,
-      desc:  e.data.desc,
+      desc:  e.data.dek ?? e.data.desc,
+      cover: e.data.cover,
+      layers: e.data.layers,
     }))
-    .sort((a: Post, b: Post) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a: Post, b: Post) => {
+      const aTime = Date.parse(a.date);
+      const bTime = Date.parse(b.date);
+      if (!Number.isFinite(aTime)) return 1;
+      if (!Number.isFinite(bTime)) return -1;
+      return bTime - aTime;
+    });
 }
 
 // ── SOURCE: Supabase ─────────────────────────────────────────────────────────

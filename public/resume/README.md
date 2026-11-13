@@ -1,6 +1,6 @@
 # Resume PDF
 
-Place the latest one-pager here as:
+Place the latest resume PDF here as:
 
 ```
 john-carlo-santos.pdf
@@ -8,4 +8,4 @@ john-carlo-santos.pdf
 
 Served at `/resume/john-carlo-santos.pdf`. Keep it fresh — stale resume is worse than none.
 
-Until the file exists, use **Print / Save as PDF** on `/resume`.
+Until the file exists, the button on `/resume` opens an A4 print layout. Choose **Save as PDF** in the browser dialog.

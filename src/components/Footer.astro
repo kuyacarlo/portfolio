@@ -1,0 +1,7 @@
+---
+import nowContent from '../data/now.json';
+---
+<footer class="site-footer">
+  <span>© {new Date().getFullYear()} John Carlo Santos<slot /></span>
+  <span>{nowContent.tagline}</span>
+</footer>

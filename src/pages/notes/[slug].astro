@@ -1,84 +1,124 @@
 ---
 import NoteLayout from '../../layouts/NoteLayout.astro';
+import NoteAdjacent from '../../components/NoteAdjacent.astro';
 import { getCollection, render } from 'astro:content';
 import { getPosts } from '../../lib/cms';
+import { layerName } from '../../lib/layers';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('notes', (e: any) => {
-    const hidden = e.data.draft || e.data.hide;
-    // In dev, still build hidden notes so you can preview at their URL.
-    return import.meta.env.DEV ? true : !hidden;
-  });
-  return entries.map((entry: any) => ({
-    params: { slug: entry.id.replace(/\.md$/, '') },
-    props:  { entry },
+  // Same order as the index (newest first), so prev/next follow the list.
+  const order = (await getPosts()).map((post) => post.slug);
+  const entries = await getCollection('notes', ({ data }) => !data.draft && !data.hide);
+  entries.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  const link = (entry?: (typeof entries)[number]) => (entry ? { slug: entry.id, title: entry.data.title } : null);
+  return entries.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, previous: link(entries[index - 1]), next: link(entries[index + 1]) },
   }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
-const { title, date, tags } = entry.data;
-const minutes = Math.max(1, Math.ceil((entry.body || '').split(/\s+/).length / 200));
-const body = entry.body || '';
-const hasMath = /\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\begin\{/.test(body);
-const hasTikz = /```(?:tikz|circuitikz)/i.test(body);
-const hasMermaid = /```mermaid/i.test(body);
-
-const slug = entry.id.replace(/\.md$/, '');
-const posts = await getPosts(); // newest → oldest
-const idx = posts.findIndex((p) => p.slug === slug);
-const newer = idx > 0 ? posts[idx - 1] : null;
-const older = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : null;
+const { entry, previous, next } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const toc = headings.filter((heading) => heading.depth === 2);
+const body = entry.body ?? '';
+const words = body.trim().split(/\s+/).filter(Boolean).length;
+const readMinutes = Math.max(1, Math.ceil(words / 225));
+const dek = entry.data.dek ?? entry.data.desc;
+const noteLayers = [...entry.data.layers].sort((a, b) => a - b);
+const editUrl = `https://github.com/kuyacarlo/portfolio/edit/main/src/content/notes/${entry.id}.md`;
+// Set by src/plugins/remark-note-features.ts from the parsed Markdown.
+const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFrontmatter as Record<string, boolean>;
 ---
+<NoteLayout title={`${entry.data.title} — John Carlo Santos`} description={dek ?? entry.data.title} hasMath={hasMath} hasTikz={hasTikz} hasMermaid={hasMermaid}>
+  <main id="main">
+    <nav class="note-crumb" aria-label="Breadcrumb"><a href="/notes">notes</a> / <span aria-current="page">{entry.id}</span></nav>
 
-<NoteLayout
-  title={`${title} — John Carlo Santos`}
-  description={entry.data.desc}
-  noteTitle={title}
-  hasMath={hasMath}
-  hasTikz={hasTikz}
-  hasMermaid={hasMermaid}
->
-<div class="wrap">
+    <section class="note-hero">
+      <h1>{entry.data.title}</h1>
+      {dek && <p class="note-dek">{dek}</p>}
+      <div class="tag-row note-tags">
+        <span class="tag">{entry.data.date}</span>
+        <span class="tag">{readMinutes} min read</span>
+        {noteLayers.map((n) => <span class="tag tag-inverted">{String(n).padStart(2, '0')} {layerName(n)}</span>)}
+        {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    </section>
 
-  <article class="note-article">
-    <div class="note-tags r">
-      {tags.map((t: string) => <span class="tag">{t}</span>)}
+    <div class="note-body">
+      {toc.length > 0 && (
+        <aside class="note-toc">
+          <nav aria-label="On this page">
+            <span class="note-toc-label">on this page</span>
+            {toc.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+          </nav>
+        </aside>
+      )}
+      <article class="note-article">
+        <div class="note-prose"><Content /></div>
+      </article>
     </div>
 
-    <h1 class="r d1" id="note-title">{title}</h1>
-    <div class="note-meta r d2">
-      <time datetime={date}>{date}</time>
-      <span class="note-meta-sep">·</span>
-      <span>{minutes} min read</span>
-    </div>
-
-    <div class="body r d3">
-      <Content />
-    </div>
-
-    <nav class="note-footer" aria-label="Note pagination">
-      <div class="note-footer-side note-footer-prev">
-        {newer ? (
-          <a class="note-footer-link" href={`/notes/${newer.slug}`}>
-            <span class="note-footer-arrow" aria-hidden="true">←</span>
-            <span class="note-footer-link-title">{newer.title}</span>
-          </a>
-        ) : null}
-      </div>
-      <div class="note-footer-center">
-        <a href="/notes">all notes</a>
-      </div>
-      <div class="note-footer-side note-footer-next">
-        {older ? (
-          <a class="note-footer-link" href={`/notes/${older.slug}`}>
-            <span class="note-footer-link-title">{older.title}</span>
-            <span class="note-footer-arrow" aria-hidden="true">→</span>
-          </a>
-        ) : null}
-      </div>
-    </nav>
-  </article>
-
-</div>
+    <NoteAdjacent previous={previous} next={next} />
+  </main>
+  <Fragment slot="footer"> · <a href={editUrl}>edit on GitHub</a></Fragment>
 </NoteLayout>
+
+
+<style>
+  .note-crumb { display: flex; align-items: center; gap: 1ch; min-height: 48px; padding: 0 var(--gutter); border-bottom: var(--rule); font: 400 13px/1.4 var(--font-mono); overflow-wrap: anywhere; }
+  .note-crumb a { display: inline-flex; align-items: center; min-height: 44px; }
+  .note-crumb a, .note-toc a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .note-crumb a:hover, .note-toc a:hover { text-decoration-thickness: 3px; }
+  .note-crumb span { min-width: 0; }
+
+  .note-hero { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--gutter); border-bottom: var(--rule); }
+  .note-hero > * { margin: 0; }
+  h1 { max-width: 1100px; font: var(--type-article-title); letter-spacing: var(--track-tight); overflow-wrap: break-word; }
+  .note-dek { max-width: 760px; font: var(--type-lead); }
+  /* Joined tags that also stay joined when the row wraps. */
+  .note-tags { padding: 0 0 var(--rule-w) var(--rule-w); }
+  .note-tags .tag { border-left: var(--rule); margin: 0 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)); }
+
+  .note-body { display: flex; border-bottom: var(--rule); }
+  .note-toc { flex: 1 1 240px; padding: var(--gutter); border-right: var(--rule); }
+  .note-toc nav { display: flex; flex-direction: column; gap: 12px; font: 400 14px/1.4 var(--font-mono); text-transform: lowercase; }
+  .note-toc-label { color: var(--muted); font-size: 12px; text-transform: uppercase; }
+  .note-article { flex: 999 1 640px; min-width: 0; padding: var(--space-5) var(--gutter) var(--space-6); }
+
+  /* Article body, rendered from Markdown. */
+  .note-prose { max-width: 720px; display: flex; flex-direction: column; gap: var(--space-3); font: var(--type-article); }
+  .note-prose > :global(*) { margin: 0; }
+  .note-prose :global(h2) { margin-top: var(--space-2); font: 800 30px/1.1 var(--font-display); }
+  .note-prose :global(h3) { margin-top: var(--space-1); font: var(--type-card); }
+  .note-prose :global(h2:first-child), .note-prose :global(h3:first-child) { margin-top: 0; }
+  .note-prose :global(:is(p, li, blockquote, td, th)) { overflow-wrap: break-word; }
+  .note-prose :global(:is(ul, ol)) { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--space-3); }
+  .note-prose :global(blockquote) { padding: var(--space-2) var(--gutter); border-left: var(--space-1) solid var(--ink); }
+  .note-prose :global(blockquote > :last-child) { margin-bottom: 0; }
+  .note-prose :global(hr) { width: 100%; border: 0; border-top: var(--rule); }
+  .note-prose :global(img) { display: block; max-width: 100%; height: auto; border: var(--rule); }
+  .note-prose :global(figure) { margin: 0; }
+  .note-prose :global(figcaption) { margin-top: var(--space-1); color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
+  .note-prose :global(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font: var(--type-body); }
+  .note-prose :global(:is(th, td)) { padding: var(--space-1) 12px; border: var(--rule); text-align: left; vertical-align: top; }
+  .note-prose :global(th) { font: 700 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .note-prose :global(.task-list-item) { list-style: none; }
+  .note-prose :global(.task-list-item input) { margin: 0 var(--space-1) 0 calc(-1 * var(--space-3)); accent-color: var(--ink); }
+  .note-prose :global(:not(pre) > code) { padding: 2px 6px; background: var(--surface); font-family: var(--font-mono); font-size: 0.89em; }
+
+  /* Code blocks: Shiki ships a dark theme (astro.config.mjs); the board draws
+     a light --surface block with ink text, so override its inline colours. */
+  .note-prose :global(pre) { max-width: 100%; overflow-x: auto; padding: var(--gutter); border: var(--rule); background: var(--surface); color: var(--ink); font: var(--type-code); white-space: pre; }
+  .note-prose :global(pre.astro-code) { background-color: var(--surface) !important; color: var(--ink) !important; white-space: pre !important; overflow-wrap: normal !important; word-wrap: normal !important; }
+  .note-prose :global(pre.astro-code span) { color: var(--ink) !important; }
+  .note-prose :global(pre code) { font: inherit; }
+
+  @media (max-width: 767px) {
+    .note-crumb { font-size: 12px; }
+    .note-hero { padding: var(--space-4) var(--gutter); }
+    .note-toc { display: none; }
+    .note-article { padding: var(--space-4) var(--gutter) var(--space-5); }
+    .note-prose { gap: var(--space-2); }
+    .note-prose :global(h2) { font: 800 24px/1.15 var(--font-display); }
+  }
+</style>

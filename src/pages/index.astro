@@ -1,250 +1,391 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import {
-  TAGLINE,
-  PROOF_OF_WORK_URL,
-  counts,
-  hackathons,
-  nowItems,
-  projects,
-  socialProof,
-} from '../lib/portfolio-data';
+import CoverageStrip from '../components/CoverageStrip.astro';
 import { site } from '../lib/site';
+import { featuredOnPhone, layers } from '../lib/layers';
+import projectContent from '../data/projects.json';
+import hackathons from '../data/hackathons.json';
+import now from '../data/now.json';
+import { getPosts } from '../lib/cms';
 
-const emailMailto = `mailto:${site.email}`;
-/** Show on mobile (featured cards). Full list stays on desktop. */
-const mobileFeatured = new Set([
-  "ComplyAIgent (FerretOPS)",
-  "git-profile & ssh-profile",
-  "WorkSight",
-  "Kasigla (PhasmaFrame)",
-  "awesome-freestack",
-  "BetterBulakan",
-]);
+type Links = { source?: string; live?: string; internal?: string };
+
+const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
+const featured = new Set(featuredOnPhone(projects).map((project) => project.name));
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/** The one link a phone card shows: homelab, else source, else live. */
+const phoneLink = (links: Links) =>
+  links.source ? { label: 'source', href: links.source, external: true }
+  : links.internal ? { label: 'homelab', href: links.internal, external: false }
+  : links.live ? { label: 'live', href: links.live, external: true }
+  : null;
+
+const primaryProjectLink = (links: Links) =>
+  links.source ? { label: 'source', href: links.source, external: true }
+  : links.internal ? { label: 'homelab', href: links.internal, external: false }
+  : links.live ? { label: 'live', href: links.live, external: true }
+  : null;
+
+const podiums = hackathons.filter((item) => item.podium);
+const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
+const phoneFeaturedResults = new Set(results.slice(0, Math.max(3, podiums.length)));
+const featuredNotes = (await getPosts()).slice(0, 3);
+const phoneTitleLink = (links: Links) =>
+  links.live ? { href: links.live, external: true }
+  : links.internal ? { href: links.internal, external: false }
+  : links.source ? { href: links.source, external: true }
+  : null;
+
+const nowCells = [
+  { label: 'Building', text: now.building },
+  { label: 'Learning', text: now.learning },
+  { label: 'Exploring', text: now.exploring },
+  { label: 'Open for', text: now.openFor },
+];
 ---
 
-<Layout active="home" navRevealId="work">
-
-<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
-<div class="wrap">
-  <section class="hero">
-    <div style="margin-bottom: 16px;">
-      <span class="hero-status" id="collab-status" style="cursor:pointer; display:inline-flex; border: 1px solid var(--b1); padding: 5px 12px; border-radius: 99px; background: var(--s1); color: var(--ink-2); font-size: 0.72rem;" title="Status: Actively open to full-time / contract roles">
-        <span class="hero-status-dot"></span>
-        available for hire & collab
-      </span>
-    </div>
-    <div class="hero-name r">
-      <div class="line1"><span>John Carlo</span></div>
-      <span class="line2">Santos.</span>
-      <div class="hero-meta">
-        <a href="/book" class="btn btn-filled hero-cta">Let's talk <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-    <div class="hero-rule r d1"></div>
-    <div class="hero-sub r d2">
-      <p class="hero-desc">
-        <strong>Software &amp; Systems Engineer</strong>, CTO @ <strong>Seekers Guild</strong>.
-        BS Computer Engineering @ <strong>Bulacan State University</strong> · 2028.
-        Actively open to work. I build high-throughput ETL data pipelines, fail-closed DevSecOps guardrails, and autonomous agent harnesses.
-      </p>
-      <p class="hero-tagline">{TAGLINE}</p>
-    </div>
-  </section>
-</div>
-
-
-<!-- PROJECTS -->
-<section class="section" id="work">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">01</span>
-      <span class="sec-name">Selected Work</span>
-      <span class="sec-rule"></span>
-      <a href={PROOF_OF_WORK_URL} class="sec-link">
-        view full resume →
-      </a>
-    </div>
-
-    <div class="project-grid">
-      {projects.map((p, i) => (
-        <div class={`project-card r d${(i % 4) + 1}${mobileFeatured.has(p.name) ? " proj-mobile" : " proj-desktop-only"}`}>
-          <div class="proj-thumb">
-            {p.img
-              ? <img src={p.img} alt={p.name} loading={i < 3 ? "eager" : "lazy"} decoding="async" />
-              : <div class="proj-placeholder"><span class="placeholder-emoji" aria-hidden="true">{p.emoji}</span></div>
-            }
-          </div>
-          <div class="proj-body">
-            <div class="proj-cat">{p.category}</div>
-            <div class="proj-name">
-              {p.name}
-              {p.live && <span class="live-dot" title="Live"></span>}
-              {p.private && <span class="proj-private">private</span>}
-            </div>
-            {(p.role || p.team || p.award) && (
-              <div class="proj-meta">
-                {p.role && <span>{p.role}</span>}
-                {p.team && <span>{p.team}</span>}
-                {p.award && <span class="proj-award">{p.award}</span>}
-              </div>
-            )}
-            <p class="proj-desc">{p.desc}</p>
-            <div class="proj-tags">
-              {p.tech.map(t => <span class="tag">{t}</span>)}
-            </div>
-            <div class="proj-links">
-              {p.private && !p.url
-                ? <span class="proj-private-note">Source private</span>
-                : p.url && (
-                  <a href={p.url} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-                )
-              }
-              {p.live && (
-                <a href={p.live} target="_blank" rel="noopener noreferrer">Live ↗</a>
-              )}
-              {p.writeup && (
-                <a href={p.writeup} target="_blank" rel="noopener noreferrer">Writeup ↗</a>
-              )}
-              {p.demo && (
-                <a href={p.demo} target="_blank" rel="noopener noreferrer">Demo ↗</a>
-              )}
-            </div>
-          </div>
+<Layout active="home">
+  <main id="main">
+    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a 3×2 grid. -->
+    <section class="region hero" aria-labelledby="home-title">
+      <div class="hero-main">
+        <h1 id="home-title">Solder, servers, and the people in between.</h1>
+        <p class="hero-bio desk">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <p class="hero-bio phone">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work"><span class="desk">See the work</span><span class="phone">The work</span></a>
+          <a class="button button-secondary" href="/resume">Resume</a>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-<!-- HACKATHONS -->
-<section class="section" id="hackathons">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">02</span>
-      <span class="sec-name">Hackathons & Competitions</span>
-      <span class="sec-rule"></span>
-    </div>
-
-    <div class="hack-list r d1">
-      {hackathons.map(h => {
-        const CardContent = (
-          <>
-            <div class="hack-place">{h.place}</div>
-            <div class="hack-name">{h.name}</div>
-            <span class="hack-proj">{h.proj}</span>
-            <p class="hack-desc">{h.desc}</p>
-          </>
-        );
-        return h.url ? (
-          <a href={h.url} target="_blank" rel="noopener noreferrer" class="hack-item" style="display:block;text-decoration:none;color:inherit;">
-            {CardContent}
-          </a>
-        ) : (
-          <div class="hack-item">
-            {CardContent}
-          </div>
-        );
-      })}
-    </div>
-    <p class="sec-count r">{counts.comps} comps · {counts.podiums} podiums</p>
-  </div>
-</section>
-
-
-{socialProof.enabled && socialProof.photos.length > 0 && (
-  <section class="section" id="photos">
-    <div class="wrap">
-      <div class="sec-label r">
-        <span class="sec-num">··</span>
-        <span class="sec-name">Photos</span>
-        <span class="sec-rule"></span>
       </div>
-      <div class="proof-strip r d1">
-        {socialProof.photos.map(ph => (
-          <figure class="proof-item">
-            <img src={ph.src} alt={ph.caption} loading="lazy" />
-            <figcaption>{ph.caption}</figcaption>
-          </figure>
+      <ul class="side layer-col desk">
+        {[...layers].reverse().map((layer) => (
+          <li><span class="layer-badge">{pad(layer.n)}</span><span class="layer-name">{layer.name}</span></li>
+        ))}
+      </ul>
+      <ul class="layer-cells phone">
+        {[...layers].reverse().map((layer) => (
+          <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- 01 Selected work -->
+    <section id="work" class="region" aria-labelledby="work-title">
+      <div class="region-head">
+        <h2 id="work-title">01 <span class="desk">Selected </span>work</h2>
+        <a class="desk" href="/resume">full resume</a>
+      </div>
+
+      <div class="work-table desk" role="table" aria-labelledby="work-title">
+        <div class="work-row work-head" role="row">
+          <span class="c-name" role="columnheader">project</span>
+          <span class="c-desc" role="columnheader">what it is</span>
+          <span class="c-strip c-nums" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span class="c-links" role="columnheader">links</span>
+        </div>
+        {projects.map((project) => (
+          <div class="work-row" role="row">
+            <span class="c-name" role="cell">
+              {primaryProjectLink(project.links) ? (
+                <a class="project-primary-link" href={primaryProjectLink(project.links)!.href} target={primaryProjectLink(project.links)!.external ? '_blank' : undefined} rel={primaryProjectLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
+              ) : project.name}
+            </span>
+            <span class="c-desc" role="cell">{project.description}</span>
+            <span class="c-strip" role="cell"><CoverageStrip layers={project.layers} /></span>
+            <span class="c-links" role="cell">
+              {project.links.source && primaryProjectLink(project.links)?.label !== 'source' && <a href={project.links.source} target="_blank" rel="noopener noreferrer" aria-label={`source for ${project.name}`}>source</a>}
+              {project.links.internal && primaryProjectLink(project.links)?.label !== 'homelab' && <a href={project.links.internal}>{'homelab'}</a>}
+              {project.links.live && primaryProjectLink(project.links)?.label !== 'live' && <a href={project.links.live} target="_blank" rel="noopener noreferrer" aria-label={`live ${project.name}`}>live</a>}
+            </span>
+          </div>
         ))}
       </div>
-    </div>
-  </section>
-)}
 
-
-<!-- NOW -->
-<section class="section" id="now">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">03</span>
-      <span class="sec-name">Now</span>
-      <span class="sec-rule"></span>
-    </div>
-
-    <div class="now-block r d1">
-      {nowItems.map(item => (
-        <div class="now-row">
-          <span class="now-key">{item.label}:</span>
-          {item.href
-            ? <a href={item.href} class="now-val">{item.text}</a>
-            : <span class="now-val">{item.text}</span>
-          }
+      <div class="phone">
+        <div id="phone-projects">
+          {projects.map((project) => {
+            const link = phoneLink(project.links);
+            return (
+              <article class:list={['phone-project-card', { 'phone-project-extra': !featured.has(project.name) }]} hidden={!featured.has(project.name)}>
+                <div class="card-body">
+                  <div class="card-title">
+                    <h3>{phoneTitleLink(project.links) ? <a href={phoneTitleLink(project.links)!.href} target={phoneTitleLink(project.links)!.external ? '_blank' : undefined} rel={phoneTitleLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a> : project.name}</h3>
+                    {link && (link.external
+                      ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
+                      : <a href={link.href}>{link.label}</a>)}
+                  </div>
+                  <p>{project.description}</p>
+                </div>
+                <CoverageStrip layers={project.layers} />
+              </article>
+            );
+          })}
         </div>
-      ))}
-      <div class="now-row">
-        <span class="now-key">open for:</span>
-        <span class="now-val">hackathon teams · data/DevOps roles · collabs</span>
+        <button class="show-all" type="button" data-expand-projects data-count={projects.length} aria-expanded="false" aria-controls="phone-projects">SHOW ALL {projects.length} PROJECTS</button>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
+    <!-- 02 Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
+    <section class="region hacks" aria-labelledby="hacks-title">
+      <div class="hacks-main">
+        <div class="region-head"><h2 id="hacks-title">02 Hackathons</h2></div>
+        <ul class="results desk">
+          {results.map((item) => (
+            <li class:list={['result', { podium: item.podium }]}>
+              <span class="r-place">{item.result}</span>
+              <span class="r-project-copy">
+                {item.source ? <a class="r-project" href={item.source} target="_blank" rel="noopener noreferrer">{item.project}</a> : <span class="r-project">{item.project}</span>}
+                {item.description && <span class="r-writeup">{item.description}</span>}
+              </span>
+              <span class="r-event">{item.event}</span>
+            </li>
+          ))}
+        </ul>
+        <div class="phone hacks-phone">
+          <ul id="phone-results">
+            {results.map((item) => (
+              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !phoneFeaturedResults.has(item) }]} hidden={!phoneFeaturedResults.has(item)}>
+                <span class="r-place">{item.result}</span>
+                <span>{item.source ? <a href={item.source} target="_blank" rel="noopener noreferrer"><b>{item.project}</b></a> : <b>{item.project}</b>} · {item.event}</span>
+                {item.description && <span class="phone-result-writeup">{item.description}</span>}
+              </li>
+            ))}
+          </ul>
+          <button class="show-all" type="button" data-expand-competitions data-count={hackathons.length} aria-expanded="false" aria-controls="phone-results">SHOW ALL {hackathons.length} COMPETITIONS</button>
+        </div>
+      </div>
+      <div class="side stats">
+        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">competitions</span></p>
+        <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">podiums</span></p>
+      </div>
+    </section>
 
-<!-- CONTACT -->
-<section class="section" id="contact">
-  <div class="wrap">
-    <div class="sec-label r">
-      <span class="sec-num">04</span>
-      <span class="sec-name">Contact</span>
-      <span class="sec-rule"></span>
-    </div>
+    <!-- 03 Featured notes -->
+    <section class="region" aria-labelledby="featured-notes-title">
+      <div class="region-head">
+        <h2 id="featured-notes-title">03 Featured notes</h2>
+        <a href="/notes">all notes</a>
+      </div>
+      <div class="featured-notes">
+        {featuredNotes.map((note) => (
+          <a class="featured-note" href={`/notes/${note.slug}`}>
+            {note.cover && <img src={note.cover} alt="" loading="lazy" decoding="async" />}
+            <span class="featured-note-copy">
+              <time datetime={note.date}>{note.date}</time>
+              <strong>{note.title}</strong>
+              {note.desc && <span>{note.desc}</span>}
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <div class="contact-block r d1">
-      <p class="contact-lead">
-        Open for hackathon teams, data / DevOps roles, and collabs.
-      </p>
-      <p class="contact-tagline">{TAGLINE}</p>
+    <!-- 04 Now -->
+    <section class="region" aria-labelledby="now-title">
+      <div class="region-head"><h2 id="now-title">04 Now</h2></div>
+      <div class="now-clip">
+        <div class="now-grid">
+          {nowCells.map((cell) => (
+            <div class="now-cell"><span class="now-label">{cell.label}</span><span class="now-text">{cell.text}</span></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 Contact -->
+    <section id="contact" class="contact on-ink" aria-labelledby="contact-title">
+      <span class="contact-label">05 Contact</span>
+      <h2 id="contact-title">Pick one. I'll reply.</h2>
       <div class="contact-actions">
-        <a href="/book" class="btn btn-filled">Book a call</a>
-        <a href={emailMailto} class="btn btn-outline">Send an email</a>
+        <a class="button button-on-ink" href="/book">Book a call</a>
+        <a class="button button-on-ink-outline" href={`mailto:${site.email}`}>Send an email</a>
       </div>
-      <div class="social-icons">
-        <a href={site.githubUrl} target="_blank" rel="noopener" class="social-icon" aria-label="GitHub">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2 0-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.1 2.8.1 3.1.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
-          <span>kuyacarlo</span>
-        </a>
-        <a href={site.linkedinUrl} target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.23 0z"/></svg>
-          <span>in/kuyacarlo</span>
-        </a>
-        <a href={site.devtoUrl} target="_blank" rel="noopener" class="social-icon" aria-label="dev.to">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.42 10.05c-.17-.23-.36-.3-.56-.3H5.8v4.5h1.06c.2 0 .39-.07.56-.3.18-.22.27-.55.27-1 .01-.45-.09-.77-.27-1zM22.67.5H1.33C.6.5 0 1.1 0 1.83v20.34c0 .73.6 1.33 1.33 1.33h21.34c.73 0 1.33-.6 1.33-1.33V1.83c0-.73-.6-1.33-1.33-1.33zM8.9 14.48c-.36.66-1.06 1.01-1.97 1.01H4.75c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7c0 .53-.09.97-.27 1.31zm5.3-4.05h-2.4c0-.65.02-1.18.04-1.58.02-.4.05-.66.09-.8.08-.25.2-.37.37-.37.17 0 .29.12.37.37.04.14.07.4.09.8.02.4.04.93.04 1.58zm0 2.25h-2.4v1.52c0 .41-.02.7-.05.87-.05.25-.17.37-.37.37-.17 0-.29-.12-.36-.37a5.1 5.1 0 0 1-.09-.87v-4.9c.09-.8.4-1.2.94-1.2.3 0 .53.12.68.35.07.11.12.26.15.46.03.2.05.5.05.88v2.89zm6.75-1.58c0 .53-.09.97-.27 1.31-.36.66-1.06 1.01-1.97 1.01h-2.18c-.24 0-.4-.07-.47-.2-.07-.13-.1-.34-.1-.63V8.98c0-.29.03-.5.1-.63.07-.13.23-.2.47-.2h2.18c.91 0 1.61.35 1.97 1.01.18.34.27.78.27 1.31v2.7z"/></svg>
-          <span>dev.to/kuyacarlo</span>
-        </a>
+      <div class="socials">
+        <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
+        <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href={site.devtoUrl} target="_blank" rel="noopener noreferrer">dev.to</a>
       </div>
-    </div>
-  </div>
-</section>
-
-
-<div class="wrap">
-  <footer class="footer">
-    <span>© 2026 John Carlo Santos</span>
-    <span>{TAGLINE}</span>
-    <span><a href="/resume" class="footer-link">resume →</a></span>
-  </footer>
-</div>
-
+    </section>
+  </main>
 </Layout>
+
+<script>
+  const expandList = (button: HTMLButtonElement | null, selector: string, label: string) => {
+    if (!button) return;
+    const count = Number(button.dataset.count ?? 0);
+    const items = Array.from(document.querySelectorAll<HTMLElement>(selector));
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      items.forEach((item) => { item.hidden = expanded; });
+      button.setAttribute('aria-expanded', String(!expanded));
+      button.textContent = expanded ? `SHOW ALL ${count} ${label}` : 'SHOW FEWER';
+    });
+  };
+
+  expandList(document.querySelector<HTMLButtonElement>('[data-expand-projects]'), '.phone-project-extra', 'PROJECTS');
+  expandList(document.querySelector<HTMLButtonElement>('[data-expand-competitions]'), '.phone-result-extra', 'COMPETITIONS');
+</script>
+
+<style>
+  /* Desktop and phone have their own markup where the two boards differ. */
+  .phone { display: none; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  /* A side column in a flex-wrap region. The negative margins lay its rules over the
+     neighbouring rule, so it never doubles a rule whether it sits beside or below. */
+  .side {
+    flex: 1 1 360px;
+    min-width: 0;
+    margin: calc(-1 * var(--rule-w)) 0 0 calc(-1 * var(--rule-w));
+    border-top: var(--rule);
+    border-left: var(--rule);
+  }
+
+  /* ── Hero ── */
+  .hero { display: flex; flex-wrap: wrap; }
+  .hero-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--gutter); }
+  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .hero-bio { max-width: 680px; margin: 0; font: var(--type-lead); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .layer-col { display: flex; flex-direction: column; font: 400 14px/1.2 var(--font-mono); }
+  .layer-col li { display: flex; min-height: 56px; border-bottom: var(--rule); }
+  .layer-col li:last-child { flex-grow: 1; border-bottom: 0; }
+  .layer-col .layer-badge { height: auto; align-self: stretch; font: inherit; }
+  .layer-name { display: flex; align-items: center; padding: 0 var(--space-2); }
+
+  .featured-note { display: flex; align-items: stretch; gap: var(--space-3); padding: var(--space-3) var(--gutter); border-bottom: var(--rule); color: var(--ink); text-decoration: none; }
+  .featured-note:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+  .featured-note img { flex: 0 0 180px; width: 180px; aspect-ratio: 16 / 9; object-fit: cover; filter: grayscale(1); }
+  .featured-note-copy { display: flex; flex-direction: column; justify-content: center; gap: var(--space-1); }
+  .featured-note time { color: var(--muted); font: 400 12px/1.4 var(--font-mono); }
+  .featured-note strong { font: var(--type-card); }
+  .featured-note-copy > span:last-child { font: var(--type-body); }
+
+  /* ── 01 Selected work ── */
+  .work-row { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: var(--rule); }
+  .work-row:last-child { border-bottom: 0; }
+  .work-head { color: var(--muted); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .c-name { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; padding: var(--space-3) var(--gutter); }
+  .c-desc { flex: 2 1 320px; min-width: 0; padding: var(--space-3) var(--gutter); }
+  .c-strip { flex: 0 0 216px; display: flex; }
+  .c-links { flex: 0 0 160px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 14px; padding: 20px var(--gutter); font: 400 14px/1.4 var(--font-mono); }
+  .work-head > * { padding-block: 10px; font-size: 12px; }
+  .c-nums { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); text-align: center; }
+  .work-row:not(.work-head) .c-name { font: var(--type-card); letter-spacing: -0.01em; }
+  .project-primary-link { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .project-primary-link:hover { text-decoration-thickness: 2px; }
+  .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
+  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+
+  /* ── 02 Hackathons ── */
+  .hacks { display: flex; flex-wrap: wrap; }
+  .hacks-main { flex: 999 1 560px; min-width: 0; }
+  .result { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .result:last-child { border-bottom: 0; }
+  .result > * { min-width: 0; padding: var(--space-3) var(--gutter); }
+  .result .r-place { flex: 0 0 200px; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .result .r-project-copy { flex: 1.5 1 300px; display: flex; flex-direction: column; gap: 3px; }
+  .result .r-project { width: fit-content; color: inherit; font: 800 18px/1.3 var(--font-display); text-decoration: none; }
+  .result a.r-project:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .result .r-writeup { font: 400 14px/1.4 var(--font-text); }
+  .result .r-event { flex: 1 1 180px; font: 400 15px/1.4 var(--font-text); }
+  .podium { background: var(--ink); color: var(--paper); }
+  .result.podium .r-place { font-weight: 700; }
+  .result.podium + .result.podium { border-top: var(--rule-on-ink); }
+
+  .side.stats { flex-basis: 320px; display: flex; flex-direction: column; }
+  .stat { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-1); margin: 0; padding: var(--space-4) var(--gutter); user-select: none; -webkit-user-select: none; }
+  .stat + .stat { border-top: var(--rule); }
+  .stat-n { font: 900 120px/0.85 var(--font-display); letter-spacing: -0.04em; }
+  .stat-label { font: 400 14px/1.2 var(--font-mono); text-transform: uppercase; }
+
+  /* ── 03 Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
+  .now-clip { overflow: hidden; }
+  .now-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
+  .now-cell { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3) var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
+  .now-label { font: 700 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .now-text { font: 400 17px/1.5 var(--font-text); }
+
+  /* ── 04 Contact ── */
+  .contact { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6) var(--gutter); }
+  .contact-label { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .contact h2 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .contact-actions .button { min-height: 52px; padding-inline: var(--space-3); font-size: 16px; }
+  /* `.on-ink a` would otherwise paint both buttons' text white in every state. */
+  .contact-actions .button-on-ink, .contact-actions .button-on-ink-outline:hover { color: var(--ink); }
+  .contact-actions .button-on-ink:hover { color: var(--paper); }
+  .socials { display: flex; flex-wrap: wrap; gap: var(--space-3); font: 400 15px/1.4 var(--font-mono); }
+  .socials a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* 768–1023: narrower bases keep each table row on one line, so the strip never
+     wraps against the frame rule. */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .c-name { flex-basis: 180px; padding-inline: var(--gutter) var(--space-2); }
+    .c-desc { flex-basis: 220px; padding-inline: var(--space-2); }
+    .c-links { flex-basis: 120px; padding-inline: var(--space-2); }
+    .work-row:not(.work-head) .c-name { font-size: 18px; }
+    .result .r-place { flex-basis: 160px; }
+  }
+
+  /* ── Phone (<768): its own layout, from the phone board ── */
+  @media (max-width: 767px) {
+    .desk { display: none; }
+    .phone { display: block; }
+    span.phone { display: inline; }
+
+    .hero-main { gap: var(--space-3); padding: var(--space-5) var(--gutter); }
+    .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
+    .hero-actions .button { font-size: 14px; }
+
+    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
+    .layer-cells li { display: contents; }
+    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
+    .layer-cells li > b { border-bottom: var(--rule); background: var(--ink); color: var(--paper); font-weight: 700; }
+    .layer-cells li > span { border-bottom: var(--rule); }
+    .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
+
+    .phone-project-card { border-bottom: var(--rule); }
+    .card-body { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
+    .card-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .card-title h3 { margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
+    .card-title h3 a { display: inline; min-height: 0; margin: 0; color: inherit; font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .card-title a { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; font: 400 13px/1 var(--font-mono); }
+    .phone-project-card p { margin: 0; font: 400 15px/1.45 var(--font-text); }
+    .featured-note { flex-direction: column; gap: var(--space-2); padding-block: var(--space-3); }
+    .featured-note img { flex: none; width: 100%; }
+    .featured-note-copy > span:last-child { font-size: 15px; line-height: 1.55; }
+    .phone-project-card :global(.coverage) { width: 100%; height: 14px; border: 0; border-top: var(--rule); }
+
+    .show-all { display: block; width: 100%; height: 52px; border: 0; background: var(--paper); color: var(--ink); font: 700 13px/1 var(--font-mono); text-transform: uppercase; }
+    .show-all:hover { background: var(--ink); color: var(--paper); }
+    .show-all:focus-visible { outline-offset: -6px; }
+
+    /* Stat pair above the list: the main column dissolves so its parts can be reordered. */
+    .hacks { flex-direction: column; flex-wrap: nowrap; }
+    .hacks-main { display: contents; }
+    .side.stats { order: 1; flex: none; flex-direction: row; margin: 0; border: 0; border-bottom: var(--rule); }
+    .hacks-phone { order: 2; }
+    .stat { justify-content: flex-start; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
+    .stat + .stat { border-top: 0; border-left: var(--rule); }
+    .stat-n { font-size: 64px; }
+    .stat-label { font-size: 12px; }
+    .phone-result-card { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); border-bottom: var(--rule); font: 400 15px/1.5 var(--font-text); }
+    .phone-result-card .r-place { font: 700 11px/1.3 var(--font-mono); text-transform: uppercase; }
+    .phone-result-card b { font: 800 17px/1.3 var(--font-display); }
+    .phone-result-card a { color: inherit; }
+    .phone-result-writeup { font: 400 14px/1.5 var(--font-text); }
+
+    .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .now-cell { gap: var(--space-2); }
+    .now-label { font-size: 11px; }
+    .now-text { font-size: 15px; line-height: 1.4; }
+
+    .contact { gap: 20px; padding: 40px var(--gutter); }
+    .contact-label { font-size: 12px; }
+    .contact-actions { flex-direction: column; gap: 20px; }
+    .socials { gap: 20px; font-size: 14px; }
+  }
+</style>

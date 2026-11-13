@@ -1,0 +1,15 @@
+---
+import { coverageLabel, layers } from '../lib/layers';
+
+interface Props {
+  layers: number[];
+  class?: string;
+}
+
+const { layers: values, class: className } = Astro.props;
+---
+{values.length > 0 && (
+  <span class:list={['coverage', className]} role="img" aria-label={coverageLabel(values)}>
+    {layers.map((layer) => <span class:list={['coverage-cell', { filled: values.includes(layer.n) }]}></span>)}
+  </span>
+)}

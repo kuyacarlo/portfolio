@@ -21,13 +21,16 @@ src/content/notes/
 ```yaml
 ---
 title: "Your Note Title"
-date: "2026-07-19"          # YYYY-MM-DD
-tags: ["tag1", "tag2"]      # optional, shows as pills
-desc: "Short blurb."        # optional, shows in listings and SEO
+dek: "A one-sentence summary for the note index and article header."
+date: "2026-07-19"          # YYYY-MM-DD; use an owner-supplied date
+layers: [4]                  # layer numbers 1–6; do not guess
+tags: ["tag1", "tag2"]
 hide: true                  # hide from listings (+ prod routes)
 # draft: true               # alias of hide — either works
 ---
 ```
+
+`title`, `date`, `tags`, and `layers` are schema fields. `dek` is optional for older notes. Keep a supplied `[date]` placeholder visible until Karlo provides the real date.
 
 ## What renders
 
@@ -39,10 +42,17 @@ hide: true                  # hide from listings (+ prod routes)
 | Link | `[text](https://url)` |
 | Blockquote | `> text` |
 | Heading | `## H2`, `### H3` |
+| Inline image | `![A clear description](/notes-assets/your-note/diagram.webp)` |
+
+Put image files under `public/notes-assets/` and use their root-relative public
+paths. Always write useful alt text for images that explain the note. An optional
+`cover` frontmatter path (for example `/notes-assets/your-note/cover.webp`) adds a
+grayscale thumbnail to the `/notes` listing; it can point to the same image used
+inline in the article.
 
 ## Code blocks
 
-Fenced with triple backticks + language name → syntax highlighted (Shiki, dark theme):
+Fenced with triple backticks + language name → syntax highlighted (Shiki):
 
 ````
 ```python

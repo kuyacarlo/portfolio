@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Mark from '../components/Mark.astro';
+---
+<Layout title="404 — John Carlo Santos" description="This page was never committed.">
+  <main id="main">
+    <section class="notfound region">
+      <div class="notfound-copy">
+        <p class="eyebrow">error 404</p>
+        <h1>This page was never committed.</h1>
+        <p class="notfound-lead">The link is wrong, or I moved something and didn't leave a redirect. Either way, it's on me.</p>
+        <div class="notfound-actions">
+          <a class="button button-primary" href="/">Home</a>
+          <a class="button button-secondary" href="/notes">Notes</a>
+        </div>
+      </div>
+      <div class="notfound-mark">
+        <Mark size={240} missingStep={4} label="The staircase mark with its fourth step missing" />
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* Both cells carry a left rule; the -2px shift lays the first one over the frame rule,
+     so a wrapped cell never shows a double rule. */
+  .notfound { display: flex; flex-wrap: wrap; margin-left: calc(-1 * var(--rule-w)); }
+  .notfound-copy { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6) var(--gutter); border-left: var(--rule); }
+  .notfound .eyebrow { margin: 0; color: var(--ink); font: 400 13px/1.4 var(--font-mono); letter-spacing: 0; }
+  .notfound h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .notfound-lead { max-width: 560px; margin: 0; font: var(--type-lead); }
+  .notfound-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .notfound-mark { flex: 1 1 320px; display: flex; align-items: center; justify-content: center; padding: var(--space-5) var(--gutter); border-left: var(--rule); }
+  .notfound-mark :global(svg) { display: block; }
+
+  @media (max-width: 767px) {
+    .notfound { margin-left: 0; }
+    .notfound-copy { flex-basis: 100%; padding-block: var(--space-5); border-left: 0; }
+    .notfound-mark { flex-basis: 100%; justify-content: flex-start; padding: var(--space-4) var(--gutter); border-left: 0; border-top: var(--rule); }
+    .notfound-mark :global(svg) { width: 160px; height: 160px; }
+  }
+</style>

@@ -4,8 +4,8 @@ Personal portfolio for John Carlo Santos (`kuyacarlo`) — data engineer, DevOps
 
 ## Stack
 
-- **Astro 5** — multi-page static output, zero client JS by default
-- **Vanilla CSS** — no Tailwind, no frameworks (tokens + components in `src/styles/global.css`)
+- **Astro** — multi-page static output, client JS only for interactions
+- **Vanilla CSS** — no Tailwind, no frameworks (tokens in `src/data/tokens.css`, shared primitives in `src/styles/global.css`, page rules scoped in each page)
 - **Cloudflare Workers (static assets)** — live at `kuyacarlo.dev`
 
 ## Quickstart (pnpm)
@@ -23,25 +23,36 @@ pnpm dev -- --host 0.0.0.0 --port 4321
 | `pnpm dev`     | Start the dev server     |
 | `pnpm build`   | Static build → `dist/`   |
 | `pnpm preview` | Preview the built site   |
+| `pnpm test`    | Unit tests (Vitest)      |
+| `pnpm test:e2e`| Playwright at 1440×900 and 390×844: routes, menu, toggles, filter, axe, no sideways scroll (builds first; `E2E_PORT` picks the preview port) |
+
+First e2e run on a machine: `pnpm exec playwright install chromium`.
 
 ## Structure
 
 ```
 src/
-  layouts/Layout.astro      # Shell — fixed nav, mobile drawer, scroll JS, ~ CLI, confetti
-  layouts/NoteLayout.astro  # Note variant — KaTeX, Mermaid, build-time TikZ
-  pages/                    # Routes: /, /homelab, /notes[/:slug], /certs, /resume, /book
-  lib/portfolio-data.ts     # Single source of truth for page content
+  layouts/Layout.astro      # Ruled 1440 frame: skip link, cell header, phone menu, footer
+  layouts/NoteLayout.astro  # Note support — KaTeX, Mermaid, build-time TikZ
+  pages/                    # Routes: /, /homelab, /notes[/:slug], /certs, /resume, /book, 404
+  components/               # Mark, CoverageStrip, Footer, and page parts (Note*, ResumeEntry, CertCard)
+  lib/layers.ts             # Layer names, CoverageStrip labels, note filter, phone-featured projects
   lib/site.ts               # PUBLIC_* env-backed site links
   lib/cms.ts                # getPosts() over Astro content collections (notes)
+  data/*.json               # Page content; data/tokens.css holds the design tokens
   content/notes/*.md        # Notes (markdown)
-  plugins/rehype-tikz.ts    # ```tikz / ```circuitikz → SVG at build time
+  plugins/                  # remark-tikz (TikZ → SVG), remark-note-features, rehype-note-a11y
+  styles/global.css         # Base, shell, and shared primitives
+tests/
+  unit/                     # Vitest
+  e2e/                      # Playwright + axe
+```tikz / ```circuitikz → SVG at build time
   styles/global.css         # All CSS
 ```
 
 ## Content
 
-- **Page data** lives in `src/lib/portfolio-data.ts` (projects, hackathons, experience, talks, certifications, skills, now, tagline). Add/edit a project there; optionally drop an image in `public/` and set `img` on the object.
+- **Page data** lives in `src/data/*.json`. Projects and layer mappings are in `projects.json`; other files hold hackathons, current work, homelab, resume, certifications, and layer names. Do not replace the layer guesses without Karlo's confirmation.
 - **Notes** are markdown in `src/content/notes/`. Slug = URL. Supports KaTeX math, Mermaid diagrams, and CircuiTikZ. Authoring guide: [`NOTES.md`](./NOTES.md).
 
 ## Deploy
@@ -61,7 +72,9 @@ Prerequisites (one-time):
 ## Docs
 
 - [`AGENTS.md`](./AGENTS.md) — guide for AI agents working on this codebase
-- [`HANDOFF.md`](./HANDOFF.md) — living handoff with current state and next steps
+- [`REDESIGN-SPEC.md`](./REDESIGN-SPEC.md) — supplied redesign brief and content decisions
+- [`HANDOFF.md`](./HANDOFF.md) — historical project handoff
+- [`INDEX.md`](./INDEX.md) — project documentation routing
 - [`NOTES.md`](./NOTES.md) — how to write notes
 
 ## License
