@@ -53,7 +53,7 @@ tests/
 ## Content
 
 - **Page data** lives in `src/data/*.json`. Projects and layer mappings are in `projects.json`; other files hold hackathons, current work, homelab, resume, certifications, and layer names. Do not replace the layer guesses without Karlo's confirmation.
-- **Notes** are markdown in `src/content/notes/`. Slug = URL. Supports KaTeX math, Mermaid diagrams, and CircuiTikZ. Authoring guide: [`NOTES.md`](./NOTES.md).
+- **Notes** are markdown in `src/content/notes/`. Slug = URL. Supports KaTeX math, Mermaid diagrams, and CircuiTikZ. Authoring guide: [`docs/NOTES.md`](./docs/NOTES.md).
 
 ## Deploy
 
@@ -72,10 +72,11 @@ Prerequisites (one-time):
 ## Docs
 
 - [`AGENTS.md`](./AGENTS.md) — guide for AI agents working on this codebase
-- [`REDESIGN-SPEC.md`](./REDESIGN-SPEC.md) — supplied redesign brief and content decisions
+- [`docs/REDESIGN-SPEC.md`](./docs/REDESIGN-SPEC.md) — original redesign brief; current project rules are in `AGENTS.md`
 - [`HANDOFF.md`](./HANDOFF.md) — historical project handoff
 - [`INDEX.md`](./INDEX.md) — project documentation routing
-- [`NOTES.md`](./NOTES.md) — how to write notes
+- [`docs/NOTES.md`](./docs/NOTES.md) — how to write notes
+- [`docs/issue-triage.md`](./docs/issue-triage.md) — review of open GitHub issues against the redesign
 
 ## License
 
