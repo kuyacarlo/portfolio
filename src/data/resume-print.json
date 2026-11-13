@@ -1,0 +1,96 @@
+{
+  "skills": [
+    { "label": "Languages", "text": "Python, TypeScript/JavaScript, Go, Dart, SQL, Bash/Shell" },
+    { "label": "Backend and AI", "text": "FastAPI, LangGraph, Model Context Protocol (MCP / FastMCP), agentic AI workflows, REST APIs" },
+    { "label": "Data Engineering", "text": "PostgreSQL, Pandas, NumPy, ETL pipelines (Bronze-Silver-Gold), web scraping (BeautifulSoup4, HTTPX)" },
+    { "label": "Infrastructure and DevOps", "text": "Podman (rootless/Quadlets), Docker, GitHub Actions / Forgejo CI/CD, Linux hardening (Fedora/Debian), Ansible, pre-commit, Systemd, GPG signing" },
+    { "label": "Cloud Architecture", "text": "Google Cloud Platform (Cloud Run, Compute Engine), AWS (Lambda, S3), Supabase, Cloudflare Workers/Pages" },
+    { "label": "Frontend and Mobile", "text": "React, Next.js (App Router), TailwindCSS, Flutter, Material Design" }
+  ],
+  "experience": [
+    {
+      "org": "Millia Labs Pte. Ltd.",
+      "role": "Junior Developer (Independent Contractor)",
+      "dates": "Jul 2026 - Sep 2026",
+      "bullets": [
+        "Developed backend services and integrations, and resolved production issues.",
+        "Established separate development and production environments with supporting database migrations and CI/CD workflows.",
+        "Migrated CI runners to cloud infrastructure and deployed centralized monitoring across application and infrastructure services."
+      ]
+    },
+    {
+      "org": "Seekers Guild",
+      "role": "Chief Technology Officer (CTO)",
+      "dates": "May 2025 - May 2026",
+      "bullets": [
+        "Directed organizational technical infrastructure, centralized authentication architecture, and developer mentorship pipelines impacting active student builder communities.",
+        "Standardized organization-wide developer tooling, CI/CD quality gates, and git profile security conventions."
+      ]
+    }
+  ],
+  "hackathons": [
+    {
+      "title": "Kasigla (PhasmaFrame) - Community Health Telemetry",
+      "event": "Build Over Nights with AWS Kiro - 2026",
+      "stack": "Astro, React, Hono, SQLite, Protocol Buffers, Docker",
+      "bullets": [
+        "Architected an offline-first hypertension monitoring platform enabling patients to record blood pressure readings offline and execute protocol-buffered, device-to-device handoffs to Barangay Health Workers (BHWs).",
+        "Implemented structured local SQLite persistence and standardized CSV clinical exports formatted for Rural Health Units (RHU)."
+      ]
+    },
+    {
+      "title": "AMD Developer Hackathon 2026 - ComplyAIgent",
+      "event": "AMD / Devpost - 2026",
+      "stack": "Go, LangGraph, FastAPI, Next.js, Docker, Gitleaks",
+      "bullets": [
+        "Engineered an agentic DevSecOps engine that ingests unstructured regulatory text and compiles policies into fail-closed pre-push git hooks.",
+        "Built a high-performance Go CLI pairing Gitleaks regex scanning with entropy scoring for local blocks, and a LangGraph human-in-the-loop interrupt for medium-risk approvals."
+      ]
+    },
+    {
+      "title": "BPI DataWave 2025 - WorkSight (Top 3 Finalist)",
+      "event": "BPI DATAwave - 2025",
+      "stack": "Next.js, Python, Agentic AI, Data Analytics",
+      "bullets": [
+        "Architected an agentic workplace intelligence platform transforming fragmented metadata into predictive burnout and productivity insights; selected as Top 3 out of 100+ competing teams."
+      ]
+    },
+    {
+      "title": "Major League Hacking, Notion MCP Challenge - SAGE",
+      "event": "MLH Hackathon - 2026",
+      "stack": "Python, FastMCP, LangGraph, Notion API",
+      "bullets": [
+        "Built an autonomous academic co-pilot using Model Context Protocol (MCP) to ingest CHED-verified university curricula and scaffold tailored semester workspaces in Notion."
+      ]
+    }
+  ],
+  "projects": [
+    { "title": "Git Profile and SSH Profile (git-profile / ssh-profile) [Go]", "text": "CLI suite for seamlessly switching multiple Git identities, GPG signing keys, and scoped SSH URLs per repository." },
+    { "title": "room-tba [Svelte / Web]", "text": "Automated campus schedule and room vacancy finder for BulSU students under the BulSUTools initiative." },
+    { "title": "BetterBulakan [Civic Tech]", "text": "Public utility portal and information transparency hub for the Municipality of Bulakan, Bulacan (betterbulakan.org)." },
+    { "title": "freestack (awesome-freestack) [Markdown]", "text": "Curated open-source catalog of free developer tools, student unlocks, and startup tiers with commercial terms and limit notes." },
+    { "title": "v4l2loopback-fedora [DKMS, Shell]", "text": "Packaging script and DKMS module automation for Video4Linux loopback virtual camera devices on Fedora Linux." },
+    { "title": "Nutrition API (meal-server) [FastAPI, Docker]", "text": "High-throughput REST API serving structured nutritional datasets with containerized SQLite." }
+  ],
+  "speaking": [
+    "Git & GitHub Fundamentals - Computer Science Society BulSU",
+    "Web Development Basics (HTML & CSS) - Seekers Guild"
+  ],
+  "leadership": [
+    "Google Cloud Innovator & Community Member | NVIDIA Developer Community Member",
+    "Computer Science Society BulSU - Cybersecurity Associate (2026-Present), External Officer (2025)",
+    "BulSU Microsoft Student Community - Creatives Officer (2024), Member (2025-Present)"
+  ],
+  "education": {
+    "school": "Bulacan State University",
+    "degree": "BS Computer Engineering",
+    "location": "Malolos, Bulacan",
+    "year": "Expected 2028"
+  },
+  "certifications": [
+    "Azure Data Fundamentals & Azure AI Services Workshops (May 2025, by Pio Balistoy & Ziggy Zulueta)",
+    "Cisco NetAcad - Intro to Cybersecurity (2025)",
+    "Mastercard Cybersecurity Job Simulation (Forage) (Apr 2025)",
+    "Google Developer Program - BigLake Qwik Start Lab, Cloud Engineer Learning Path (CloudSkillsBoost)"
+  ]
+}
