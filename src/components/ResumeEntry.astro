@@ -25,7 +25,7 @@ const listId = `${id}-bullets`;
       {bullets.map((bullet, index) => <li class:list={{ 'resume-entry-extra': index >= phoneLimit }}>{bullet}</li>)}
     </ul>
     {hasMore && (
-      <button class="resume-entry-more" type="button" aria-expanded="false" aria-controls={listId} data-resume-more>more</button>
+      <button class="resume-entry-more" type="button" aria-expanded="false" aria-controls={listId} data-resume-more>show all</button>
     )}
   </div>}
 </article>
@@ -65,7 +65,7 @@ const listId = `${id}-bullets`;
     button.addEventListener('click', () => {
       const open = button.getAttribute('aria-expanded') !== 'true';
       button.setAttribute('aria-expanded', String(open));
-      button.textContent = open ? 'less' : 'more';
+      button.textContent = open ? 'show less' : 'show all';
       if (entry) entry.dataset.open = String(open);
     });
   });
