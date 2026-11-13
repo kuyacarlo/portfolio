@@ -59,7 +59,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   h1 { margin: 0; font: var(--type-page-title); letter-spacing: var(--track-tight); }
   .projects-hero > ul.project-layer-grid { display: grid; flex: 0 1 594px; width: 594px; max-width: 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 40px 40px; align-self: center; margin: 0; padding: 0; border: var(--rule); list-style: none; font: 400 12px/1 var(--font-mono); }
   .project-layer-grid li { display: contents; }
-  .project-layer-grid li > b, .project-layer-grid li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 3px; border-right: var(--rule); border-bottom: var(--rule); text-align: center; overflow-wrap: anywhere; }
+  .project-layer-grid li > b, .project-layer-grid li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 1px; border-right: var(--rule); letter-spacing: -0.04em; border-bottom: var(--rule); text-align: center; overflow-wrap: anywhere; }
   .project-layer-grid li > b { border-right: 0; background: var(--solid); color: var(--solid-text); font-weight: 700; }
   .project-layer-grid li:last-child > b, .project-layer-grid li:last-child > span { border-right: 0; }
   .project-row { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(260px, 1.5fr) 216px minmax(130px, .7fr); align-items: stretch; border-bottom: var(--rule); }

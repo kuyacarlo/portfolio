@@ -354,9 +354,9 @@ const nowCells = [
     .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
     .hero-actions .button { font-size: 14px; }
 
-    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
+    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 12px/1 var(--font-mono); letter-spacing: -0.04em; }
     .layer-cells li { display: contents; }
-    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
+    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 1px; text-align: center; overflow-wrap: anywhere; }
     .layer-cells li > b { border-bottom: var(--rule); background: var(--solid); color: var(--solid-text); font-weight: 700; }
     .layer-cells li > span { border-bottom: var(--rule); }
     .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
