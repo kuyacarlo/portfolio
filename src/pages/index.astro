@@ -29,6 +29,7 @@ const primaryProjectLink = (links: Links) =>
 
 const podiums = hackathons.filter((item) => item.podium);
 const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
+const phoneFeaturedResults = new Set(results.slice(0, Math.max(3, podiums.length)));
 const featuredNotes = (await getPosts()).slice(0, 3);
 const phoneTitleLink = (links: Links) =>
   links.live ? { href: links.live, external: true }
@@ -144,7 +145,7 @@ const nowCells = [
         <div class="phone hacks-phone">
           <ul id="phone-results">
             {results.map((item) => (
-              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !item.podium }]} hidden={!item.podium}>
+              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !phoneFeaturedResults.has(item) }]} hidden={!phoneFeaturedResults.has(item)}>
                 <span class="r-place">{item.result}</span>
                 <span>{item.source ? <a href={item.source} target="_blank" rel="noopener noreferrer"><b>{item.project}</b></a> : <b>{item.project}</b>} · {item.event}</span>
                 {item.description && <span class="phone-result-writeup">{item.description}</span>}
@@ -350,7 +351,7 @@ const nowCells = [
     .card-body { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
     .card-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .card-title h3 { margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
-    .card-title h3 a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .card-title h3 a { display: inline; min-height: 0; margin: 0; color: inherit; font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .card-title a { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; font: 400 13px/1 var(--font-mono); }
     .phone-project-card p { margin: 0; font: 400 15px/1.45 var(--font-text); }
     .featured-note { flex-direction: column; gap: var(--space-2); padding-block: var(--space-3); }
