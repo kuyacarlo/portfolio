@@ -1,7 +1,7 @@
 ---
 title: "Notes Syntax Reference"
 date: "2026-07-19"
-tags: ["meta", "reference"]
+tags: ["markdown", "meta", "reference"]
 desc: "How to write notes — markdown, math, mermaid diagrams, and CircuiTikZ circuits. (tikz ssr)"
 ---
 

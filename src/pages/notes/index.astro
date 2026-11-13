@@ -1,10 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import NoteLayerFilter from '../../components/NoteLayerFilter.astro';
+import NoteTagFilter from '../../components/NoteTagFilter.astro';
 import NoteListItem from '../../components/NoteListItem.astro';
 import { getPosts } from '../../lib/cms';
 
 const posts = await getPosts();
+const tags = [...new Set(posts.flatMap((post) => post.tags))].sort((a, b) => a.localeCompare(b));
 const lead = "Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.";
 ---
 <Layout active="notes" title="Notes — John Carlo Santos" description={lead}>
@@ -15,10 +17,11 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
     </section>
 
     <NoteLayerFilter />
+    <NoteTagFilter tags={tags} />
 
     <div class="notes-list" aria-live="polite">
       {posts.map((post) => (
-        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} cover={post.cover} layers={post.layers} />
+        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} cover={post.cover} layers={post.layers} tags={post.tags} />
       ))}
       <p class="notes-empty" hidden={posts.length > 0}>Nothing at this layer yet.</p>
     </div>
@@ -29,31 +32,52 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
   import { filterByLayer } from '../../lib/layers';
 
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-layer-filter]')];
+  const tagButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-tag-filter]')];
   const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')].map((el) => ({
     el,
     layers: (el.dataset.noteLayers ?? '').split(',').filter(Boolean).map(Number),
+    tags: (el.dataset.noteTags ?? '').split(',').filter(Boolean),
   }));
   const empty = document.querySelector<HTMLElement>('.notes-empty');
   const isLayer = (value: string | null): value is string => !!value && buttons.some((button) => button.dataset.layerFilter === value);
+  const isTag = (value: string | null): value is string => !!value && tagButtons.some((button) => button.dataset.tagFilter === value);
   const fromUrl = () => {
     const layer = new URLSearchParams(location.search).get('layer');
-    return isLayer(layer) ? layer : 'all';
+    const tag = new URLSearchParams(location.search).get('tag');
+    return { layer: isLayer(layer) ? layer : 'all', tag: isTag(tag) ? tag : 'all' };
   };
-  const applyFilter = (layer: string, push = false) => {
-    const visible = new Set(filterByLayer(items, layer));
-    for (const item of items) item.el.hidden = !visible.has(item);
+  const applyFilters = (layer: string, tag: string, push = false) => {
+    const layerMatches = filterByLayer(items, layer);
+    const visible = layerMatches.filter((item) => tag === 'all' || item.tags.includes(tag));
+    const visibleSet = new Set(visible);
+    for (const item of items) item.el.hidden = !visibleSet.has(item);
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.layerFilter === layer)));
-    if (empty) empty.hidden = visible.size !== 0;
+    tagButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.tagFilter === tag)));
+    if (empty) {
+      empty.hidden = visible.length !== 0;
+      empty.textContent = layer === 'all'
+        ? 'Nothing with this tag yet.'
+        : tag === 'all'
+          ? 'Nothing at this layer yet.'
+          : 'Nothing matches these filters.';
+    }
     if (push) {
       const next = new URL(location.href);
       if (layer === 'all') next.searchParams.delete('layer');
       else next.searchParams.set('layer', layer);
+      if (tag === 'all') next.searchParams.delete('tag');
+      else next.searchParams.set('tag', tag);
       history.pushState({}, '', next);
     }
   };
-  applyFilter(fromUrl());
-  buttons.forEach((button) => button.addEventListener('click', () => applyFilter(button.dataset.layerFilter ?? 'all', true)));
-  window.addEventListener('popstate', () => applyFilter(fromUrl()));
+  const current = fromUrl();
+  applyFilters(current.layer, current.tag);
+  buttons.forEach((button) => button.addEventListener('click', () => applyFilters(button.dataset.layerFilter ?? 'all', fromUrl().tag, true)));
+  tagButtons.forEach((button) => button.addEventListener('click', () => applyFilters(fromUrl().layer, button.dataset.tagFilter ?? 'all', true)));
+  window.addEventListener('popstate', () => {
+    const next = fromUrl();
+    applyFilters(next.layer, next.tag);
+  });
 </script>
 
 <style>

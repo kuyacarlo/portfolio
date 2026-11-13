@@ -1,7 +1,7 @@
 ---
 title: "Designing Offline-First Healthcare Telemetry with SQLite & Protocol Buffers"
 date: "2026-10-06"
-tags: ["architecture", "iot", "healthcare", "sqlite", "protobuf"]
+tags: ["healthcare", "iot", "offline-first", "protobuf", "sqlite"]
 desc: "Architectural patterns for reliable vital-sign data collection and device-to-device clinical handoffs in zero-connectivity environments."
 ---
 

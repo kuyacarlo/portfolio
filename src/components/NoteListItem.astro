@@ -9,36 +9,46 @@ interface Props {
   dek?: string;
   cover?: string;
   layers: number[];
+  tags: string[];
 }
 
-const { slug, title, date, dek, cover, layers } = Astro.props;
+const { slug, title, date, dek, cover, layers, tags } = Astro.props;
 ---
-<a class="note-list-item" href={`/notes/${slug}`} data-note-layers={layers.join(',')}>
-  {cover && <span class="note-thumb"><img src={cover} alt="" loading="lazy" decoding="async" /></span>}
-  <span class="note-date">{date}</span>
-  <span class="note-copy">
-    <span class="note-title">{title}</span>
-    {dek && <span class="note-dek">{dek}</span>}
-  </span>
-  <CoverageStrip layers={layers} class="note-strip" />
-</a>
+<article class="note-list-item" data-note-layers={layers.join(',')} data-note-tags={tags.join(',')}>
+  <a class="note-list-main" href={`/notes/${slug}`}>
+    {cover && <span class="note-thumb"><img src={cover} alt="" loading="lazy" decoding="async" /></span>}
+    <span class="note-date">{date}</span>
+    <span class="note-copy">
+      <span class="note-title">{title}</span>
+      {dek && <span class="note-dek">{dek}</span>}
+    </span>
+    <CoverageStrip layers={layers} class="note-strip" />
+  </a>
+  <div class="note-list-tags" aria-label={`Tags for ${title}`}>
+    {tags.map((tag) => <a class="tag" href={`/notes?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
+  </div>
+</article>
 
 <style>
-  .note-list-item { display: flex; flex-direction: column; align-items: stretch; border-bottom: var(--rule); color: var(--ink); text-decoration: none; }
-  .note-list-item:hover { color: var(--ink); }
-  .note-list-item:hover .note-title { text-decoration: underline; }
-  .note-list-item:focus-visible { outline-offset: -6px; }
+  .note-list-item { display: flex; flex-direction: column; align-items: stretch; border-bottom: var(--rule); }
+  .note-list-main { display: flex; flex-direction: column; align-items: stretch; color: var(--ink); text-decoration: none; }
+  .note-list-main:hover { color: var(--ink); }
+  .note-list-main:hover .note-title { text-decoration: underline; }
+  .note-list-main:focus-visible { outline-offset: -6px; }
   .note-thumb { flex: none; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: var(--rule); }
   .note-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
   .note-date { flex: none; padding: var(--space-2) var(--gutter) 0; color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
   .note-copy { flex: none; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-1) var(--gutter) var(--space-2); }
   .note-title { font: var(--type-card); letter-spacing: -0.01em; }
   .note-dek { font: var(--type-body); }
-  .note-list-item :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border: 0; border-top: var(--rule); }
+  .note-list-main :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border: 0; border-top: var(--rule); }
+  .note-list-tags { display: flex; flex-wrap: wrap; gap: 0; padding: var(--space-1) var(--gutter); }
+  .note-list-tags .tag { min-height: 28px; padding: 4px 8px; font-size: 12px; }
+  .note-list-tags .tag + .tag { border-left: 0; }
 
   @media (max-width: 767px) {
     .note-date { font-size: 12px; }
     .note-dek { display: none; }
-    .note-list-item :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border-left: 0; border-top: var(--rule); }
+    .note-list-main :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border-left: 0; border-top: var(--rule); }
   }
 </style>

@@ -3,7 +3,7 @@ title: Disk full, with free space showing
 dek: btrfs said ENOSPC. df said I had room. Both were telling the truth.
 date: "[date]"
 layers: [4]
-tags: [btrfs, snapper]
+tags: [btrfs, linux, snapper, storage]
 ---
 
 ## Symptom
