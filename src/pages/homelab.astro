@@ -2,33 +2,53 @@
 import Layout from '../layouts/Layout.astro';
 import homelab from '../data/homelab.json';
 import { getCollection } from 'astro:content';
+import { layerName } from '../lib/layers';
 
-const layerNames: Record<string, string> = {
-  '3': 'network',
-  '4': 'server',
-  '5': 'app',
+// The only public link this page may carry. Anything else in the data is dropped.
+const PUBLIC_HOST = 'forge.kuyacarlo.dev';
+const publicLink = (link?: string) => {
+  if (!link) return null;
+  try {
+    const url = new URL(link);
+    return url.protocol === 'https:' && url.host === PUBLIC_HOST ? { href: url.href, label: url.host } : null;
+  } catch {
+    return null;
+  }
 };
-const services = Object.entries(homelab.services).sort(([a], [b]) => Number(b) - Number(a));
-const noteIds = new Set((await getCollection('notes')).map((note) => note.id));
+
+type Service = { name: string; note: string; link?: string };
+
+const layerRows = Object.entries(homelab.services as Record<string, Service[]>)
+  .map(([layer, services]) => ({ n: Number(layer), services }))
+  .sort((a, b) => b.n - a.n);
+
+// Only incidents with a published note link anywhere; the rest render as plain rows.
+const publishedNotes = new Set(
+  (await getCollection('notes', ({ data }) => !data.draft && !data.hide)).map((note) => note.id),
+);
+const incidents = homelab.incidents.map((incident) => ({
+  ...incident,
+  href: publishedNotes.has(incident.slug) ? `/notes/${incident.slug}` : null,
+}));
+
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <Layout
   active="homelab"
   title="Homelab — John Carlo Santos"
   description="What runs on Andromeda, my small self-hosted server."
-  navStickyId="services"
 >
-  <main id="main" class="page homelab-page">
-    <section class="page-hero split homelab-hero" aria-labelledby="page-title">
-      <div class="page-hero-main">
-        <p class="eyebrow">homelab</p>
-        <h1 class="homelab-title" id="page-title">ANDROMEDA</h1>
-        <p class="homelab-lead">{homelab.intro}</p>
+  <main id="main">
+    <section class="region hl-hero" aria-labelledby="hl-title">
+      <div class="hl-hero-main">
+        <p class="hl-eyebrow">homelab</p>
+        <h1 class="hl-title" id="hl-title">andromeda</h1>
+        <p class="hl-lead">{homelab.intro}</p>
       </div>
-
-      <dl class="spec-sheet" aria-label="Andromeda specifications">
+      <dl class="hl-spec">
         {homelab.spec.map((item) => (
-          <div class="spec-row">
+          <div class="hl-spec-row">
             <dt>{item.label}</dt>
             <dd>{item.value}</dd>
           </div>
@@ -36,266 +56,212 @@ const noteIds = new Set((await getCollection('notes')).map((note) => note.id));
       </dl>
     </section>
 
-    <section class="page-section homelab-services" id="services" aria-labelledby="services-title">
-      <header class="homelab-section-heading">
-        <p class="eyebrow">01 — what runs</p>
-        <h2 class="section-title" id="services-title">What runs</h2>
-      </header>
-
-      <div class="layer-service-list">
-        {services.map(([layer, entries]) => (
-          <section class="layer-service-row" aria-labelledby={`layer-${layer}-title`}>
-            <div class="layer-service-label">
-              <span class="badge layer-badge" aria-hidden="true">0{layer}</span>
-              <h3 id={`layer-${layer}-title`}>{layerNames[layer]}</h3>
-            </div>
-            <ul class="service-grid">
-              {entries.map((service) => (
-                <li class="service-cell">
-                  <div class="service-cell-title">
-                    {service.link ? (
-                      <a href={service.link} target="_blank" rel="noopener noreferrer">{service.name}</a>
-                    ) : (
-                      <span>{service.name}</span>
-                    )}
-                  </div>
-                  <p>{service.note}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+    <section class="region" aria-labelledby="hl-runs">
+      <div class="region-head">
+        <h2 id="hl-runs">What runs</h2>
       </div>
+      {layerRows.map(({ n, services }) => (
+        <div class="hl-layer">
+          <span class="hl-badge">{pad(n)}</span>
+          <div class="hl-services">
+            <ul class="hl-service-grid" aria-label={layerName(n)}>
+              {services.map((service) => {
+                const link = publicLink(service.link);
+                return (
+                  <li class="hl-service">
+                    <span class="hl-service-name">{service.name}</span>
+                    <span class="hl-service-note">
+                      {service.note}
+                      {link && <> <a href={link.href} rel="noopener">{link.label}</a></>}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <p class="hl-service-list">{services.map((service) => service.name).join(', ')}</p>
+        </div>
+      ))}
     </section>
 
-    <section class="page-section homelab-incidents" aria-labelledby="incidents-title">
-      <header class="homelab-section-heading">
-        <p class="eyebrow">02 — what broke</p>
-        <h2 class="section-title" id="incidents-title">What broke</h2>
-      </header>
+    <section class="region" aria-labelledby="hl-broke">
+      <div class="region-head">
+        <h2 id="hl-broke">What broke</h2>
+        <span class="hl-head-note">symptom → cause → fix</span>
+      </div>
 
-      <div class="incident-list">
-        {homelab.incidents.map((incident) => (
-          <a class="incident-row" href={noteIds.has(incident.slug) ? `/notes/${incident.slug}` : '/notes'}>
-            <span class="incident-title">{incident.title}</span>
-            <span class="incident-summary">{incident.summary}</span>
-            <span class="incident-link">{noteIds.has(incident.slug) ? 'Read note' : 'Browse notes'} <span aria-hidden="true">→</span></span>
-          </a>
+      <div class="hl-incidents">
+        {incidents.map((incident) => (
+          <article class="hl-incident">
+            <h3 class="hl-incident-title">{incident.title}</h3>
+            <p class="hl-incident-summary">{incident.summary}</p>
+            {incident.href ? (
+              <a class="hl-incident-link" href={incident.href}>read note<span class="sr-only">: {incident.title}</span></a>
+            ) : (
+              <span class="hl-incident-link" aria-hidden="true"></span>
+            )}
+          </article>
         ))}
       </div>
+
+      <ul class="hl-incidents-phone">
+        {incidents.map((incident) => (
+          <li>
+            {incident.href ? (
+              <a class="hl-incident-row" href={incident.href}>
+                <span class="hl-incident-row-title">{incident.title}</span>
+                <span class="hl-arrow" aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <span class="hl-incident-row">
+                <span class="hl-incident-row-title">{incident.title}</span>
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
     </section>
   </main>
 </Layout>
 
 <style>
-  .homelab-page {
-    width: min(100%, var(--container, 1440px));
-    margin-inline: auto;
-    padding-inline: var(--gutter, 24px);
-    border-inline: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .homelab-hero {
+  /* ── Hero: title cell + spec sheet ─────────────────────────────────── */
+  .hl-hero { display: flex; flex-wrap: wrap; }
+  .hl-hero-main {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-5, 48px);
-    padding-block: clamp(56px, 8vw, 112px) var(--space-6, 64px);
-  }
-
-  .page-hero-main {
     flex: 999 1 560px;
+    flex-direction: column;
+    gap: var(--space-3);
     min-width: 0;
+    padding: var(--space-5) var(--gutter);
   }
-
-  .homelab-title {
-    margin: var(--space-2, 16px) 0 var(--space-3, 24px);
-    font: 900 clamp(56px, 9vw, 136px)/0.85 var(--font-display, sans-serif);
+  .hl-title {
+    margin: 0;
+    font: var(--type-page-title);
     letter-spacing: -0.04em;
-  }
-
-  .homelab-lead {
-    max-width: 650px;
-    margin: 0;
-    font: 400 19px/1.5 var(--font-text, sans-serif);
-  }
-
-  .spec-sheet {
-    flex: 1 1 360px;
-    min-width: 300px;
-    margin: 0;
-    border-block-start: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .spec-row {
-    display: grid;
-    grid-template-columns: 132px minmax(0, 1fr);
-    gap: var(--space-2, 16px);
-    padding: var(--space-2, 16px) 0;
-    border-block-end: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .spec-row dt,
-  .layer-service-label h3,
-  .incident-link,
-  .homelab-page .eyebrow {
-    font: 600 12px/1.4 var(--font-mono, monospace);
-    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+  .hl-eyebrow { margin: 0; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .hl-lead { max-width: 640px; margin: 0; font: var(--type-lead); }
 
-  .spec-row dt { color: var(--muted, #666); }
-  .spec-row dd { margin: 0; font: 400 15px/1.5 var(--font-text, sans-serif); }
-
-  .homelab-page .eyebrow { margin: 0; }
-
-  .page-section {
-    padding-block: var(--space-5, 48px);
-    border-block-start: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .homelab-section-heading {
+  .hl-spec {
     display: flex;
-    align-items: baseline;
-    gap: var(--space-2, 16px);
-    margin-block-end: var(--space-4, 32px);
-  }
-
-  .homelab-section-heading .eyebrow { flex: 0 0 auto; }
-
-  .layer-service-row {
-    display: grid;
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: var(--space-3, 24px);
-    padding-block: var(--space-3, 24px);
-    border-block-start: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .layer-service-label {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-2, 16px);
-  }
-
-  .layer-badge {
-    display: grid;
-    flex: 0 0 56px;
-    aspect-ratio: 1;
-    place-items: center;
-    padding: 0;
-    background: var(--ink, #000);
-    color: var(--paper, #fff);
-    font: 600 14px/1 var(--font-mono, monospace);
-  }
-
-  .layer-service-label h3 { margin: 5px 0 0; }
-
-  .service-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0;
+    flex: 1 1 380px;
+    flex-direction: column;
     margin: 0;
+    border-left: var(--rule);
+  }
+  .hl-spec-row { display: flex; min-height: 52px; border-bottom: var(--rule); }
+  .hl-spec-row:last-child { flex-grow: 1; border-bottom: 0; }
+  .hl-spec dt,
+  .hl-spec dd { display: flex; align-items: center; margin: 0; padding: 0 var(--space-2); }
+  .hl-spec dt {
+    box-sizing: content-box;
+    flex: 0 0 132px;
+    border-right: var(--rule);
+    font: var(--type-label);
+    text-transform: uppercase;
+  }
+  .hl-spec dd { font: 400 15px/1.5 var(--font-text); }
+
+  /* ── What runs: full-height badge column, service cells edge to edge ── */
+  .hl-layer { display: flex; border-bottom: var(--rule); }
+  .hl-layer:last-child { border-bottom: 0; }
+  .hl-badge {
+    display: flex;
+    flex: 0 0 72px;
+    align-items: center;
+    justify-content: center;
+    min-height: 64px;
+    background: var(--ink);
+    color: var(--paper);
+    font: 400 14px/1 var(--font-mono);
+  }
+  /* The grid overhangs by one rule so the outer right and bottom rules are clipped:
+     cells keep shared rules however the grid wraps. */
+  .hl-services { flex: 1 1 0; min-width: 0; overflow: hidden; }
+  .hl-service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0;
     padding: 0;
     list-style: none;
-    border-inline-start: var(--rule, 2px solid var(--ink, #000));
-    border-block-start: var(--rule, 2px solid var(--ink, #000));
   }
-
-  .service-cell {
-    min-width: 0;
-    padding: var(--space-3, 24px);
-    border-inline-end: var(--rule, 2px solid var(--ink, #000));
-    border-block-end: var(--rule, 2px solid var(--ink, #000));
-  }
-
-  .service-cell-title {
-    margin-block-end: var(--space-1, 8px);
-    font: 800 clamp(18px, 2vw, 22px)/1.15 var(--font-display, sans-serif);
-  }
-
-  .service-cell-title a,
-  .incident-row { color: inherit; }
-
-  .service-cell-title a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .service-cell p { margin: 0; font: 400 15px/1.55 var(--font-text, sans-serif); }
-
-  .incident-list { border-block-start: var(--rule, 2px solid var(--ink, #000)); }
-
-  .incident-row {
-    display: grid;
-    grid-template-columns: minmax(190px, 1fr) minmax(0, 2fr) auto;
-    align-items: start;
-    gap: var(--space-3, 24px);
-    padding: var(--space-3, 24px) 0;
-    border-block-end: var(--rule, 2px solid var(--ink, #000));
-    text-decoration: none;
-  }
-
-  .incident-row:hover .incident-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
-  .incident-title { font: 800 22px/1.15 var(--font-display, sans-serif); }
-  .incident-summary { font: 400 15px/1.55 var(--font-text, sans-serif); }
-  .incident-link { white-space: nowrap; }
-
-  .homelab-page a:focus-visible {
-    outline: 2px solid var(--ink, #000);
-    outline-offset: 3px;
-  }
-
-  .site-footer {
+  .hl-service {
     display: flex;
-    justify-content: space-between;
-    gap: var(--space-2, 16px);
-    width: min(100%, var(--container, 1440px));
-    margin-inline: auto;
-    padding: var(--space-3, 24px);
-    border: var(--rule, 2px solid var(--ink, #000));
-    font: 500 12px/1.5 var(--font-mono, monospace);
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3) var(--gutter);
+    border-right: var(--rule);
+    border-bottom: var(--rule);
   }
+  .hl-service-name { font: 800 20px/1.2 var(--font-display); }
+  .hl-service-note { font: 400 14px/1.5 var(--font-text); }
+  .hl-service-list { display: none; }
 
+  /* ── What broke ────────────────────────────────────────────────────── */
+  .hl-head-note { color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
+
+  .hl-incident { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .hl-incident:last-child { border-bottom: 0; }
+  .hl-incident-title { box-sizing: content-box; flex: 1 1 280px; margin: 0; padding: var(--space-3) var(--gutter); font: var(--type-card); }
+  .hl-incident-summary { box-sizing: content-box; flex: 2 1 420px; margin: 0; padding: var(--space-3) var(--gutter); font: 400 16px/1.55 var(--font-text); }
+  .hl-incident-link { box-sizing: content-box; flex: 0 0 160px; padding: var(--space-3) var(--gutter); font: 400 14px/1.4 var(--font-mono); }
+
+  .hl-incidents-phone { display: none; margin: 0; padding: 0; list-style: none; }
+
+  /* ── Phone ─────────────────────────────────────────────────────────── */
   @media (max-width: 767px) {
-    .homelab-page { padding-inline: var(--gutter, 16px); }
-    .homelab-hero { display: block; padding-block: 48px; }
-    .homelab-title { font-size: 56px; }
-    .homelab-lead { font-size: 16px; }
-    .spec-sheet {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      min-width: 0;
-      margin-block-start: var(--space-4, 32px);
-      border-inline-start: var(--rule, 2px solid var(--ink, #000));
+    .hl-hero { display: block; }
+    .hl-hero-main {
+      gap: var(--space-2);
+      padding: var(--space-4) var(--gutter);
+      border-bottom: var(--rule);
     }
-    .spec-row {
+    .hl-eyebrow { font-size: 12px; }
+
+    .hl-spec { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-left: 0; }
+    .hl-spec-row {
       display: block;
       min-width: 0;
-      padding: var(--space-2, 16px);
-      border-inline-end: var(--rule, 2px solid var(--ink, #000));
-      border-block-end: var(--rule, 2px solid var(--ink, #000));
+      min-height: 0;
+      padding: 12px var(--gutter);
     }
-    .spec-row dt { margin-block-end: var(--space-1, 8px); }
-    .homelab-section-heading { display: block; }
-    .homelab-section-heading .section-title { margin-block-start: var(--space-1, 8px); }
-    .layer-service-row { grid-template-columns: 1fr; gap: var(--space-2, 16px); }
-    .layer-service-label { align-items: center; }
-    .layer-badge { flex-basis: 48px; }
-    .service-grid {
+    .hl-spec-row:nth-child(odd) { border-right: var(--rule); }
+    .hl-spec-row:last-child { border-bottom: 0; }
+    .hl-spec-row:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
+    .hl-spec dt,
+    .hl-spec dd { display: block; padding: 0; border: 0; }
+    .hl-spec dt { font-size: 11px; }
+    .hl-spec dd { margin-top: 4px; font-size: 15px; }
+
+    .hl-badge { flex-basis: 48px; min-height: 0; font-size: 13px; }
+    .hl-services { display: none; }
+    .hl-service-list {
       display: block;
-      border: 0;
-      font: 400 15px/1.55 var(--font-text, sans-serif);
+      flex: 1 1 auto;
+      min-width: 0;
+      margin: 0;
+      padding: 14px var(--gutter);
+      font: 400 15px/1.5 var(--font-text);
     }
-    .service-cell,
-    .service-cell-title {
-      display: inline;
-      padding: 0;
-      border: 0;
-      font: inherit;
+
+    .hl-head-note { display: none; }
+    .hl-incidents { display: none; }
+    .hl-incidents-phone { display: block; }
+    .hl-incidents-phone li + li { border-top: var(--rule); }
+    .hl-incident-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: var(--touch);
+      padding: var(--space-2) var(--gutter);
+      color: var(--ink);
+      text-decoration: none;
     }
-    .service-cell-title { font-weight: 600; }
-    .service-cell p { display: none; }
-    .service-cell + .service-cell::before { content: ', '; }
-    .incident-row { display: block; padding-block: var(--space-3, 24px); }
-    .incident-title { display: block; font-size: 20px; }
-    .incident-summary,
-    .incident-link { display: none; }
-    .site-footer { flex-direction: column; padding: var(--space-2, 16px); }
+    a.hl-incident-row:hover .hl-incident-row-title { text-decoration: underline; }
+    .hl-incident-row-title { font: 800 18px/1.2 var(--font-display); }
+    .hl-arrow { font: 400 18px/1 var(--font-mono); }
   }
 </style>
