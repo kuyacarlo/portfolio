@@ -1,181 +1,174 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../lib/site';
-import projectContent from '../data/projects.json';
-import hackathonContent from '../data/hackathons.json';
-import nowContent from '../data/now.json';
 import CoverageStrip from '../components/CoverageStrip.astro';
-import { layers } from '../lib/layers';
-const projects = projectContent.projects.map((project) => {
-  const links = project.links as { source?: string; live?: string; internal?: string };
-  return { ...project, source: links.source, live: links.live, internal: links.internal };
-});
-const podiums = hackathonContent.filter((item) => item.podium);
-const otherCompetitions = hackathonContent.filter((item) => !item.podium);
+import { site } from '../lib/site';
+import { featuredOnPhone, layers } from '../lib/layers';
+import projectContent from '../data/projects.json';
+import hackathons from '../data/hackathons.json';
+import now from '../data/now.json';
+
+type Links = { source?: string; live?: string; internal?: string };
+
+const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
+const featured = new Set(featuredOnPhone(projects).map((project) => project.name));
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/** The one link a phone card shows: homelab, else source, else live. */
+const phoneLink = (links: Links) =>
+  links.internal ? { label: 'homelab', href: links.internal, external: false }
+  : links.source ? { label: 'source', href: links.source, external: true }
+  : links.live ? { label: 'live', href: links.live, external: true }
+  : null;
+
+const podiums = hackathons.filter((item) => item.podium);
+const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
+
+const nowCells = [
+  { label: 'Building', text: now.building },
+  { label: 'Learning', text: now.learning },
+  { label: 'Exploring', text: now.exploring },
+  { label: 'Open for', text: now.openFor },
+];
 ---
 
-<Layout active="home" title="John Carlo Santos — Software & Systems Engineer" description="I build software across data, infrastructure, and the people who use it.">
-  <main id="main" class="stack-home">
-    <div class="shell">
-      <section class="page page-hero home-hero" aria-labelledby="home-title">
-        <div class="home-intro">
-          <p class="eyebrow">AVAILABLE — HACKATHON TEAMS, DATA AND DEVOPS ROLES</p>
-          <h1 id="home-title">Solder, servers,<br />and the people<br class="hero-break" /> in between.</h1>
-          <div class="hero-copy">
-            <p>I’m John Carlo Santos, a software and systems engineer and CTO at Seekers Guild. I study Computer Engineering at Bulacan State University.</p>
-            <p>I build dependable data systems, developer tooling, and agent workflows. I care about how the pieces meet the people using them.</p>
-          </div>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#work">SEE THE WORK</a>
-            <a class="button button-secondary" href="/resume">RESUME</a>
-          </div>
+<Layout active="home">
+  <main id="main">
+    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a 3×2 grid. -->
+    <section class="region hero" aria-labelledby="home-title">
+      <div class="hero-main">
+        <span class="badge-outline hero-badge">
+          <span class="desk">Available — hackathon teams, data and DevOps roles</span>
+          <span class="phone">Available — teams, data and DevOps roles</span>
+        </span>
+        <h1 id="home-title">Solder, servers, and the people in between.</h1>
+        <p class="hero-bio desk">I'm John Carlo Santos. Software and systems engineer, CTO at Seekers Guild, and computer engineering at Bulacan State University, class of 2028. I work on ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <p class="hero-bio phone">I'm John Carlo Santos. Software and systems engineer, CTO at Seekers Guild, computer engineering at BulSU, class of 2028. ETL pipelines, DevSecOps guardrails, agent harnesses.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work"><span class="desk">See the work</span><span class="phone">The work</span></a>
+          <a class="button button-secondary" href="/resume">Resume</a>
         </div>
-        <div class="hero-layers" aria-label="Layers of work">
-          {layers.map((layer) => (
-            <div class="hero-layer">
-              <span class="badge layer-badge">{String(layer.n).padStart(2, '0')}</span>
-              <span>{layer.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
+      </div>
+      <ul class="side layer-col desk">
+        {[...layers].reverse().map((layer) => (
+          <li><span class="layer-badge">{pad(layer.n)}</span><span class="layer-name">{layer.name}</span></li>
+        ))}
+      </ul>
+      <ul class="layer-cells phone">
+        {layers.map((layer) => (
+          <li><b>{pad(layer.n)}</b>{layer.name}</li>
+        ))}
+      </ul>
+    </section>
 
-    <!-- PROJECTS -->
-    <section id="work" class="page-section" aria-labelledby="work-title">
-      <div class="shell">
-        <div class="section-heading">
-          <h2 class="section-title" id="work-title">01 Selected work</h2>
-          <a class="text-link" href="/resume">FULL RESUME →</a>
-        </div>
+    <!-- 01 Selected work -->
+    <section id="work" class="region" aria-labelledby="work-title">
+      <div class="region-head">
+        <h2 id="work-title">01 <span class="desk">Selected </span>work</h2>
+        <a class="desk" href="/resume">full resume</a>
+      </div>
 
-        <div class="desktop-projects" role="region" aria-label="Selected projects">
-          <div class="data-table project-table" role="table" aria-label="Selected work">
-            <div class="table-row table-head" role="row">
-              <span role="columnheader">PROJECT</span>
-              <span role="columnheader">WHAT IT IS</span>
-              <span role="columnheader">01—06</span>
-              <span role="columnheader">LINKS</span>
-            </div>
-            {projects.map((project) => (
-              <div class="table-row project-row" role="row">
-                <strong role="cell">{project.name}</strong>
-                <span role="cell">{project.description}</span>
-                <span class="coverage-cell-wrap" role="cell"><CoverageStrip layers={project.layers} /></span>
-                <span class="project-links" role="cell">
-                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer">SOURCE</a>}
-                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer">LIVE</a>}
-                  {project.internal && <a href={project.internal}>HOMELAB</a>}
-                </span>
-              </div>
-            ))}
+      <div class="work-table desk" role="table" aria-labelledby="work-title">
+        <div class="work-row work-head" role="row">
+          <span class="c-name" role="columnheader">project</span>
+          <span class="c-desc" role="columnheader">what it is</span>
+          <span class="c-strip c-nums" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span class="c-links" role="columnheader">links</span>
+        </div>
+        {projects.map((project) => (
+          <div class="work-row" role="row">
+            <span class="c-name" role="cell">{project.name}</span>
+            <span class="c-desc" role="cell">{project.description}</span>
+            <span class="c-strip" role="cell"><CoverageStrip layers={project.layers} /></span>
+            <span class="c-links" role="cell">
+              {project.links.source && <a href={project.links.source} target="_blank" rel="noopener noreferrer" aria-label={`source for ${project.name}`}>source</a>}
+              {project.links.internal && <a href={project.links.internal}>homelab</a>}
+              {project.links.live && <a href={project.links.live} target="_blank" rel="noopener noreferrer" aria-label={`live ${project.name}`}>live</a>}
+            </span>
           </div>
-        </div>
+        ))}
+      </div>
 
-        <div class="phone-projects" data-phone-projects>
-          <div class="phone-project-list">
-            {projects.map((project) => (
-              <article class:list={['cell', 'phone-project-card', { 'phone-project-extra': !project.featuredOnPhone }]} hidden={!project.featuredOnPhone}>
-                <div class="phone-project-title">
-                  <h3>{project.name}</h3>
-                  {project.source && <a href={project.source} target="_blank" rel="noopener noreferrer" aria-label={`Source for ${project.name}`}>SOURCE →</a>}
-                  {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" aria-label={`Live ${project.name}`}>LIVE →</a>}
-                  {project.internal && <a href={project.internal} aria-label={`Open ${project.name}`}>OPEN →</a>}
+      <div class="phone">
+        <div id="phone-projects">
+          {projects.map((project) => {
+            const link = phoneLink(project.links);
+            return (
+              <article class:list={['phone-project-card', { 'phone-project-extra': !featured.has(project.name) }]} hidden={!featured.has(project.name)}>
+                <div class="card-body">
+                  <div class="card-title">
+                    <h3>{project.name}</h3>
+                    {link && (link.external
+                      ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
+                      : <a href={link.href}>{link.label}</a>)}
+                  </div>
+                  <p>{project.description}</p>
                 </div>
-                <p>{project.description}</p>
                 <CoverageStrip layers={project.layers} />
               </article>
-            ))}
-          </div>
-          <button class="button button-secondary expand-button" type="button" data-expand-projects data-count={projects.length} aria-expanded="false">
-            SHOW ALL {projects.length} PROJECTS
-          </button>
+            );
+          })}
         </div>
+        <button class="show-all" type="button" data-expand-projects data-count={projects.length} aria-expanded="false" aria-controls="phone-projects">SHOW ALL {projects.length} PROJECTS</button>
       </div>
     </section>
 
-    <!-- HACKATHONS -->
-    <section class="page-section" aria-labelledby="hackathons-title">
-      <div class="shell">
-        <div class="section-heading">
-          <h2 class="section-title" id="hackathons-title">02 Hackathons</h2>
-        </div>
-        <div class="split hackathon-layout">
-          <div class="competition-list" aria-label="Competition results">
-            {hackathonContent.map((item) => (
-              <div class:list={["result-row", { podium: item.podium }]}>
-                <span class="result-place">{item.result}</span>
-                <strong>{item.project}</strong>
-                <span>{item.event}</span>
-              </div>
+    <!-- 02 Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
+    <section class="region hacks" aria-labelledby="hacks-title">
+      <div class="hacks-main">
+        <div class="region-head"><h2 id="hacks-title">02 Hackathons</h2></div>
+        <ul class="results desk">
+          {results.map((item) => (
+            <li class:list={['result', { podium: item.podium }]}>
+              <span class="r-place">{item.result}</span>
+              <span class="r-project">{item.project}</span>
+              <span class="r-event">{item.event}</span>
+            </li>
+          ))}
+        </ul>
+        <div class="phone hacks-phone">
+          <ul id="phone-results">
+            {results.map((item) => (
+              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !item.podium }]} hidden={!item.podium}>
+                <span class="r-place">{item.result}</span>
+                <span><b>{item.project}</b> · {item.event}</span>
+              </li>
             ))}
-          </div>
-          <aside class="stat-pair" aria-label={`${hackathonContent.length} competitions, ${podiums.length} podium finishes`}>
-            <div class="stat-cell"><strong>{hackathonContent.length}</strong><span>COMPETITIONS</span></div>
-            <div class="stat-cell stat-inverted"><strong>{podiums.length}</strong><span>PODIUMS</span></div>
-          </aside>
+          </ul>
+          <button class="show-all" type="button" data-expand-competitions data-count={hackathons.length} aria-expanded="false" aria-controls="phone-results">SHOW ALL {hackathons.length} COMPETITIONS</button>
         </div>
-        <div class="phone-competitions" data-phone-competitions>
-          <div class="phone-result-list">
-            {podiums.map((item) => (
-              <article class="cell phone-result-card podium">
-                <span class="result-place">{item.result}</span>
-                <strong>{item.project}</strong>
-                <span>{item.event}</span>
-              </article>
-            ))}
-            {otherCompetitions.map((item) => (
-              <article class="cell phone-result-card phone-result-extra" hidden>
-                <span class="result-place">{item.result}</span>
-                <strong>{item.project}</strong>
-                <span>{item.event}</span>
-              </article>
-            ))}
-          </div>
-          <button class="button button-secondary expand-button" type="button" data-expand-competitions data-count={hackathonContent.length} aria-expanded="false">
-            SHOW ALL {hackathonContent.length} COMPETITIONS
-          </button>
-        </div>
+      </div>
+      <div class="side stats">
+        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">competitions</span></p>
+        <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">podiums</span></p>
       </div>
     </section>
 
-    <!-- NOW -->
-    <section class="page-section" aria-labelledby="now-title">
-      <div class="shell">
-        <div class="section-heading"><h2 class="section-title" id="now-title">03 Now</h2></div>
+    <!-- 03 Now -->
+    <section class="region" aria-labelledby="now-title">
+      <div class="region-head"><h2 id="now-title">03 Now</h2></div>
+      <div class="now-clip">
         <div class="now-grid">
-          <div class="cell now-cell"><span class="label">BUILDING</span><p>{nowContent.building}</p></div>
-          <div class="cell now-cell"><span class="label">LEARNING</span><p>{nowContent.learning}</p></div>
-          <div class="cell now-cell"><span class="label">EXPLORING</span><p>{nowContent.exploring}</p></div>
-          <div class="cell now-cell"><span class="label">OPEN FOR</span><p>{nowContent.openFor}</p></div>
+          {nowCells.map((cell) => (
+            <div class="now-cell"><span class="now-label">{cell.label}</span><span class="now-text">{cell.text}</span></div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="contact-section" aria-labelledby="contact-title">
-      <div class="shell">
-        <div class="section-heading"><h2 class="section-title" id="contact-title">04 Contact</h2></div>
-        <div class="contact-panel">
-          <div>
-            <h2>Pick one.<br />I’ll reply.</h2>
-            <p>{nowContent.openFor}</p>
-          </div>
-          <div class="contact-actions">
-            <a class="button button-on-ink" href="/book">BOOK A CALL</a>
-            <a class="button button-on-ink-secondary" href={`mailto:${site.email}`}>SEND AN EMAIL</a>
-            <div class="social-links" aria-label="Social links">
-              <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">GITHUB ↗</a>
-              <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>
-              <a href={site.devtoUrl} target="_blank" rel="noopener noreferrer">DEV.TO ↗</a>
-            </div>
-          </div>
-        </div>
+    <!-- 04 Contact -->
+    <section id="contact" class="contact on-ink" aria-labelledby="contact-title">
+      <span class="contact-label">04 Contact</span>
+      <h2 id="contact-title">Pick one. I'll reply.</h2>
+      <div class="contact-actions">
+        <a class="button button-on-ink" href="/book">Book a call</a>
+        <a class="button button-on-ink-outline" href={`mailto:${site.email}`}>Send an email</a>
+      </div>
+      <div class="socials">
+        <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
+        <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href={site.devtoUrl} target="_blank" rel="noopener noreferrer">dev.to</a>
       </div>
     </section>
-
-    <div class="shell">
-    </div>
   </main>
 </Layout>
 
@@ -197,95 +190,145 @@ const otherCompetitions = hackathonContent.filter((item) => !item.podium);
 </script>
 
 <style>
-  .stack-home { color: var(--ink); }
-  .home-hero { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); padding-block: clamp(48px, 9vw, 112px); }
-  .home-intro { flex: 999 1 560px; min-width: 0; }
-  .home-intro h1 { max-width: 900px; margin: var(--space-3) 0 var(--space-4); font: 900 clamp(44px, 7vw, 104px)/.9 var(--font-display); letter-spacing: -.035em; text-transform: none; }
-  .hero-copy { max-width: 700px; font: 400 19px/1.5 var(--font-text); }
-  .hero-copy p + p { margin-top: var(--space-2); }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
-  .hero-layers { flex: 1 1 320px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: var(--rule); border-left: var(--rule); }
-  .hero-layer { min-height: 76px; display: flex; align-items: center; gap: 12px; padding: 10px; border-right: var(--rule); border-bottom: var(--rule); font: 700 15px/1 var(--font-mono); text-transform: uppercase; }
-  .layer-badge { width: 48px; height: 48px; display: grid; place-items: center; flex: none; }
-  .page-section { padding-block: var(--space-5); border-top: var(--rule); }
-  .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-3); }
-  .section-title { margin: 0; font: 900 40px/1 var(--font-display); letter-spacing: -.02em; text-transform: uppercase; }
-  .text-link, .project-links a, .phone-project-title a, .social-links a { color: var(--link); font: 600 12px/1.4 var(--font-mono); text-decoration: underline; text-underline-offset: 3px; }
-  .desktop-projects { display: block; }
-  .project-table .table-row { display: grid; grid-template-columns: minmax(170px, 1.2fr) minmax(220px, 2fr) 216px minmax(150px, 1fr); align-items: stretch; }
-  .table-head { font: 700 12px/1.4 var(--font-mono); }
-  .project-table .table-head > *, .project-row > * { padding: 14px var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
-  .project-table .table-head { border-top: var(--rule); border-left: var(--rule); background: var(--surface); }
-  .project-row { border-left: var(--rule); }
-  .project-row > :first-child { font: 800 20px/1.15 var(--font-display); }
-  .project-row > :nth-child(2) { font: 400 15px/1.5 var(--font-text); }
-  .coverage-cell-wrap { display: flex; align-items: center; }
-  .phone-project-card :global(.coverage) { width: 100%; height: 14px; }
-  .coverage-cell-wrap :global(.coverage) { width: 100%; }
-  .project-links { display: flex; align-content: center; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
-  .phone-projects, .phone-competitions { display: none; }
-  .split { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-3); }
-  .competition-list { flex: 999 1 560px; border-top: var(--rule); }
-  .result-row { min-height: 66px; display: grid; grid-template-columns: 150px minmax(150px, 1fr) minmax(180px, 1.4fr); align-items: center; gap: 16px; padding: 12px var(--gutter); border: var(--rule); border-top: 0; }
-  .result-row.podium { color: var(--paper); background: var(--ink); }
-  .result-place, .label { font: 700 12px/1.35 var(--font-mono); text-transform: uppercase; }
-  .result-row strong { font: 800 22px/1.1 var(--font-display); }
-  .result-row > span:last-child { color: var(--muted); font: 400 14px/1.4 var(--font-text); }
-  .result-row.podium > span:last-child { color: var(--paper); }
-  .stat-pair { flex: 1 1 300px; display: grid; grid-template-columns: 1fr 1fr; align-self: stretch; border-top: var(--rule); border-left: var(--rule); }
-  .stat-cell { display: flex; flex-direction: column; justify-content: space-between; min-height: 164px; padding: 16px; border-right: var(--rule); border-bottom: var(--rule); }
-  .stat-cell strong { font: 900 clamp(64px, 9vw, 120px)/.8 var(--font-display); letter-spacing: -.06em; }
-  .stat-cell span { font: 700 12px/1.2 var(--font-mono); }
-  .stat-inverted { color: var(--paper); background: var(--ink); }
-  .now-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: var(--rule); border-left: var(--rule); }
-  .now-cell { min-height: 160px; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
-  .now-cell p { margin: 0; font: 400 16px/1.55 var(--font-text); }
-  .contact-section { padding-block: var(--space-5); color: var(--paper); background: var(--ink); }
-  .contact-section .section-heading { border-bottom: 2px solid var(--paper); padding-bottom: 16px; }
-  .contact-panel { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-5); padding-block: var(--space-4); }
-  .contact-panel > div:first-child { flex: 999 1 560px; }
-  .contact-panel h2 { margin: 0 0 var(--space-2); font: 900 clamp(44px, 7vw, 104px)/.9 var(--font-display); letter-spacing: -.035em; }
-  .contact-panel p { font: 400 16px/1.5 var(--font-text); }
-  .contact-actions { flex: 1 1 300px; display: grid; gap: 12px; }
-  .button-on-ink, .button-on-ink-secondary { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border: 2px solid var(--paper); color: var(--ink); background: var(--paper); font: 800 15px/1.2 var(--font-display); text-align: center; text-decoration: none; }
-  .button-on-ink-secondary { color: var(--paper); background: transparent; }
-  .social-links { display: flex; flex-wrap: wrap; gap: 12px 20px; padding-top: 8px; }
-  .social-links a { color: var(--paper); }
-  .site-footer { min-height: 64px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: var(--rule); font: 500 12px/1.4 var(--font-mono); }
-  .phone-project-list, .phone-result-list { display: grid; }
-  .phone-project-card { display: grid; gap: 12px; padding: 16px; border-top: 0; }
-  .phone-project-title { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
-  .phone-project-title h3 { margin: 0; font: 800 20px/1.1 var(--font-display); }
-  .phone-project-card p { margin: 0; font: 400 14px/1.5 var(--font-text); }
-  .expand-button { width: 100%; margin-top: 12px; }
-  .phone-result-card { display: grid; gap: 6px; padding: 16px; border-top: 0; }
-  .phone-result-card strong { font: 800 20px/1.1 var(--font-display); }
-  .phone-result-card > span:last-child { color: var(--muted); font: 400 14px/1.4 var(--font-text); }
-  .phone-result-card.podium { color: var(--paper); background: var(--ink); }
-  .phone-result-card.podium > span:last-child { color: var(--paper); }
+  /* Desktop and phone have their own markup where the two boards differ. */
+  .phone { display: none; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  /* A side column in a flex-wrap region. The negative margins lay its rules over the
+     neighbouring rule, so it never doubles a rule whether it sits beside or below. */
+  .side {
+    flex: 1 1 360px;
+    min-width: 0;
+    margin: calc(-1 * var(--rule-w)) 0 0 calc(-1 * var(--rule-w));
+    border-top: var(--rule);
+    border-left: var(--rule);
+  }
+
+  /* ── Hero ── */
+  .hero { display: flex; flex-wrap: wrap; }
+  .hero-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--gutter); }
+  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .hero-bio { max-width: 680px; margin: 0; font: var(--type-lead); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .layer-col { display: flex; flex-direction: column; font: 400 14px/1.2 var(--font-mono); }
+  .layer-col li { display: flex; min-height: 56px; border-bottom: var(--rule); }
+  .layer-col li:last-child { flex-grow: 1; border-bottom: 0; }
+  .layer-col .layer-badge { height: auto; align-self: stretch; font: inherit; }
+  .layer-name { display: flex; align-items: center; padding: 0 var(--space-2); }
+
+  /* ── 01 Selected work ── */
+  .work-row { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: var(--rule); }
+  .work-row:last-child { border-bottom: 0; }
+  .work-head { color: var(--muted); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .c-name { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; padding: 20px var(--gutter); }
+  .c-desc { flex: 2 1 320px; min-width: 0; padding: 20px var(--gutter); }
+  .c-strip { flex: 0 0 216px; display: flex; }
+  .c-links { flex: 0 0 160px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 14px; padding: 20px var(--gutter); font: 400 14px/1.4 var(--font-mono); }
+  .work-head > * { padding-block: 10px; font-size: 12px; }
+  .c-nums { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); text-align: center; }
+  .work-row:not(.work-head) .c-name { font: var(--type-card); letter-spacing: -0.01em; }
+  .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
+  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+
+  /* ── 02 Hackathons ── */
+  .hacks { display: flex; flex-wrap: wrap; }
+  .hacks-main { flex: 999 1 560px; min-width: 0; }
+  .result { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .result:last-child { border-bottom: 0; }
+  .result > * { min-width: 0; padding: var(--space-2) var(--gutter); }
+  .result .r-place { flex: 0 0 200px; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .result .r-project { flex: 1 1 160px; font: 800 18px/1.3 var(--font-display); }
+  .result .r-event { flex: 2 1 240px; font: 400 15px/1.4 var(--font-text); }
+  .podium { background: var(--ink); color: var(--paper); }
+  .result.podium .r-place { font-weight: 700; }
+  .result.podium + .result.podium { border-top: var(--rule-on-ink); }
+
+  .side.stats { flex-basis: 320px; display: flex; flex-direction: column; }
+  .stat { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-1); margin: 0; padding: var(--space-4) var(--gutter); }
+  .stat + .stat { border-top: var(--rule); }
+  .stat-n { font: 900 120px/0.85 var(--font-display); letter-spacing: -0.04em; }
+  .stat-label { font: 400 14px/1.2 var(--font-mono); text-transform: uppercase; }
+
+  /* ── 03 Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
+  .now-clip { overflow: hidden; }
+  .now-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
+  .now-cell { display: flex; flex-direction: column; gap: 10px; padding: var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
+  .now-label { font: 700 12px/1.4 var(--font-mono); text-transform: uppercase; }
+  .now-text { font: 400 17px/1.5 var(--font-text); }
+
+  /* ── 04 Contact ── */
+  .contact { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6) var(--gutter); }
+  .contact-label { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  .contact h2 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .contact-actions .button { min-height: 52px; padding-inline: var(--space-3); font-size: 16px; }
+  /* `.on-ink a` would otherwise paint both buttons' text white in every state. */
+  .contact-actions .button-on-ink, .contact-actions .button-on-ink-outline:hover { color: var(--ink); }
+  .contact-actions .button-on-ink:hover { color: var(--paper); }
+  .socials { display: flex; flex-wrap: wrap; gap: var(--space-3); font: 400 15px/1.4 var(--font-mono); }
+  .socials a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* 768–1023: narrower bases keep each table row on one line, so the strip never
+     wraps against the frame rule. */
   @media (min-width: 768px) and (max-width: 1023px) {
-    .project-table .table-row { grid-template-columns: minmax(130px, 1fr) minmax(150px, 1.5fr) minmax(140px, .9fr) minmax(125px, .8fr); }
-    .project-table .table-head > *, .project-row > * { padding-inline: 10px; }
-    }
+    .c-name { flex-basis: 180px; padding-inline: var(--gutter) var(--space-2); }
+    .c-desc { flex-basis: 220px; padding-inline: var(--space-2); }
+    .c-links { flex-basis: 120px; padding-inline: var(--space-2); }
+    .work-row:not(.work-head) .c-name { font-size: 18px; }
+    .result .r-place { flex-basis: 160px; }
+  }
+
+  /* ── Phone (<768): its own layout, from the phone board ── */
   @media (max-width: 767px) {
-    .home-hero { gap: var(--space-4); padding-block: 48px; }
-    .home-intro h1 { margin-block: 20px; font-size: 46px; }
-    .hero-copy { font-size: 16px; }
-    .hero-break { display: none; }
-    .hero-layers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
-    .hero-layer { min-height: 64px; justify-content: center; flex-direction: column; gap: 6px; padding: 6px 2px; font-size: 9px; }
-    .layer-badge { width: 36px; height: 36px; }
-    .section-title { font-size: 28px; }
-    .desktop-projects { display: none; }
-    .phone-projects, .phone-competitions { display: block; }
-    .phone-project-card:first-child, .phone-result-card:first-child { border-top: var(--rule); }
-    .hackathon-layout { display: none; }
+    .desk { display: none; }
+    .phone { display: block; }
+    span.phone { display: inline; }
+
+    .hero-main { gap: 20px; padding: var(--space-4) var(--gutter); }
+    .hero-badge { padding: 6px var(--space-1); font-size: 11px; }
+    .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
+    .hero-actions .button { font-size: 14px; }
+
+    .layer-cells { display: grid; flex: 1 1 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: var(--rule); font: 400 12px/1 var(--font-mono); }
+    .layer-cells li { display: flex; align-items: center; gap: var(--space-1); height: 44px; padding: 0 10px; }
+    .layer-cells li:not(:nth-child(3n)) { border-right: var(--rule); }
+    .layer-cells li:nth-child(-n + 3) { border-bottom: var(--rule); }
+    .layer-cells b { font-weight: 700; }
+
+    .phone-project-card { border-bottom: var(--rule); }
+    .card-body { display: flex; flex-direction: column; gap: 6px; padding: var(--space-2) var(--gutter) 12px; }
+    .card-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .card-title h3 { margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
+    .card-title a { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; font: 400 13px/1 var(--font-mono); }
+    .phone-project-card p { margin: 0; font: 400 15px/1.45 var(--font-text); }
+    .phone-project-card :global(.coverage) { width: 100%; height: 14px; border: 0; border-top: var(--rule); }
+
+    .show-all { display: block; width: 100%; height: 52px; border: 0; background: var(--paper); color: var(--ink); font: 700 13px/1 var(--font-mono); text-transform: uppercase; }
+    .show-all:hover { background: var(--ink); color: var(--paper); }
+    .show-all:focus-visible { outline-offset: -6px; }
+
+    /* Stat pair above the list: the main column dissolves so its parts can be reordered. */
+    .hacks { flex-direction: column; flex-wrap: nowrap; }
+    .hacks-main { display: contents; }
+    .side.stats { order: 1; flex: none; flex-direction: row; margin: 0; border: 0; border-bottom: var(--rule); }
+    .hacks-phone { order: 2; }
+    .stat { justify-content: flex-start; gap: 4px; padding: var(--space-2) var(--gutter); }
+    .stat + .stat { border-top: 0; border-left: var(--rule); }
+    .stat-n { font-size: 64px; }
+    .stat-label { font-size: 12px; }
+    .phone-result-card { display: flex; flex-direction: column; gap: 4px; padding: 14px var(--gutter); border-bottom: var(--rule); font: 400 15px/1.4 var(--font-text); }
+    .phone-result-card .r-place { font: 700 11px/1.3 var(--font-mono); text-transform: uppercase; }
+    .phone-result-card b { font: 800 17px/1.3 var(--font-display); }
+
     .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .now-cell { min-height: 140px; padding: 12px; }
-    .contact-panel { gap: var(--space-3); }
-    .contact-panel h2 { font-size: 46px; }
-    .contact-actions { flex-basis: 100%; }
-    .site-footer { padding-block: 16px; }
-    .site-footer span:last-child { flex-basis: 100%; }
+    .now-cell { gap: 6px; }
+    .now-label { font-size: 11px; }
+    .now-text { font-size: 15px; line-height: 1.4; }
+
+    .contact { gap: 20px; padding: 40px var(--gutter); }
+    .contact-label { font-size: 12px; }
+    .contact-actions { flex-direction: column; gap: 20px; }
+    .socials { gap: 20px; font-size: 14px; }
   }
 </style>
