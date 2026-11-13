@@ -20,15 +20,11 @@
     "katex": "^0.18.1",
     "node-tikzjax": "^1.0.5",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0",
-    "rss": "^1.2.2"
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "1.58.2",
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/rss": "^0.0.32",
-    "canvas-confetti": "^1.9.4",
     "vitest": "^5.0.3",
     "wrangler": "^4.113.0"
   },

@@ -14,10 +14,6 @@ export const site = {
   ),
   githubUrl: requirePublic("PUBLIC_GITHUB_URL", "https://github.com/kuyacarlo"),
   devtoUrl: requirePublic("PUBLIC_DEVTO_URL", "https://dev.to/kuyacarlo"),
-  statusUrl: requirePublic(
-    "PUBLIC_STATUS_URL",
-    "https://status.kuyacarlo.dev",
-  ),
 } as const;
 
 export function displayHost(url: string): string {
