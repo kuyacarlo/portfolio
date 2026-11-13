@@ -18,7 +18,7 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
 
     <div class="notes-list" aria-live="polite">
       {posts.map((post) => (
-        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} cover={post.cover} layers={post.layers} tags={post.tags} />
+        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} cover={post.cover} layers={post.layers} />
       ))}
       <p class="notes-empty" hidden={posts.length > 0}>Nothing at this layer yet.</p>
     </div>

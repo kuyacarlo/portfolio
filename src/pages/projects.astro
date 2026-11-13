@@ -72,8 +72,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .project-coverage :global(.coverage-cell + .coverage-cell) { border-left: var(--rule); }
   .project-links { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; font: 400 14px/1.4 var(--font-mono); }
   @media (min-width: 768px) and (max-width: 1023px) {
+    .projects-hero { flex-direction: column; align-items: stretch; gap: var(--space-3); }
+    .projects-title-copy { flex: none; }
+    .projects-hero > ul.project-layer-grid { flex: none; width: 100%; align-self: stretch; }
     .project-row { grid-template-columns: minmax(130px, 1fr) minmax(180px, 1.5fr) 160px minmax(90px, .7fr); }
     .project-row > * { padding-inline: var(--space-2); }
+    .project-head { align-items: center; }
+    .project-head > * { padding-inline: 8px; }
+    .project-head .project-layers { padding-inline: 0; align-items: center; }
   }
   @media (max-width: 767px) {
     .projects-hero { flex-direction: column; gap: var(--space-3); padding-block: var(--space-4); }

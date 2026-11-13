@@ -1,5 +1,5 @@
 ---
-/** One note index row with a linked title area and static topic tags. */
+/** One note index row with a linked title area. */
 import CoverageStrip from './CoverageStrip.astro';
 
 interface Props {
@@ -9,10 +9,9 @@ interface Props {
   dek?: string;
   cover?: string;
   layers: number[];
-  tags: string[];
 }
 
-const { slug, title, date, dek, cover, layers, tags } = Astro.props;
+const { slug, title, date, dek, cover, layers } = Astro.props;
 ---
 <article class="note-list-item" data-note-layers={layers.join(',')}>
   <a class="note-list-main" href={`/notes/${slug}`}>
@@ -24,9 +23,6 @@ const { slug, title, date, dek, cover, layers, tags } = Astro.props;
     </span>
     <CoverageStrip layers={layers} class="note-strip" />
   </a>
-  <div class="note-list-tags" role="group" aria-label={`Tags for ${title}`}>
-    {tags.map((tag) => <span class="tag">{tag}</span>)}
-  </div>
 </article>
 
 <style>
@@ -42,9 +38,6 @@ const { slug, title, date, dek, cover, layers, tags } = Astro.props;
   .note-title { font: var(--type-card); letter-spacing: -0.01em; }
   .note-dek { font: var(--type-body); }
   .note-list-main :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border: 0; border-top: var(--rule); }
-  .note-list-tags { display: flex; flex-wrap: wrap; gap: 0; padding: var(--space-1) var(--gutter); }
-  .note-list-tags .tag { min-height: 28px; padding: 4px 8px; font-size: 12px; }
-  .note-list-tags .tag + .tag { border-left: 0; }
 
   @media (max-width: 767px) {
     .note-date { font-size: 12px; }

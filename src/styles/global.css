@@ -43,6 +43,13 @@ h1, h2, h3, p { margin-top: 0; }
 .menu-toggle { display: none; }
 .mobile-menu { display: none; }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .brand { padding-inline: 16px; }
+  .main-nav { flex: 1 1 auto; justify-content: center; overflow-x: visible; }
+  .main-nav a { padding-inline: 12px; }
+  .talk-link { padding-inline: 18px; }
+}
+
 /* ── Footer ───────────────────────────────────────────────────────────── */
 .site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 20px var(--gutter); font: 400 13px/1.4 var(--font-mono); }
 .site-footer > * { margin: 0; }
