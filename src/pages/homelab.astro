@@ -68,11 +68,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 const link = publicLink(service.link);
                 return (
                   <li class="hl-service">
-                    <span class="hl-service-name">{service.name}</span>
-                    <span class="hl-service-note">
-                      {service.note}
-                      {link && <> <a href={link.href} rel="noopener">{link.label}</a></>}
+                    <span class="hl-service-name">
+                      {link ? <a href={link.href} rel="noopener">{service.name}</a> : service.name}
                     </span>
+                    <span class="hl-service-note">{service.note}</span>
                   </li>
                 );
               })}
@@ -86,20 +85,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <section class="region" aria-labelledby="hl-broke">
       <div class="region-head">
         <h2 id="hl-broke">What broke</h2>
-        <span class="hl-head-note">symptom → cause → fix</span>
       </div>
 
       <div class="hl-incidents">
         {incidents.map((incident) => (
-          <article class="hl-incident">
-            <h3 class="hl-incident-title">{incident.title}</h3>
-            <p class="hl-incident-summary">{incident.summary}</p>
-            {incident.href ? (
-              <a class="hl-incident-link" href={incident.href}>read note<span class="sr-only">: {incident.title}</span></a>
-            ) : (
-              <span class="hl-incident-link" aria-hidden="true"></span>
-            )}
-          </article>
+          incident.href ? (
+            <a class="hl-incident hl-incident-clickable" href={incident.href}>
+              <h3 class="hl-incident-title">{incident.title}</h3>
+              <p class="hl-incident-summary">{incident.summary}</p>
+            </a>
+          ) : (
+            <article class="hl-incident">
+              <h3 class="hl-incident-title">{incident.title}</h3>
+              <p class="hl-incident-summary">{incident.summary}</p>
+            </article>
+          )
         ))}
       </div>
 
@@ -198,14 +198,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .hl-service-list { display: none; }
 
   /* ── What broke ────────────────────────────────────────────────────── */
-  .hl-head-note { color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
-
   .hl-incident { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
+  .hl-incident-clickable { color: inherit; text-decoration: none; }
+  .hl-incident-clickable:hover .hl-incident-title { text-decoration: underline; text-underline-offset: 3px; }
+  .hl-incident-clickable:focus-visible { outline-offset: -4px; }
   .hl-incident:last-child { border-bottom: 0; }
   .hl-incident-title { box-sizing: content-box; flex: 1 1 280px; margin: 0; padding: var(--space-3) var(--gutter); font: var(--type-card); }
   .hl-incident-summary { box-sizing: content-box; flex: 2 1 420px; margin: 0; padding: var(--space-3) var(--gutter); font: 400 16px/1.55 var(--font-text); }
-  .hl-incident-link { box-sizing: content-box; flex: 0 0 160px; padding: var(--space-3) var(--gutter); font: 400 14px/1.4 var(--font-mono); }
-
   .hl-incidents-phone { display: none; margin: 0; padding: 0; list-style: none; }
 
   /* ── Phone ─────────────────────────────────────────────────────────── */
