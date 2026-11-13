@@ -5,7 +5,9 @@ import { layers } from '../lib/layers';
 import projectContent from '../data/projects.json';
 
 type Links = { source?: string; live?: string; internal?: string };
-const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
+const projects = projectContent.projects
+  .filter((project) => !('internal' in project.links))
+  .map((project) => ({ ...project, links: project.links as Links }));
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
@@ -27,19 +29,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <div class="project-table" role="table" aria-label="Projects">
         <div class="project-row project-head" role="row">
           <span role="columnheader">project</span>
-          <span role="columnheader">what it is</span>
+          <span role="columnheader">writeup</span>
           <span class="project-layers" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
           <span role="columnheader">links</span>
         </div>
         {projects.map((project) => (
           <article class="project-row" role="row">
-            <h2 role="cell">{project.name}</h2>
+            <h2 role="cell">
+              {project.links.live || project.links.source ? (
+                <a class="project-title-link" href={project.links.live ?? project.links.source} target="_blank" rel="noopener noreferrer">{project.name}</a>
+              ) : project.name}
+            </h2>
             <p role="cell">{project.description}</p>
             <span class="project-coverage" role="cell"><CoverageStrip layers={project.layers} /></span>
             <span class="project-links" role="cell">
-              {project.links.source && <a href={project.links.source} target="_blank" rel="noopener noreferrer">source</a>}
-              {project.links.live && <a href={project.links.live} target="_blank" rel="noopener noreferrer">live</a>}
-              {project.links.internal && <a href={project.links.internal}>homelab</a>}
+              {project.links.live && project.links.source && <a href={project.links.source} target="_blank" rel="noopener noreferrer">source</a>}
             </span>
           </article>
         ))}
@@ -56,7 +60,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .projects-hero > ul.project-layer-grid { display: grid; flex: 0 1 594px; width: 594px; max-width: 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 40px 40px; align-self: center; margin: 0; padding: 0; border: var(--rule); list-style: none; font: 400 12px/1 var(--font-mono); }
   .project-layer-grid li { display: contents; }
   .project-layer-grid li > b, .project-layer-grid li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 3px; border-right: var(--rule); border-bottom: var(--rule); text-align: center; overflow-wrap: anywhere; }
-  .project-layer-grid li > b { border-right-color: var(--paper); background: var(--ink); color: var(--paper); font-weight: 700; }
+  .project-layer-grid li > b { border-right: 0; background: var(--solid); color: var(--solid-text); font-weight: 700; }
   .project-layer-grid li:last-child > b, .project-layer-grid li:last-child > span { border-right: 0; }
   .project-row { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(260px, 1.5fr) 216px minmax(130px, .7fr); align-items: stretch; border-bottom: var(--rule); }
   .project-row:last-child { border-bottom: 0; }
@@ -65,6 +69,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .project-head > * { padding-block: 10px; }
   .project-head .project-layers { display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; }
   .project-row h2 { font: var(--type-card); overflow-wrap: anywhere; }
+  .project-title-link { color: inherit; text-decoration: none; }
+  .project-title-link:hover { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+  .project-title-link:focus-visible { outline-offset: 3px; }
   .project-row p { font: var(--type-body); }
   .project-coverage { display: flex; padding: 0; }
   .project-coverage :global(.coverage) { width: 100%; height: 48px; gap: 2px; border: 0; }

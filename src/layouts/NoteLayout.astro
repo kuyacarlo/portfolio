@@ -78,6 +78,8 @@ const {
 
   .mermaid { background: var(--surface); border: var(--rule); padding: 24px; margin-bottom: 24px; overflow-x: auto; text-align: center; }
   .mermaid svg { max-width: 100%; height: auto; }
+  :root[data-theme="dark"] .mermaid svg,
+  :root[data-theme="dark"] .tikz-figure :is(img, svg) { filter: invert(1); }
 
   .tikz-figure {
     display: flex;

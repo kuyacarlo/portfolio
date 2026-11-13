@@ -26,6 +26,17 @@ const links = [
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem('portfolio-theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') document.documentElement.dataset.theme = savedTheme;
+      } catch {}
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
+          .catch(() => {});
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
@@ -63,6 +74,7 @@ const links = [
         <nav class="main-nav" aria-label="Main">
           {links.map((link) => <a href={link.href} aria-current={active === link.key ? 'page' : undefined}>{link.label}</a>)}
         </nav>
+        <button class="theme-toggle" type="button" aria-label="Dark theme" aria-pressed="false">Dark</button>
         <a href="/book" class="talk-link" aria-current={active === 'book' ? 'page' : undefined}>Let’s talk</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">Menu</button>
       </header>
@@ -76,6 +88,18 @@ const links = [
     <script>
       const button = document.querySelector<HTMLButtonElement>('.menu-toggle');
       const menu = document.querySelector<HTMLElement>('#mobile-menu');
+      const themeButton = document.querySelector<HTMLButtonElement>('.theme-toggle');
+      const syncThemeButton = () => {
+        const dark = document.documentElement.dataset.theme === 'dark';
+        themeButton?.setAttribute('aria-pressed', String(dark));
+      };
+      syncThemeButton();
+      themeButton?.addEventListener('click', () => {
+        const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = nextTheme;
+        syncThemeButton();
+        try { localStorage.setItem('portfolio-theme', nextTheme); } catch {}
+      });
       const closeMenu = () => {
         if (!button || !menu) return;
         button.setAttribute('aria-expanded', 'false');

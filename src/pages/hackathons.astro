@@ -43,10 +43,10 @@ const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
   .result .r-project { width: fit-content; color: inherit; font: 800 18px/1.3 var(--font-display); text-decoration: none; }
   .result a.r-project:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .result a.r-project:focus-visible { outline-color: var(--ink); }
-  .result.podium a.r-project:focus-visible { outline-color: var(--paper); }
+  .result.podium a.r-project:focus-visible { outline-color: var(--solid-text); }
   .result .r-writeup { font: 400 14px/1.4 var(--font-text); }
   .result .r-event { flex: 1 1 180px; font: 400 15px/1.4 var(--font-text); }
-  .podium { background: var(--ink); color: var(--paper); }
+  .podium { background: var(--solid); color: var(--solid-text); }
   .result.podium .r-place { font-weight: 700; }
   .result.podium + .result.podium { border-top: var(--rule-on-ink); }
   @media (max-width: 767px) {

@@ -13,7 +13,7 @@ type Links = { source?: string; live?: string; internal?: string };
 const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
 const selectedWorkNames = new Set([
   'git-profile + ssh-profile',
-  'awesome-freestack',
+  'freestack',
   'v4l2loopback-fedora',
 ]);
 const selectedWork = projects.filter((project) => selectedWorkNames.has(project.name));
@@ -286,7 +286,7 @@ const nowCells = [
   .work-row:not(.work-head) .c-name { font: var(--type-card); letter-spacing: -0.01em; }
   .project-primary-link { color: inherit; text-decoration: none; }
   .project-primary-link:hover, .project-primary-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .notes-all { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 14px; border: var(--rule); background: var(--ink); color: var(--paper); font: 800 15px/1 var(--font-display); text-decoration: none; text-transform: uppercase; }
+  .notes-all { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 14px; border: var(--rule); background: var(--solid); color: var(--solid-text); font: 800 15px/1 var(--font-display); text-decoration: none; text-transform: uppercase; }
   .notes-all:hover { background: var(--paper); color: var(--ink); }
   .notes-all:focus-visible { outline-color: var(--link); }
   .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
@@ -303,10 +303,10 @@ const nowCells = [
   .result .r-project { width: fit-content; color: inherit; font: 800 18px/1.3 var(--font-display); text-decoration: none; }
   .result a.r-project:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .result a.r-project:focus-visible { outline-color: var(--ink); }
-  .result.podium a.r-project:focus-visible { outline-color: var(--paper); }
+  .result.podium a.r-project:focus-visible { outline-color: var(--solid-text); }
   .result .r-writeup { font: 400 14px/1.4 var(--font-text); }
   .result .r-event { flex: 1 1 180px; font: 400 15px/1.4 var(--font-text); }
-  .podium { background: var(--ink); color: var(--paper); }
+  .podium { background: var(--solid); color: var(--solid-text); }
   .result.podium .r-place { font-weight: 700; }
   .result.podium + .result.podium { border-top: var(--rule-on-ink); }
 
@@ -332,7 +332,7 @@ const nowCells = [
   .contact-actions .button { min-height: 52px; padding-inline: var(--space-3); font-size: 16px; }
   /* `.on-ink a` would otherwise paint both buttons' text white in every state. */
   .contact-actions .button-on-ink, .contact-actions .button-on-ink-outline:hover { color: var(--ink); }
-  .contact-actions .button-on-ink:hover { color: var(--paper); }
+  .contact-actions .button-on-ink:hover { color: var(--solid-text); }
   .socials { display: flex; flex-wrap: wrap; gap: var(--space-3); font: 400 15px/1.4 var(--font-mono); }
   .socials a { display: inline-flex; align-items: center; min-height: 44px; }
 
@@ -359,7 +359,7 @@ const nowCells = [
     .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
     .layer-cells li { display: contents; }
     .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
-    .layer-cells li > b { border-bottom: var(--rule); background: var(--ink); color: var(--paper); font-weight: 700; }
+    .layer-cells li > b { border-bottom: var(--rule); background: var(--solid); color: var(--solid-text); font-weight: 700; }
     .layer-cells li > span { border-bottom: var(--rule); }
     .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
 
@@ -376,7 +376,7 @@ const nowCells = [
     .phone-project-card :global(.coverage) { width: 100%; height: 14px; border: 0; border-top: var(--rule); }
 
     .show-all { display: block; width: 100%; height: 52px; border: 0; background: var(--paper); color: var(--ink); font: 700 13px/1 var(--font-mono); text-transform: uppercase; }
-    .show-all:hover { background: var(--ink); color: var(--paper); }
+    .show-all:hover { background: var(--solid); color: var(--solid-text); }
     .show-all:focus-visible { outline-offset: -6px; }
 
     /* Stat pair above the list: the main column dissolves so its parts can be reordered. */
