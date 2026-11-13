@@ -10,7 +10,6 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
 <Layout active="notes" title="Notes — John Carlo Santos" description={lead}>
   <main id="main">
     <section class="notes-hero">
-      <p class="notes-eyebrow">notes</p>
       <h1>Notes</h1>
       <p class="notes-lead">{lead}</p>
     </section>
@@ -60,14 +59,12 @@ const lead = "Things I broke, fixed, or figured out. Written so the next person,
 <style>
   .notes-hero { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--gutter); border-bottom: var(--rule); }
   .notes-hero > * { margin: 0; }
-  .notes-eyebrow { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
   h1 { font: var(--type-page-title); letter-spacing: -0.04em; text-transform: uppercase; overflow-wrap: anywhere; }
   .notes-lead { max-width: 640px; font: var(--type-lead); }
   .notes-empty { margin: 0; padding: var(--space-5) var(--gutter); border-bottom: var(--rule); font: 400 15px/1.4 var(--font-mono); }
 
   @media (max-width: 767px) {
     .notes-hero { gap: var(--space-2); padding: var(--space-4) var(--gutter); }
-    .notes-eyebrow { font-size: 12px; }
     .notes-empty { padding: var(--space-4) var(--gutter); font-size: 14px; }
   }
 </style>

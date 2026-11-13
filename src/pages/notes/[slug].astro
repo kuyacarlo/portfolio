@@ -67,6 +67,8 @@ const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFro
 <style>
   .note-crumb { display: flex; align-items: center; gap: 1ch; min-height: 48px; padding: 0 var(--gutter); border-bottom: var(--rule); font: 400 13px/1.4 var(--font-mono); overflow-wrap: anywhere; }
   .note-crumb a { display: inline-flex; align-items: center; min-height: 44px; }
+  .note-crumb a, .note-toc a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .note-crumb a:hover, .note-toc a:hover { text-decoration-thickness: 3px; }
   .note-crumb span { min-width: 0; }
 
   .note-hero { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--gutter); border-bottom: var(--rule); }

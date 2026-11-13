@@ -14,20 +14,20 @@ const { org, role, dates, bullets, id, phoneLimit = 2 } = Astro.props;
 const hasMore = bullets.length > phoneLimit;
 const listId = `${id}-bullets`;
 ---
-<article class="resume-entry" data-resume-entry data-open="false">
+<article class="resume-entry" data-resume-entry data-open="false" data-has-work={bullets.length > 0}>
   <div class="resume-entry-meta">
     <h3>{org}</h3>
     <p>{role}</p>
     <p class="resume-entry-dates">{dates}</p>
   </div>
-  <div class="resume-entry-work">
+  {bullets.length > 0 && <div class="resume-entry-work">
     <ul id={listId}>
       {bullets.map((bullet, index) => <li class:list={{ 'resume-entry-extra': index >= phoneLimit }}>{bullet}</li>)}
     </ul>
     {hasMore && (
       <button class="resume-entry-more" type="button" aria-expanded="false" aria-controls={listId} data-resume-more>more</button>
     )}
-  </div>
+  </div>}
 </article>
 
 <style>
@@ -37,6 +37,7 @@ const listId = `${id}-bullets`;
   .resume-entry-meta h3 { margin: 0; font: 800 24px/1.2 var(--font-display); }
   .resume-entry-meta p { margin: 0; font: 400 16px/1.5 var(--font-text); }
   .resume-entry-meta .resume-entry-dates { color: var(--muted); font: 400 13px/1.5 var(--font-mono); }
+  .resume-entry[data-has-work="false"] .resume-entry-meta { flex-basis: 100%; border-right: 0; }
   .resume-entry-work { flex: 2 1 420px; min-width: 0; padding: var(--gutter); }
   .resume-entry-work ul { display: flex; flex-direction: column; gap: 10px; margin: 0; padding-left: 20px; font: 400 16px/1.55 var(--font-text); }
   .resume-entry-more { display: none; }

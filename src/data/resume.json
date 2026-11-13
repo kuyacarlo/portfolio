@@ -12,8 +12,8 @@
         "Run the org platform on Next.js and TypeScript with event-based routing."
       ]
     },
-    { "org": "PyTorch student chapter", "role": "Chapter lead", "dates": "[start] — present", "bullets": ["[What you run: sessions, workshops, members reached]"] },
-    { "org": "CompSciety BulSU", "role": "External officer", "dates": "[start] — present", "bullets": ["[Partnerships or events you handled]"] },
+    { "org": "PyTorch student chapter", "role": "Chapter lead", "dates": "[start] — present", "bullets": [] },
+    { "org": "CompSciety BulSU", "role": "External officer", "dates": "[start] — present", "bullets": ["Supported external communications and partner coordination for student activities."] },
     { "org": "Freelance", "role": "Infrastructure commissions", "dates": "ongoing", "bullets": ["Built a self-hosted library server for books and comics, reachable from phones behind pfSense."] }
   ],
   "education": { "degree": "BS Computer Engineering", "school": "Bulacan State University", "year": "class of 2028" },
