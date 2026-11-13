@@ -1,6 +1,26 @@
-/* kuyacarlo.dev design tokens. Source of truth: HANDOFF.md §2.
-   Fonts (one request):
-   https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400..900&family=Red+Hat+Text:wght@400..700&family=Red+Hat+Mono:wght@400..700&display=swap */
+/* kuyacarlo.dev design tokens. Source of truth: kuyacarlo design system v3. */
+
+@font-face {
+  font-family: "Red Hat Display";
+  src: url("/fonts/RedHatDisplay-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Red Hat Text";
+  src: url("/fonts/RedHatText-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Red Hat Mono";
+  src: url("/fonts/RedHatMono-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
 
 :root {
   /* color */

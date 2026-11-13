@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fff"/>
+  <rect x="3" y="3" width="1194" height="624" fill="none" stroke="#000" stroke-width="6"/>
+
+  <g fill="#000">
+    <rect x="1075" y="60" width="122" height="122"/>
+    <rect x="955" y="180" width="242" height="122"/>
+    <rect x="835" y="300" width="362" height="122"/>
+    <rect x="715" y="420" width="482" height="207"/>
+  </g>
+  <rect x="600" y="120" width="180" height="507" fill="#f2f2f2" stroke="#000" stroke-width="3"/>
+  <rect x="780" y="420" width="60" height="207" fill="#00e"/>
+
+  <text x="32" y="476" fill="#000" font-family="Arial, Helvetica, sans-serif" font-size="100" font-weight="800" letter-spacing="-6">kuyacarlo</text>
+  <text x="34" y="529" fill="#666" font-family="monospace" font-size="17" letter-spacing="1.1">Solder, servers, and the people in between.</text>
+  <line x1="4" y1="626" x2="1196" y2="626" stroke="#000" stroke-width="6"/>
+</svg>
