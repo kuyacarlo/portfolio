@@ -102,3 +102,6 @@ h1, h2, h3, p { margin-top: 0; }
   .site-footer { flex-direction: column; gap: 6px; padding: 16px var(--gutter); font-size: 12px; }
   .button { width: 100%; }
 }
+
+/* Mermaid appends a tooltip div to <body>; keep it out of the flow. */
+.mermaidTooltip { position: absolute; }
