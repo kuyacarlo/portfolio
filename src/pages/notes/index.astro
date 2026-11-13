@@ -1,39 +1,28 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import NoteLayerFilter from '../../components/NoteLayerFilter.astro';
+import NoteListItem from '../../components/NoteListItem.astro';
 import { getPosts } from '../../lib/cms';
-import CoverageStrip from '../../components/CoverageStrip.astro';
-import { layers } from '../../lib/layers';
 
 const posts = await getPosts();
+const lead = "Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.";
 ---
-<Layout active="notes" title="Notes — John Carlo Santos" description="Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.">
-  <main id="main" class="notes-page page">
-    <header class="notes-hero">
-      <p class="eyebrow">writing / field notes</p>
-      <h1>NOTES</h1>
-      <p>Things I broke, fixed, or figured out. Written so the next person, usually me, doesn't have to start from zero.</p>
-    </header>
-
-    <section class="notes-index" aria-label="Notes by layer">
-      <div class="layer-filter" role="group" aria-label="Filter notes by layer">
-        <button type="button" data-layer-filter="all" aria-pressed="true">ALL</button>
-        {layers.map((layer) => <button type="button" data-layer-filter={layer.n} aria-pressed="false">{String(layer.n).padStart(2, '0')}</button>)}
-      </div>
-      <div class="notes-list" aria-live="polite">
-        {posts.map((post) => (
-          <a class="note-list-item" href={`/notes/${post.slug}`} data-note-layers={post.layers.join(',')}>
-            <span class="note-list-date">{post.date}</span>
-            <span class="note-list-copy">
-              <strong>{post.title}</strong>
-              {post.desc && <span>{post.desc}</span>}
-            </span>
-            <CoverageStrip layers={post.layers} />
-          </a>
-        ))}
-        <p class="notes-empty" hidden>Nothing at this layer yet.</p>
-        {posts.length === 0 && <p class="notes-empty">No notes yet.</p>}
-      </div>
+<Layout active="notes" title="Notes — John Carlo Santos" description={lead}>
+  <main id="main">
+    <section class="notes-hero">
+      <p class="notes-eyebrow">notes</p>
+      <h1>Notes</h1>
+      <p class="notes-lead">{lead}</p>
     </section>
+
+    <NoteLayerFilter />
+
+    <div class="notes-list" aria-live="polite">
+      {posts.map((post) => (
+        <NoteListItem slug={post.slug} title={post.title} date={post.date} dek={post.desc} layers={post.layers} />
+      ))}
+      <p class="notes-empty" hidden={posts.length > 0}>Nothing at this layer yet.</p>
+    </div>
   </main>
 </Layout>
 
@@ -41,8 +30,11 @@ const posts = await getPosts();
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-layer-filter]')];
   const items = [...document.querySelectorAll<HTMLElement>('[data-note-layers]')];
   const empty = document.querySelector<HTMLElement>('.notes-empty');
-  const params = new URLSearchParams(location.search);
-  const initial = params.get('layer');
+  const isLayer = (value: string | null): value is string => !!value && buttons.some((button) => button.dataset.layerFilter === value);
+  const fromUrl = () => {
+    const layer = new URLSearchParams(location.search).get('layer');
+    return isLayer(layer) ? layer : 'all';
+  };
   const applyFilter = (layer: string, push = false) => {
     let visible = 0;
     for (const item of items) {
@@ -59,33 +51,22 @@ const posts = await getPosts();
       history.pushState({}, '', next);
     }
   };
-  const validInitial = initial && buttons.some((button) => button.dataset.layerFilter === initial) ? initial : 'all';
-  applyFilter(validInitial);
+  applyFilter(fromUrl());
   buttons.forEach((button) => button.addEventListener('click', () => applyFilter(button.dataset.layerFilter ?? 'all', true)));
-  window.addEventListener('popstate', () => applyFilter(new URLSearchParams(location.search).get('layer') ?? 'all'));
+  window.addEventListener('popstate', () => applyFilter(fromUrl()));
 </script>
 
 <style>
-  .notes-hero { padding-block: clamp(48px, 8vw, 104px); border-bottom: var(--rule); }
-  .notes-hero h1 { margin: 0 0 var(--space-3); font: var(--type-page-title); letter-spacing: -.04em; }
-  .notes-hero > p:last-child { max-width: 720px; margin: 0; font: var(--type-lead); }
-  .notes-index { padding-block: var(--space-4); }
-  .layer-filter { display: flex; overflow-x: auto; border: var(--rule); margin-bottom: var(--space-4); }
-  .layer-filter button { flex: 0 0 auto; min-width: 56px; min-height: 48px; padding: 0 14px; border: 0; border-right: var(--rule); background: var(--paper); font: var(--type-label); }
-  .layer-filter button:last-child { border-right: 0; }
-  .layer-filter button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
-  .note-list-item { display: grid; grid-template-columns: 120px minmax(0,1fr) 216px; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-top: var(--rule); color: var(--ink); text-decoration: none; }
-  .note-list-date { color: var(--muted); font: var(--type-label); }
-  .note-list-copy { display: grid; gap: 6px; }
-  .note-list-copy strong { font: var(--type-card); }
-  .note-list-copy > span { font: var(--type-body); }
-  .notes-empty { margin: 0; padding: var(--space-3); border: var(--rule); font: var(--type-label); }
-  .notes-page .site-footer { margin-inline: calc(-1 * var(--gutter)); }
+  .notes-hero { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5) var(--gutter); border-bottom: var(--rule); }
+  .notes-hero > * { margin: 0; }
+  .notes-eyebrow { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
+  h1 { font: var(--type-page-title); letter-spacing: -0.04em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .notes-lead { max-width: 640px; font: var(--type-lead); }
+  .notes-empty { margin: 0; padding: var(--space-5) var(--gutter); border-bottom: var(--rule); font: 400 15px/1.4 var(--font-mono); }
+
   @media (max-width: 767px) {
-    .notes-hero { padding-block: var(--space-5); }
-    .notes-hero > p:last-child { font-size: 16px; }
-    .note-list-item { grid-template-columns: minmax(0,1fr); gap: 8px; }
-    .note-list-item :global(.coverage) { width: 100%; height: 14px; }
-    .note-list-date { font-size: 11px; }
+    .notes-hero { gap: var(--space-2); padding: var(--space-4) var(--gutter); }
+    .notes-eyebrow { font-size: 12px; }
+    .notes-empty { padding: var(--space-4) var(--gutter); font-size: 14px; }
   }
 </style>
