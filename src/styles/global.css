@@ -20,8 +20,8 @@ h1, h2, h3, p { margin-top: 0; }
 .skip-link:focus { transform: translateY(0); outline-color: var(--paper); }
 
 /* ── Frame: one 1440 container, ruled left and right. Every region inside is a cell. */
-.frame { max-width: var(--container); margin-inline: auto; border-left: var(--rule); border-right: var(--rule); }
-.frame > main { display: block; }
+.frame { display: flex; flex-direction: column; min-height: 100vh; max-width: var(--container); margin-inline: auto; border-left: var(--rule); border-right: var(--rule); }
+.frame > main { display: block; flex: 1 0 auto; }
 
 /* ── Header (desktop 64px) ────────────────────────────────────────────── */
 .site-header { display: flex; align-items: stretch; min-height: 64px; border-bottom: var(--rule); background: var(--paper); }
@@ -51,7 +51,7 @@ h1, h2, h3, p { margin-top: 0; }
 .eyebrow { margin: 0; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
 .badge-outline { align-self: flex-start; display: inline-block; padding: 6px 10px; border: var(--rule); font: 700 13px/1.3 var(--font-mono); text-transform: uppercase; }
 .on-ink { background: var(--ink); color: var(--paper); }
-.on-ink a { color: var(--paper); }
+.on-ink a:not(.button) { color: var(--paper); }
 
 /* ── Buttons ──────────────────────────────────────────────────────────── */
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border: var(--rule); font: 800 15px/1 var(--font-display); text-decoration: none; text-transform: uppercase; }
