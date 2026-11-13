@@ -36,10 +36,6 @@ const nowCells = [
     <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a 3×2 grid. -->
     <section class="region hero" aria-labelledby="home-title">
       <div class="hero-main">
-        <span class="badge-outline hero-badge">
-          <span class="desk">Available — hackathon teams, data and DevOps roles</span>
-          <span class="phone">Available — teams, data and DevOps roles</span>
-        </span>
         <h1 id="home-title">Solder, servers, and the people in between.</h1>
         <p class="hero-bio desk">I'm John Carlo Santos. Software and systems engineer, CTO at Seekers Guild, and computer engineering at Bulacan State University, class of 2028. I work on ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
         <p class="hero-bio phone">I'm John Carlo Santos. Software and systems engineer, CTO at Seekers Guild, computer engineering at BulSU, class of 2028. ETL pipelines, DevSecOps guardrails, agent harnesses.</p>
@@ -286,7 +282,6 @@ const nowCells = [
     span.phone { display: inline; }
 
     .hero-main { gap: 20px; padding: var(--space-4) var(--gutter); }
-    .hero-badge { padding: 6px var(--space-1); font-size: 11px; }
     .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
     .hero-actions .button { font-size: 14px; }
 

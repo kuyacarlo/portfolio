@@ -33,9 +33,9 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
       </div>
       <div class="resume-hero-side">
         {hasPdf ? (
-          <a class="resume-download" href={pdfPath} download>Download Harvard PDF <span class="resume-download-ext">.pdf</span></a>
+          <a class="resume-download" href={pdfPath} download>Download PDF</a>
         ) : (
-          <button class="resume-download" type="button" data-resume-print>Save Harvard PDF <span class="resume-download-ext">.pdf</span></button>
+          <button class="resume-download" type="button" data-resume-print>Download PDF</button>
         )}
         <div class="resume-links">
           <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
@@ -101,7 +101,6 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
   .resume-download:hover { background: var(--paper); color: var(--ink); }
   .resume-download:focus-visible { outline: var(--rule-w) solid var(--paper); outline-offset: -6px; }
   .resume-download:hover:focus-visible { outline-color: var(--ink); }
-  .resume-download-ext { font: 400 13px/1.3 var(--font-mono); text-transform: none; }
   .resume-links { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding: 20px var(--gutter); border-top: var(--rule); font: 400 14px/1.4 var(--font-mono); overflow-wrap: anywhere; }
 
   .resume-head { padding: 20px var(--gutter); border-bottom: var(--rule); }
@@ -122,9 +121,9 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
   .resume-skills { margin: 0; }
   .resume-skill { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
   .resume-skill:last-child { border-bottom: 0; }
-  .resume-skill dt { flex: 0 0 64px; display: flex; align-items: center; justify-content: center; min-height: 56px; background: var(--ink); color: var(--paper); font: 400 14px/1 var(--font-mono); }
+  .resume-skill dt { box-sizing: border-box; flex: 0 0 128px; display: flex; align-items: center; gap: 8px; min-height: 56px; padding-inline: 16px; background: var(--ink); color: var(--paper); font: 400 14px/1 var(--font-mono); }
   .resume-skill dd { flex: 1 1 400px; min-width: 0; margin: 0; padding: var(--space-2) var(--gutter); font: 400 16px/1.5 var(--font-text); }
-  .resume-layer-name { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .resume-layer-name { white-space: nowrap; }
 
   @media (max-width: 767px) {
     .resume-hero, .resume-pair { margin-left: 0; }
@@ -139,7 +138,7 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
     .resume-podium-result { flex-basis: 100%; box-sizing: border-box; padding-bottom: 0; }
     .resume-podium-what { flex-basis: 100%; padding-top: 4px; font: var(--type-body); }
     .resume-skill { flex-wrap: nowrap; }
-    .resume-skill dt { flex-basis: 48px; min-height: 48px; }
+    .resume-skill dt { flex-basis: 112px; min-height: 48px; padding-inline: 12px; }
     .resume-skill dd { flex: 1 1 auto; padding-block: 12px; font: var(--type-body); }
   }
 
