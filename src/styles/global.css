@@ -107,4 +107,4 @@ h1, h2, h3, p { margin-top: 0; }
 .mermaidTooltip { position: absolute; }
 
 /* Wide display math scrolls inside its own box instead of the page. */
-.katex-display { overflow-x: auto; overflow-y: hidden; }
+.katex-display { overflow-x: auto; overflow-y: hidden; } /* focusable via rehype-note-a11y */

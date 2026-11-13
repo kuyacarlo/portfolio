@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { entry, previous, next } = Astro.props;
-const { Content, headings } = await render(entry);
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 const toc = headings.filter((heading) => heading.depth === 2);
 const body = entry.body ?? '';
 const words = body.trim().split(/\s+/).filter(Boolean).length;
@@ -26,9 +26,8 @@ const readMinutes = Math.max(1, Math.ceil(words / 225));
 const dek = entry.data.dek ?? entry.data.desc;
 const noteLayers = [...entry.data.layers].sort((a, b) => a - b);
 const editUrl = `https://github.com/kuyacarlo/portfolio/edit/main/src/content/notes/${entry.id}.md`;
-const hasMath = /\$\$?|\\\(|\\\[/.test(body);
-const hasTikz = /```(?:tikz|circuitikz)/i.test(body);
-const hasMermaid = /```mermaid/i.test(body);
+// Set by src/plugins/remark-note-features.ts from the parsed Markdown.
+const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFrontmatter as Record<string, boolean>;
 ---
 <NoteLayout title={`${entry.data.title} — John Carlo Santos`} description={dek ?? entry.data.title} hasMath={hasMath} hasTikz={hasTikz} hasMermaid={hasMermaid}>
   <main id="main">
@@ -64,12 +63,6 @@ const hasMermaid = /```mermaid/i.test(body);
   <Fragment slot="footer"> · <a href={editUrl}>edit on GitHub</a></Fragment>
 </NoteLayout>
 
-<script>
-  // GFM task lists render bare disabled checkboxes; name each one after its item.
-  for (const box of document.querySelectorAll<HTMLInputElement>('.note-prose .task-list-item > input[type="checkbox"]')) {
-    if (!box.hasAttribute('aria-label')) box.setAttribute('aria-label', box.parentElement?.textContent?.trim() ?? '');
-  }
-</script>
 
 <style>
   .note-crumb { display: flex; align-items: center; gap: 1ch; min-height: 48px; padding: 0 var(--gutter); border-bottom: var(--rule); font: 400 13px/1.4 var(--font-mono); overflow-wrap: anywhere; }
