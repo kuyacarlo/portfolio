@@ -9,6 +9,8 @@ const notes = defineCollection({
     date:  z.string(),
     tags:  z.array(z.string()).default([]),
     dek:   z.string().optional(),
+    /** Optional thumbnail image, served from /public. */
+    cover: z.string().optional(),
     layers: z.array(z.number().int().min(1).max(6)).default([]),
     draft: z.boolean().default(false),
     /** Hide from listings + production routes (same effect as draft). */

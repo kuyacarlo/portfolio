@@ -22,6 +22,7 @@ export interface Post {
   tags:  string[];
   desc?: string;
   dek?: string;
+  cover?: string;
   layers: number[];
 }
 
@@ -41,6 +42,7 @@ export async function getPosts(): Promise<Post[]> {
       date:  e.data.date,
       tags:  e.data.tags,
       desc:  e.data.dek ?? e.data.desc,
+      cover: e.data.cover,
       layers: e.data.layers,
     }))
     .sort((a: Post, b: Post) => {

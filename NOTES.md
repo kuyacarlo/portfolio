@@ -42,6 +42,13 @@ hide: true                  # hide from listings (+ prod routes)
 | Link | `[text](https://url)` |
 | Blockquote | `> text` |
 | Heading | `## H2`, `### H3` |
+| Inline image | `![A clear description](/notes-assets/your-note/diagram.webp)` |
+
+Put image files under `public/notes-assets/` and use their root-relative public
+paths. Always write useful alt text for images that explain the note. An optional
+`cover` frontmatter path (for example `/notes-assets/your-note/cover.webp`) adds a
+grayscale thumbnail to the `/notes` listing; it can point to the same image used
+inline in the article.
 
 ## Code blocks
 

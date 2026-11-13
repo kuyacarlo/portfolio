@@ -7,12 +7,14 @@ interface Props {
   title: string;
   date: string;
   dek?: string;
+  cover?: string;
   layers: number[];
 }
 
-const { slug, title, date, dek, layers } = Astro.props;
+const { slug, title, date, dek, cover, layers } = Astro.props;
 ---
 <a class="note-list-item" href={`/notes/${slug}`} data-note-layers={layers.join(',')}>
+  {cover && <span class="note-thumb"><img src={cover} alt="" loading="lazy" decoding="async" /></span>}
   <span class="note-date">{date}</span>
   <span class="note-copy">
     <span class="note-title">{title}</span>
@@ -22,20 +24,20 @@ const { slug, title, date, dek, layers } = Astro.props;
 </a>
 
 <style>
-  .note-list-item { display: flex; align-items: stretch; border-bottom: var(--rule); color: var(--ink); text-decoration: none; }
+  .note-list-item { display: flex; flex-direction: column; align-items: stretch; border-bottom: var(--rule); color: var(--ink); text-decoration: none; }
   .note-list-item:hover { color: var(--ink); }
   .note-list-item:hover .note-title { text-decoration: underline; }
   .note-list-item:focus-visible { outline-offset: -6px; }
-  .note-date { flex: 0 0 calc(160px + 2 * var(--gutter)); padding: var(--gutter); color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
-  .note-copy { flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--gutter); }
+  .note-thumb { flex: none; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: var(--rule); }
+  .note-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+  .note-date { flex: none; padding: var(--space-2) var(--gutter) 0; color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
+  .note-copy { flex: none; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-1) var(--gutter) var(--space-2); }
   .note-title { font: var(--type-card); letter-spacing: -0.01em; }
   .note-dek { font: var(--type-body); }
-  .note-list-item :global(.note-strip) { flex: 0 0 216px; width: 216px; height: auto; min-height: 48px; border: 0; border-left: var(--rule); }
+  .note-list-item :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border: 0; border-top: var(--rule); }
 
   @media (max-width: 767px) {
-    .note-list-item { flex-direction: column; }
-    .note-date { flex: none; padding: var(--space-2) var(--gutter) 0; font-size: 12px; }
-    .note-copy { flex: none; padding: var(--space-1) var(--gutter) var(--space-2); }
+    .note-date { font-size: 12px; }
     .note-dek { display: none; }
     .note-list-item :global(.note-strip) { flex: none; width: 100%; height: 14px; min-height: 0; border-left: 0; border-top: var(--rule); }
   }

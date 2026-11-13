@@ -7,6 +7,7 @@ import { site } from '../lib/site';
 import { layerName } from '../lib/layers';
 import resume from '../data/resume.json';
 import hackathons from '../data/hackathons.json';
+import projectContent from '../data/projects.json';
 
 // Link the PDF only when the file is actually in public/ (see public/resume/README.md);
 // until then the button falls back to print / save as PDF.
@@ -14,6 +15,8 @@ const pdfPath = '/resume/john-carlo-santos.pdf';
 const hasPdf = existsSync(join(process.cwd(), 'public', pdfPath));
 
 const podiums = hackathons.filter((item) => item.podium);
+const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
+const projects = projectContent.projects;
 const skills = Object.entries(resume.skills)
   .map(([layer, items]) => ({ n: Number(layer), items }))
   .sort((a, b) => b.n - a.n);
@@ -82,6 +85,62 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
         ))}
       </dl>
     </section>
+
+    <div class="resume-print">
+      <header class="print-header">
+        <h1>{resume.name}</h1>
+        <p>{resume.positioning}</p>
+        <nav aria-label="Contact links">
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <a href={site.linkedinUrl}>{site.linkedinUrl.replace(/^https?:\/\//, '')}</a>
+          <a href={site.githubUrl}>{site.githubUrl.replace(/^https?:\/\//, '')}</a>
+        </nav>
+      </header>
+
+      <section class="print-section">
+        <h2>Skills</h2>
+        <div class="print-skills">
+          {skills.map((skill) => <p><strong>{layerName(skill.n)}:</strong> {skill.items}</p>)}
+        </div>
+      </section>
+
+      <section class="print-section">
+        <h2>Experience</h2>
+        <div class="print-experience">
+          {resume.experience.map((entry) => (
+            <article class="print-entry">
+              <header><strong>{entry.org}</strong><span>{entry.dates}</span><em>{entry.role}</em></header>
+              {entry.bullets.length > 0 && <ul>{entry.bullets.map((bullet) => <li>{bullet}</li>)}</ul>}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="print-section">
+        <h2>Hackathons</h2>
+        <ul class="print-list">
+          {results.map((item) => (
+            <li>
+              {item.source ? <a href={item.source}><strong>{item.project}</strong></a> : <strong>{item.project}</strong>}
+              {' — '}{item.event} <span>({item.result})</span>
+              {item.description && <p>{item.description}</p>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="print-section">
+        <h2>Selected Projects</h2>
+        <ul class="print-list">
+          {projects.map((project) => <li><strong>{project.name}</strong> — {project.description}</li>)}
+        </ul>
+      </section>
+
+      <section class="print-section print-education">
+        <h2>Education</h2>
+        <p><strong>{resume.education.school}</strong> — {resume.education.degree}, {resume.education.year}</p>
+      </section>
+    </div>
   </main>
 
   <script>
@@ -124,6 +183,7 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
   .resume-skill dt { box-sizing: border-box; flex: 0 0 128px; display: flex; align-items: center; gap: 8px; min-height: 56px; padding-inline: 16px; background: var(--ink); color: var(--paper); font: 400 14px/1 var(--font-mono); }
   .resume-skill dd { flex: 1 1 400px; min-width: 0; margin: 0; padding: var(--space-2) var(--gutter); font: 400 16px/1.5 var(--font-text); }
   .resume-layer-name { white-space: nowrap; }
+  .resume-print { display: none; }
 
   @media (max-width: 767px) {
     .resume-hero, .resume-pair { margin-left: 0; }
@@ -143,44 +203,34 @@ const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').
   }
 
   @media print {
-    @page { size: Letter; margin: 0.55in; }
-    :global(html), :global(body) { background: #fff !important; color: #000 !important; font: 10pt/1.25 "Times New Roman", Georgia, serif !important; }
+    @page { size: A4 portrait; margin: 0.4in 0.45in; }
+    :global(html), :global(body) { background: #fff !important; color: #000 !important; font: 9pt/1.16 "Times New Roman", Georgia, serif !important; }
     :global(.frame) { display: block; min-height: 0; max-width: none; border: 0; }
     :global(.site-header), :global(.site-footer), :global(.skip-link) { display: none !important; }
     #main { max-width: none; border: 0; color: #000; }
-    .region { border: 0; }
-    .resume-hero { display: block; margin: 0; border: 0; }
-    .resume-hero-copy { display: block; padding: 0 0 5pt; border: 0; text-align: center; }
-    .resume-hero h1 { margin: 0 0 3pt; font: bold 16pt/1.1 "Times New Roman", Georgia, serif; letter-spacing: 0; text-transform: uppercase; }
-    .resume-lead { max-width: none; font: 10pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-hero-side { display: block; border: 0; text-align: center; }
-    .resume-download { display: none !important; }
-    .resume-links { display: flex; flex-direction: row; justify-content: center; gap: 10pt; padding: 2pt 0 7pt; border: 0; font: 9pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-links a { color: #000 !important; text-decoration: none; }
-    .resume-head { padding: 7pt 0 2pt; border-bottom: 0.75pt solid #000; }
-    .resume-head h2 { font: bold 10.5pt/1.2 "Times New Roman", Georgia, serif; letter-spacing: 0; text-transform: uppercase; }
-    :global(.resume-entry) { display: block !important; margin: 3pt 0 6pt; border: 0 !important; break-inside: avoid; }
-    :global(.resume-entry-meta) { display: grid !important; grid-template-columns: minmax(0,1fr) auto; gap: 0 10pt; padding: 0; border: 0 !important; }
-    :global(.resume-entry-meta h3) { grid-column: 1; grid-row: 1; font: bold 10pt/1.2 "Times New Roman", Georgia, serif; }
-    :global(.resume-entry-meta p:not(.resume-entry-dates)) { grid-column: 1; grid-row: 2; font: italic 10pt/1.2 "Times New Roman", Georgia, serif; }
-    :global(.resume-entry-meta .resume-entry-dates) { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: #000; font: 9pt/1.2 "Times New Roman", Georgia, serif; text-align: right; }
-    :global(.resume-entry-work) { padding: 1pt 0 0 12pt; }
-    :global(.resume-entry-work ul) { display: block; padding-left: 12pt; font: 9.5pt/1.2 "Times New Roman", Georgia, serif; }
-    :global(.resume-entry-work li) { display: list-item !important; margin: 1pt 0; }
-    :global(.resume-entry-more) { display: none !important; }
-    .resume-pair { display: block; margin: 0; break-inside: avoid; }
-    .resume-pair-cell { border: 0; }
-    .resume-education { gap: 1pt; padding: 3pt 0; font: 9.5pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-education h3, .resume-education p { font: inherit; }
-    .resume-education .resume-muted { color: #000; font: inherit; }
-    .resume-podiums { font: 9.5pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-podiums li { display: block; border: 0; margin: 2pt 0; }
-    .resume-podium-result { padding: 0 5pt 0 0; font: bold 9.5pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-podium-what { padding: 0; font: inherit; }
-    .resume-skill { display: grid; grid-template-columns: 112pt minmax(0,1fr); border: 0; break-inside: avoid; }
-    .resume-skill dt { display: block; min-height: 0; padding: 1pt 0; background: transparent; color: #000; font: bold 9.5pt/1.2 "Times New Roman", Georgia, serif; }
-    .resume-layer-name { position: static; width: auto; height: auto; clip: auto; clip-path: none; overflow: visible; white-space: normal; }
-    .resume-skill dd { min-width: 0; padding: 1pt 0; font: 9.5pt/1.2 "Times New Roman", Georgia, serif; }
+    #main > :not(.resume-print) { display: none !important; }
+    .resume-print { display: block; color: #000; font: 9pt/1.16 "Times New Roman", Georgia, serif; }
+    .resume-print * { box-sizing: border-box; }
+    .print-header { margin: 0 0 5pt; padding: 0 0 5pt; border-bottom: 0.75pt solid #000; text-align: center; }
+    .print-header h1 { margin: 0 0 2pt; font: bold 17pt/1.05 "Times New Roman", Georgia, serif; text-transform: uppercase; }
+    .print-header p { margin: 0 0 3pt; font: 8.5pt/1.15 "Times New Roman", Georgia, serif; }
+    .print-header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 9pt; font: 8pt/1.1 "Times New Roman", Georgia, serif; }
+    .print-header a { color: #000; text-decoration: none; }
+    .print-section { margin: 0 0 6pt; break-inside: auto; }
+    .print-section h2 { margin: 0 0 2pt; padding: 0 0 1pt; border-bottom: 0.5pt solid #000; font: bold 9.5pt/1.15 "Times New Roman", Georgia, serif; text-align: center; text-transform: uppercase; }
+    .print-skills p { margin: 0 0 1pt; }
+    .print-entry { display: block; margin: 0 0 3pt; break-inside: avoid; }
+    .print-entry header { display: block; }
+    .print-entry header strong { font-weight: bold; }
+    .print-entry header span { margin-left: 6pt; color: #333; font-size: 7.8pt; }
+    .print-entry header em { display: block; font-style: italic; }
+    .print-entry ul { margin: 0; padding-left: 11pt; }
+    .print-entry li { margin: 0 0 1pt; }
+    .print-list { margin: 0; padding-left: 12pt; }
+    .print-list li { margin: 0 0 1.5pt; break-inside: avoid; }
+    .print-list span { color: #333; }
+    .print-list p { margin: 0 0 1pt; }
+    .print-education p { margin: 0; }
     a { color: #000 !important; }
   }
 </style>

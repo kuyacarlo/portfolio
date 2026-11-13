@@ -8,4 +8,4 @@ john-carlo-santos.pdf
 
 Served at `/resume/john-carlo-santos.pdf`. Keep it fresh — stale resume is worse than none.
 
-Until the file exists, the button on `/resume` opens the browser's print dialog as a fallback.
+Until the file exists, the button on `/resume` opens an A4 print layout. Choose **Save as PDF** in the browser dialog.

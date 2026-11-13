@@ -96,7 +96,9 @@ const { hasMath = false, hasTikz = false, hasMermaid = false } = remarkPluginFro
   .note-prose :global(blockquote) { padding: var(--space-2) var(--gutter); border-left: var(--space-1) solid var(--ink); }
   .note-prose :global(blockquote > :last-child) { margin-bottom: 0; }
   .note-prose :global(hr) { width: 100%; border: 0; border-top: var(--rule); }
-  .note-prose :global(img) { height: auto; border: var(--rule); }
+  .note-prose :global(img) { display: block; max-width: 100%; height: auto; border: var(--rule); }
+  .note-prose :global(figure) { margin: 0; }
+  .note-prose :global(figcaption) { margin-top: var(--space-1); color: var(--muted); font: 400 13px/1.4 var(--font-mono); }
   .note-prose :global(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font: var(--type-body); }
   .note-prose :global(:is(th, td)) { padding: var(--space-1) 12px; border: var(--rule); text-align: left; vertical-align: top; }
   .note-prose :global(th) { font: 700 13px/1.4 var(--font-mono); text-transform: uppercase; }
