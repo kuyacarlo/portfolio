@@ -12,7 +12,7 @@
         "source": "https://github.com/liitkud/complyaigent",
         "live": "https://ferretops.kuyacarlo.workers.dev/"
       },
-      "featuredOnPhone": true
+      "featured": true
     },
     {
       "name": "andromeda",
@@ -24,7 +24,7 @@
       "links": {
         "internal": "/homelab"
       },
-      "featuredOnPhone": true
+      "featured": true
     },
     {
       "name": "git-profile + ssh-profile",
@@ -35,7 +35,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/git-profile"
       },
-      "featuredOnPhone": false
+      "featured": false
     },
     {
       "name": "WorkSight",
@@ -47,7 +47,7 @@
       "links": {
         "source": "https://github.com/4sightorg/worksight"
       },
-      "featuredOnPhone": false
+      "featured": true
     },
     {
       "name": "Kasigla",
@@ -59,7 +59,7 @@
       "links": {
         "source": "https://github.com/Phasmanastasis/PhasmaFrame"
       },
-      "featuredOnPhone": false
+      "featured": false
     },
     {
       "name": "BetterBulakan",
@@ -71,7 +71,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/betterbulakan"
       },
-      "featuredOnPhone": true
+      "featured": true
     },
     {
       "name": "room-tba",
@@ -83,7 +83,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/room-tba"
       },
-      "featuredOnPhone": false
+      "featured": false
     },
     {
       "name": "freestack",
@@ -95,7 +95,7 @@
         "source": "https://github.com/kuyacarlo/awesome-freestack",
         "live": "https://freestack.kuyacarlo.dev"
       },
-      "featuredOnPhone": false
+      "featured": false
     },
     {
       "name": "v4l2loopback-fedora",
@@ -106,7 +106,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/v4l2loopback-fedora"
       },
-      "featuredOnPhone": true
+      "featured": false
     },
     {
       "name": "nutrition-api",
@@ -117,7 +117,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/nutrition-api"
       },
-      "featuredOnPhone": false
+      "featured": false
     }
   ]
 }

@@ -114,7 +114,7 @@ The original page reference markup is not included in this repository. Treat the
 - **04 Contact:** an inverted section with the `type-hero` line "Pick one. I'll reply.", a Book a call button (white), a Send an email button (white outline), and social links.
 - **Phone:**
   - The layers become a 3×2 grid of 44px cells.
-  - **Show only the projects marked `featuredOnPhone` (4) and the 2 podiums.** Under each list is a full-width toggle: "SHOW ALL 10 PROJECTS" / "SHOW ALL 8 COMPETITIONS", which switches to "SHOW FEWER" when open. Lists expand in place, with `aria-expanded` on the toggle.
+  - **Show only the projects marked `featured` (4) and the 2 podiums.** Under each list is a full-width toggle: "SHOW ALL 10 PROJECTS" / "SHOW ALL 8 COMPETITIONS", which switches to "SHOW FEWER" when open. Lists expand in place, with `aria-expanded` on the toggle.
   - Now becomes a 2×2 grid. Contact buttons go full width.
 
 ### `/homelab`
@@ -176,7 +176,7 @@ The content files are in `content/`. Treat them as the source of truth and rende
 | File | Shape |
 |---|---|
 | `layers.json` | `[{n, name}]` for 01–06 |
-| `projects.json` | `name, description, layers[], links{source?, live?, internal?}, featuredOnPhone` |
+| `projects.json` | `name, description, layers[], links{source?, live?, internal?}, featured` |
 | `hackathons.json` | `result, project, event, podium` |
 | `now.json` | `building, learning, exploring, openFor` |
 | `homelab.json` | `spec[]`, `services{layer: [{name, note}]}`, `incidents[{title, summary, slug}]` |

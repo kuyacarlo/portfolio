@@ -15,8 +15,8 @@ export function filterByLayer<T extends { layers: number[] }>(items: T[], layer:
   return items.filter((item) => item.layers.includes(n));
 }
 
-/** Projects shown on the phone home page before "Show all". */
-export const featuredOnPhone = <T extends { featuredOnPhone?: boolean }>(projects: T[]): T[] =>
-  projects.filter((project) => project.featuredOnPhone === true);
+/** Projects the home page features: the desktop table and the phone list before "Show all". */
+export const featuredProjects = <T extends { featured?: boolean }>(projects: T[]): T[] =>
+  projects.filter((project) => project.featured === true);
 
 export { layers };
