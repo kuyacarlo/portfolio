@@ -24,7 +24,7 @@
       "links": {
         "internal": "/homelab"
       },
-      "featured": true
+      "featured": false
     },
     {
       "name": "git-profile + ssh-profile",
@@ -106,7 +106,7 @@
       "links": {
         "source": "https://github.com/kuyacarlo/v4l2loopback-fedora"
       },
-      "featured": false
+      "featured": true
     },
     {
       "name": "nutrition-api",

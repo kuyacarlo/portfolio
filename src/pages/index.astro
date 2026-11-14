@@ -73,10 +73,10 @@ const nowCells = [
       </ul>
     </section>
 
-    <!-- 01 Selected work -->
+    <!-- Selected work -->
     <section id="work" class="region" aria-labelledby="work-title">
       <div class="region-head">
-        <h2 id="work-title">01 <span class="desk">Selected </span>work</h2>
+        <h2 id="work-title"><span class="desk">Selected work</span><span class="phone">Work</span></h2>
         <a class="region-all" href="/projects">all projects →</a>
       </div>
 
@@ -129,11 +129,11 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- 02 Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
+    <!-- Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
     <section class="region hacks" aria-labelledby="hacks-title">
       <div class="hacks-main">
         <div class="region-head">
-          <h2 id="hacks-title">02 Hackathons</h2>
+          <h2 id="hacks-title">Hackathons</h2>
           <a class="region-all" href="/hackathons">all hackathons →</a>
         </div>
         <ul class="results desk">
@@ -167,10 +167,10 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- 03 Featured notes -->
+    <!-- Featured notes -->
     <section class="region" aria-labelledby="featured-notes-title">
       <div class="region-head">
-        <h2 id="featured-notes-title">03 Featured notes</h2>
+        <h2 id="featured-notes-title">Featured notes</h2>
         <a class="region-all" href="/notes">all notes →</a>
       </div>
       <div class="featured-notes">
@@ -187,11 +187,11 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- 04 Now: one heading cell beside a 2×2 grid of updates. -->
+    <!-- Now: one heading cell beside a 2×2 grid of updates. -->
     <section class="region now-region" aria-labelledby="now-title">
       <div class="now-clip">
         <div class="now-grid">
-          <div class="region-head now-heading"><h2 id="now-title">04 Now</h2></div>
+          <div class="region-head now-heading"><h2 id="now-title">Now</h2></div>
           {nowCells.map((cell) => (
             <div class="now-cell"><span class="now-label">{cell.label}</span><span class="now-text">{cell.text}</span></div>
           ))}
@@ -199,9 +199,8 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- 05 Contact -->
+    <!-- Contact -->
     <section id="contact" class="contact on-ink" aria-labelledby="contact-title">
-      <span class="contact-label">05 Contact</span>
       <h2 id="contact-title">Say hi.</h2>
       <div class="contact-actions">
         <a class="button button-on-ink" href="/book">Book a call</a>
@@ -270,7 +269,7 @@ const nowCells = [
   .featured-note strong { font: var(--type-card); }
   .featured-note-copy > span:last-child { font: var(--type-body); }
 
-  /* ── 01 Selected work ── */
+  /* ── Selected work ── */
   .work-row { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: var(--rule); }
   .work-row:last-child { border-bottom: 0; }
   .work-head { color: var(--muted); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
@@ -288,7 +287,7 @@ const nowCells = [
   .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
   .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
 
-  /* ── 02 Hackathons ── */
+  /* ── Hackathons ── */
   .hacks { display: flex; flex-wrap: wrap; }
   .hacks-main { flex: 999 1 560px; min-width: 0; }
   .result { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
@@ -314,7 +313,7 @@ const nowCells = [
   .stat-n { font: 900 120px/0.85 var(--font-display); letter-spacing: -0.04em; }
   .stat-label { font: 400 14px/1.2 var(--font-mono); text-transform: uppercase; }
 
-  /* ── 04 Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
+  /* ── Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
   .now-clip { overflow: hidden; }
   .now-grid { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(0, 1.25fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
   .now-heading { grid-row: span 2; align-items: flex-start; justify-content: flex-start; border-right: var(--rule); }
@@ -322,9 +321,8 @@ const nowCells = [
   .now-label { font: 700 12px/1.4 var(--font-mono); text-transform: uppercase; }
   .now-text { font: 400 17px/1.5 var(--font-text); }
 
-  /* ── 05 Contact ── */
+  /* ── Contact ── */
   .contact { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6) var(--gutter); }
-  .contact-label { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
   .contact h2 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
   .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; }
   .contact-actions .button { min-height: 52px; padding-inline: var(--space-3); font-size: 16px; }
@@ -401,7 +399,6 @@ const nowCells = [
     .now-text { font-size: 15px; line-height: 1.4; }
 
     .contact { gap: 20px; padding: 40px var(--gutter); }
-    .contact-label { font-size: 12px; }
     .contact-actions { flex-direction: column; gap: 20px; }
     .socials { gap: 20px; font-size: 14px; }
   }
