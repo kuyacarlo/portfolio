@@ -32,7 +32,7 @@ const nowCells = [
 
 <Layout active="home">
   <main id="main">
-    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a 3×2 grid. -->
+    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a strip of six numbered cells. -->
     <section class="region hero" aria-labelledby="home-title">
       <div class="hero-main">
         <h1 id="home-title">Solder, servers, and the people in between.</h1>
@@ -43,12 +43,12 @@ const nowCells = [
           <a class="button button-secondary" href="/resume">Resume</a>
         </div>
       </div>
-      <ul class="side layer-col desk">
+      <ul class="side layer-col desk" aria-label="Layers">
         {[...layers].reverse().map((layer) => (
           <li><span class="layer-badge">{pad(layer.n)}</span><span class="layer-name">{layer.name}</span></li>
         ))}
       </ul>
-      <ul class="layer-cells phone">
+      <ul class="layer-cells phone" aria-label="Layers">
         {layers.map((layer) => (
           <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
@@ -250,8 +250,8 @@ const nowCells = [
   .featured-note img { flex: 0 0 180px; width: 180px; aspect-ratio: 16 / 9; object-fit: cover; filter: grayscale(1); }
   .featured-note-copy { display: flex; flex-direction: column; justify-content: center; gap: var(--space-1); }
   .featured-note time { color: var(--muted); font: 400 12px/1.4 var(--font-mono); }
-  .featured-note strong { font: var(--type-card); }
-  .featured-note-copy > span:last-child { font: var(--type-body); }
+  .featured-note strong { font: var(--type-card); line-height: 1.3; }
+  .featured-note-copy > span:last-child { max-width: 70ch; font: var(--type-body); }
 
   /* ── Selected work ── */
   .work-row { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: var(--rule); }

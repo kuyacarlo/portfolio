@@ -3,7 +3,7 @@
   "projects": [
     {
       "name": "ComplyAIgent",
-      "description": "Agentic DevSecOps compliance engine. AMD Hackathon 2026.",
+      "description": "Agentic DevSecOps compliance engine. AMD Developer Hackathon 2026.",
       "layers": [
         4,
         5
