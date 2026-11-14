@@ -185,7 +185,6 @@ const nowCells = [
         <a class="button button-on-ink" href="/book">Book a call</a>
         <a class="button button-on-ink-outline" href={`mailto:${site.email}`}>Send an email</a>
       </div>
-      <p class="contact-email">or write to <span class="contact-address">{site.email}</span></p>
       <div class="socials">
         <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
         <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin</a>
@@ -332,8 +331,6 @@ const nowCells = [
   /* `.on-ink a` would otherwise paint both buttons' text white in every state. */
   .contact-actions .button-on-ink, .contact-actions .button-on-ink-outline:hover { color: var(--ink); }
   .contact-actions .button-on-ink:hover { color: var(--solid-text); }
-  .contact-email { margin: 0; font: 400 15px/1.4 var(--font-mono); }
-  .contact-address { user-select: all; overflow-wrap: anywhere; }
   .socials { display: flex; flex-wrap: wrap; gap: var(--space-3); font: 400 15px/1.4 var(--font-mono); }
   .socials a { display: inline-flex; align-items: center; min-height: 44px; }
 
