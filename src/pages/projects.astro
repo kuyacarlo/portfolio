@@ -3,11 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import CoverageStrip from '../components/CoverageStrip.astro';
 import { layers } from '../lib/layers';
 import projectContent from '../data/projects.json';
+import { projectLinks, type ProjectLinks } from '../lib/project-links';
 
-type Links = { source?: string; live?: string; internal?: string };
 const projects = projectContent.projects
   .filter((project) => !('internal' in project.links))
-  .map((project) => ({ ...project, links: project.links as Links }));
+  .map((project) => ({ ...project, ...projectLinks(project.links as ProjectLinks) }));
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
@@ -35,14 +35,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
         {projects.map((project) => (
           <article class="project-row" role="row">
             <h2 role="cell">
-              {project.links.live || project.links.source ? (
-                <a class="project-title-link" href={project.links.live ?? project.links.source} target="_blank" rel="noopener noreferrer">{project.name}</a>
+              {project.primary ? (
+                <a class="project-title-link" href={project.primary.href} target={project.primary.external ? '_blank' : undefined} rel={project.primary.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
               ) : project.name}
             </h2>
             <p role="cell">{project.description}</p>
             <span class="project-coverage" role="cell"><CoverageStrip layers={project.layers} /></span>
             <span class="project-links" role="cell">
-              {project.links.live && project.links.source && <a href={project.links.source} target="_blank" rel="noopener noreferrer">source</a>}
+              {project.rest.map((link) => link.external
+                ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
+                : <a href={link.href} aria-label={`${link.label} for ${project.name}`}>{link.label}</a>)}
             </span>
           </article>
         ))}
@@ -70,10 +72,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .project-title-link { text-decoration-thickness: 1px; text-underline-offset: 4px; }
   .project-title-link:hover { text-decoration-thickness: 2px; }
   .project-title-link:focus-visible { outline-offset: 3px; }
-  .project-row p { font: var(--type-body); }
-  .project-row > .project-coverage { display: flex; padding: 0; }
+  .project-row p { font: var(--type-body); overflow-wrap: anywhere; }
+  /* The cell carries the rules, so a project with no layers still reads as an empty strip. */
+  .project-row > .project-coverage { display: flex; min-height: 48px; padding: 0; border-left: var(--rule); border-right: var(--rule); }
   .project-head > .project-layers { padding-inline: 0; }
-  .project-coverage :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+  .project-coverage :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; }
   .project-links { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; font: 400 14px/1.4 var(--font-mono); }
   @media (min-width: 768px) and (max-width: 1023px) {
     .projects-hero { flex-direction: column; align-items: stretch; gap: var(--space-3); }
@@ -95,7 +98,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     .project-row > * { padding: var(--space-1) var(--gutter); }
     .project-row h2 { font-size: 20px; }
     .project-title-link { padding-block: 10px; }
-    .project-row > .project-coverage { padding: var(--space-1) var(--gutter); }
+    .project-row > .project-coverage { min-height: 0; padding: var(--space-1) var(--gutter); border: 0; }
     .project-coverage :global(.coverage) { height: 14px; min-height: 14px; border: var(--rule); }
     .project-links { min-height: 44px; align-items: center; }
   }

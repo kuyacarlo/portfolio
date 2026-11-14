@@ -18,6 +18,7 @@ src/
   data/*.json                # Handoff page content; data/tokens.css holds the tokens
   content/notes/*.md         # Notes collection
   lib/layers.ts              # Layer names, strip labels, note filter, featured projects
+  lib/project-links.ts       # One link rule for project names and side links
   lib/site.ts                # PUBLIC_* links and booking URL
   lib/cms.ts                 # Notes collection adapter
   plugins/                   # remark-tikz, remark-note-features (asset flags), rehype-note-a11y

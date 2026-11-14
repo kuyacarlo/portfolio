@@ -7,38 +7,21 @@ import projectContent from '../data/projects.json';
 import hackathons from '../data/hackathons.json';
 import now from '../data/now.json';
 import { getPosts } from '../lib/cms';
+import { projectLinks, type ProjectLinks } from '../lib/project-links';
 
-type Links = { source?: string; live?: string; internal?: string };
-
-const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
+const projects = projectContent.projects.map((project) => ({ ...project, ...projectLinks(project.links as ProjectLinks) }));
 // One `featured` flag in projects.json drives the desktop table and the phone list.
 const selectedWork = featuredProjects(projects);
 const featured = new Set(selectedWork.map((project) => project.name));
 const pad = (n: number) => String(n).padStart(2, '0');
 
-/** The one link a phone card shows: homelab, else source, else live. */
-const phoneLink = (links: Links) =>
-  links.source ? { label: 'source', href: links.source, external: true }
-  : links.internal ? { label: 'homelab', href: links.internal, external: false }
-  : links.live ? { label: 'live', href: links.live, external: true }
-  : null;
-
-const primaryProjectLink = (links: Links) =>
-  links.source ? { label: 'source', href: links.source, external: true }
-  : links.internal ? { label: 'homelab', href: links.internal, external: false }
-  : links.live ? { label: 'live', href: links.live, external: true }
-  : null;
-
 const podiums = hackathons.filter((item) => item.podium);
 const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
-const phoneFeaturedResults = new Set(podiums);
+// The two podiums lead; with no podium yet, the first two results stand in.
+const shownResults = podiums.length > 0 ? podiums : results.slice(0, 2);
+const shownSet = new Set(shownResults);
 // Notes about the notes system (tagged `meta`) stay on /notes, not the home page.
 const featuredNotes = (await getPosts()).filter((note) => !note.tags.includes('meta')).slice(0, 3);
-const phoneTitleLink = (links: Links) =>
-  links.live ? { href: links.live, external: true }
-  : links.internal ? { href: links.internal, external: false }
-  : links.source ? { href: links.source, external: true }
-  : null;
 
 const nowCells = [
   { label: 'Building', text: now.building },
@@ -89,16 +72,16 @@ const nowCells = [
         {selectedWork.map((project) => (
           <div class="work-row" role="row">
             <span class="c-name" role="cell">
-              {primaryProjectLink(project.links) ? (
-                <a class="project-primary-link" href={primaryProjectLink(project.links)!.href} target={primaryProjectLink(project.links)!.external ? '_blank' : undefined} rel={primaryProjectLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
+              {project.primary ? (
+                <a class="project-primary-link" href={project.primary.href} target={project.primary.external ? '_blank' : undefined} rel={project.primary.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
               ) : project.name}
             </span>
             <span class="c-desc" role="cell">{project.description}</span>
             <span class="c-strip" role="cell"><CoverageStrip layers={project.layers} /></span>
             <span class="c-links" role="cell">
-              {project.links.source && primaryProjectLink(project.links)?.label !== 'source' && <a href={project.links.source} target="_blank" rel="noopener noreferrer" aria-label={`source for ${project.name}`}>source</a>}
-              {project.links.internal && primaryProjectLink(project.links)?.label !== 'homelab' && <a href={project.links.internal}>{'homelab'}</a>}
-              {project.links.live && primaryProjectLink(project.links)?.label !== 'live' && <a href={project.links.live} target="_blank" rel="noopener noreferrer" aria-label={`live ${project.name}`}>live</a>}
+              {project.rest.map((link) => link.external
+                ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
+                : <a href={link.href} aria-label={`${link.label} for ${project.name}`}>{link.label}</a>)}
             </span>
           </div>
         ))}
@@ -106,37 +89,34 @@ const nowCells = [
 
       <div class="phone">
         <div id="phone-projects">
-          {projects.map((project) => {
-            const link = phoneLink(project.links);
-            return (
+          {projects.map((project) => (
               <article class:list={['phone-project-card', { 'phone-project-extra': !featured.has(project.name) }]} hidden={!featured.has(project.name)}>
                 <div class="card-body">
                   <div class="card-title">
-                    <h3>{phoneTitleLink(project.links) ? <a href={phoneTitleLink(project.links)!.href} target={phoneTitleLink(project.links)!.external ? '_blank' : undefined} rel={phoneTitleLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a> : project.name}</h3>
-                    {link && (link.external
+                    <h3>{project.primary ? <a href={project.primary.href} target={project.primary.external ? '_blank' : undefined} rel={project.primary.external ? 'noopener noreferrer' : undefined}>{project.name}</a> : project.name}</h3>
+                    {project.rest.map((link) => link.external
                       ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
-                      : <a href={link.href}>{link.label}</a>)}
+                      : <a href={link.href} aria-label={`${link.label} for ${project.name}`}>{link.label}</a>)}
                   </div>
                   <p>{project.description}</p>
                 </div>
                 <CoverageStrip layers={project.layers} />
               </article>
-            );
-          })}
+          ))}
         </div>
         <button class="show-all" type="button" data-expand-projects data-count={projects.length} aria-expanded="false" aria-controls="phone-projects">SHOW ALL {projects.length} PROJECTS</button>
       </div>
     </section>
 
     <!-- Hackathons: the two podiums, inverted. Desktop: the stats share the head and podium rows. Phone: stats above the list. -->
-    <section class="region hacks" aria-labelledby="hacks-title">
+    {hackathons.length > 0 && <section class="region hacks" aria-labelledby="hacks-title">
       <div class="hacks-main">
         <div class="region-head">
           <h2 id="hacks-title">Hackathons</h2>
           <a class="region-all" href="/hackathons">all hackathons →</a>
         </div>
         <ul class="results desk">
-          {podiums.map((item) => (
+          {shownResults.map((item) => (
             <li class:list={['result', { podium: item.podium }]}>
               <span class="r-place">{item.result}</span>
               <span class="r-project-copy">
@@ -150,7 +130,7 @@ const nowCells = [
         <div class="phone hacks-phone">
           <ul id="phone-results">
             {results.map((item) => (
-              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !phoneFeaturedResults.has(item) }]} hidden={!phoneFeaturedResults.has(item)}>
+              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !shownSet.has(item) }]} hidden={!shownSet.has(item)}>
                 <span class="r-place">{item.result}</span>
                 <span>{item.source ? <a href={item.source} target="_blank" rel="noopener noreferrer"><b>{item.project}</b></a> : <b>{item.project}</b>} · {item.event}</span>
                 {item.description && <span class="phone-result-writeup">{item.description}</span>}
@@ -161,13 +141,13 @@ const nowCells = [
         </div>
       </div>
       <div class="side stats">
-        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">competitions</span></p>
-        <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">podiums</span></p>
+        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">{hackathons.length === 1 ? 'competition' : 'competitions'}</span></p>
+        {podiums.length > 0 && <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">{podiums.length === 1 ? 'podium' : 'podiums'}</span></p>}
       </div>
-    </section>
+    </section>}
 
-    <!-- Featured notes -->
-    <section class="region" aria-labelledby="featured-notes-title">
+    <!-- Featured notes: the section only renders when there is a note to show. -->
+    {featuredNotes.length > 0 && <section class="region" aria-labelledby="featured-notes-title">
       <div class="region-head">
         <h2 id="featured-notes-title">Featured notes</h2>
         <a class="region-all" href="/notes">all notes →</a>
@@ -184,7 +164,7 @@ const nowCells = [
           </a>
         ))}
       </div>
-    </section>
+    </section>}
 
     <!-- Now: one heading cell beside three updates. -->
     <section class="region now-region" aria-labelledby="now-title">
@@ -225,6 +205,8 @@ const nowCells = [
       items.forEach((item) => { item.hidden = expanded; });
       button.setAttribute('aria-expanded', String(!expanded));
       button.textContent = expanded ? `SHOW ALL ${count} ${label}` : 'SHOW FEWER';
+      // Collapsing pulls the list up past the reader; bring the toggle back into view.
+      if (expanded) button.scrollIntoView({ block: 'nearest' });
     });
   };
 
@@ -250,7 +232,7 @@ const nowCells = [
   /* ── Hero ── */
   .hero { display: flex; flex-wrap: wrap; }
   .hero-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--gutter); }
-  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); overflow-wrap: break-word; }
   .hero-bio { max-width: 680px; margin: 0; font: var(--type-lead); }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
   .hero-open { max-width: 680px; margin: calc(-1 * var(--space-2)) 0 0; font: var(--type-body); }
@@ -276,7 +258,7 @@ const nowCells = [
   .work-row:last-child { border-bottom: 0; }
   .work-head { color: var(--muted); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
   .c-name { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; padding: var(--space-3) var(--gutter); }
-  .c-desc { flex: 2 1 320px; min-width: 0; padding: var(--space-3) var(--gutter); }
+  .c-desc { flex: 2 1 320px; min-width: 0; overflow-wrap: anywhere; padding: var(--space-3) var(--gutter); }
   .c-strip { flex: 0 0 216px; display: flex; }
   .c-links { flex: 0 0 160px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 14px; padding: 20px var(--gutter); font: 400 14px/1.4 var(--font-mono); }
   .work-head > * { padding-block: 10px; font-size: 12px; }
@@ -287,7 +269,9 @@ const nowCells = [
   /* A plain link, not a black box: inversion stays for podiums, the current page and contact. */
   .region-all { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
   .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
-  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+  /* The cell carries the rules, so a project with no layers still reads as an empty strip. */
+  .work-row:not(.work-head) .c-strip { min-height: 48px; border-left: var(--rule); border-right: var(--rule); }
+  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; }
 
   /* ── Hackathons ── */
   .hacks { display: flex; flex-wrap: wrap; }
@@ -328,6 +312,8 @@ const nowCells = [
     .stat.on-ink { grid-area: s2; border-left: var(--rule-on-ink); }
     .stat-n { font-size: 72px; }
     .stat-label { padding-bottom: 4px; }
+    /* No podium yet: the one stat holds the whole side column. */
+    .stat:only-child { grid-area: 1 / 2 / 3 / 3; border-bottom: 0; }
   }
 
   /* ── Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
@@ -364,6 +350,7 @@ const nowCells = [
     .stat, .stat.on-ink { border-left: 0; }
     .stat:first-child { border-top: var(--rule); border-bottom: 0; }
     .stat + .stat.on-ink { border-top: var(--rule-on-ink); border-left: var(--rule); }
+    .stat:only-child { grid-area: 3 / 1 / 4 / 3; }
   }
 
   /* ── Phone (<768): its own layout, from the phone board ── */
@@ -386,11 +373,11 @@ const nowCells = [
     .phone-project-card { border-bottom: var(--rule); }
     .card-body { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
     .card-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .card-title h3 { margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
+    .card-title h3 { min-width: 0; overflow-wrap: anywhere; margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
     /* Inline padding grows the tap area to 44px without moving the line. */
     .card-title h3 a { display: inline; min-height: 0; margin: 0; padding-block: 10px; font: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .card-title a { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; font: 400 13px/1 var(--font-mono); }
-    .phone-project-card p { margin: 0; font: 400 15px/1.45 var(--font-text); }
+    .phone-project-card p { overflow-wrap: anywhere; margin: 0; font: 400 15px/1.45 var(--font-text); }
     .featured-note { flex-direction: column; gap: var(--space-2); padding-block: var(--space-3); }
     .featured-note img { flex: none; width: 100%; }
     .featured-note-copy > span:last-child { font-size: 15px; line-height: 1.55; }
