@@ -44,7 +44,6 @@ const nowCells = [
   { label: 'Building', text: now.building },
   { label: 'Learning', text: now.learning },
   { label: 'Exploring', text: now.exploring },
-  { label: 'Open for', text: now.openFor },
 ];
 ---
 
@@ -55,6 +54,7 @@ const nowCells = [
       <div class="hero-main">
         <h1 id="home-title">Solder, servers, and the people in between.</h1>
         <p class="hero-bio">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <p class="hero-open"><span class="hero-open-label">Open for</span> {now.openFor}</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#work"><span class="desk">See the work</span><span class="phone">The work</span></a>
           <a class="button button-secondary" href="/resume">Resume</a>
@@ -186,7 +186,7 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- Now: one heading cell beside a 2×2 grid of updates. -->
+    <!-- Now: one heading cell beside three updates. -->
     <section class="region now-region" aria-labelledby="now-title">
       <div class="now-clip">
         <div class="now-grid">
@@ -205,6 +205,7 @@ const nowCells = [
         <a class="button button-on-ink" href="/book">Book a call</a>
         <a class="button button-on-ink-outline" href={`mailto:${site.email}`}>Send an email</a>
       </div>
+      <p class="contact-email">or write to <span class="contact-address">{site.email}</span></p>
       <div class="socials">
         <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">github</a>
         <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">linkedin</a>
@@ -252,6 +253,8 @@ const nowCells = [
   .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
   .hero-bio { max-width: 680px; margin: 0; font: var(--type-lead); }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-open { max-width: 680px; margin: calc(-1 * var(--space-2)) 0 0; font: var(--type-body); }
+  .hero-open-label { margin-right: 6px; font: 700 13px/1.4 var(--font-mono); text-transform: uppercase; }
 
   .layer-col { display: flex; flex-direction: column; font: 400 14px/1.2 var(--font-mono); }
   /* Equal steps: the column fills the hero height without one layer swallowing the slack. */
@@ -329,8 +332,8 @@ const nowCells = [
 
   /* ── Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
   .now-clip { overflow: hidden; }
-  .now-grid { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(0, 1.25fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
-  .now-heading { grid-row: span 2; align-items: flex-start; justify-content: flex-start; border-right: var(--rule); }
+  .now-grid { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(3, minmax(0, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
+  .now-heading { align-items: flex-start; justify-content: flex-start; border-right: var(--rule); }
   .now-cell { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3) var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
   .now-label { font: 700 12px/1.4 var(--font-mono); text-transform: uppercase; }
   .now-text { font: 400 17px/1.5 var(--font-text); }
@@ -343,6 +346,8 @@ const nowCells = [
   /* `.on-ink a` would otherwise paint both buttons' text white in every state. */
   .contact-actions .button-on-ink, .contact-actions .button-on-ink-outline:hover { color: var(--ink); }
   .contact-actions .button-on-ink:hover { color: var(--solid-text); }
+  .contact-email { margin: 0; font: 400 15px/1.4 var(--font-mono); }
+  .contact-address { user-select: all; overflow-wrap: anywhere; }
   .socials { display: flex; flex-wrap: wrap; gap: var(--space-3); font: 400 15px/1.4 var(--font-mono); }
   .socials a { display: inline-flex; align-items: center; min-height: 44px; }
 
@@ -418,6 +423,7 @@ const nowCells = [
 
     .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
     .now-heading { grid-column: 1 / -1; grid-row: auto; }
+    .now-cell:last-child:nth-child(even) { grid-column: 1 / -1; }
     .now-cell { gap: var(--space-2); }
     .now-label { font-size: 11px; }
     .now-text { font-size: 15px; line-height: 1.4; }

@@ -110,7 +110,7 @@ The original page reference markup is not included in this repository. Treat the
 - **Hero:** an availability badge (outlined, mono caps: "Available — hackathon teams, data and DevOps roles"), the `type-hero` headline **"Solder, servers, and the people in between."**, a bio paragraph, and two buttons (See the work / Resume). The right column is the six layers as rows, each a `LayerBadge` + name. That column has no heading.
 - **Selected work** (no section numbers; numbers mean layers only): a table with a column-heading row (project / what it is / 01–06 / links). Rows come from `content/projects.json`.
 - **Hackathons:** the result list with podiums first and inverted, plus a `StatPair` on the right. Rows come from `content/hackathons.json`.
-- **Now:** four cells (Building / Learning / Exploring / Open for), from `content/now.json`.
+- **Now:** three cells (Building / Learning / Exploring; "Open for" sits in the hero under the bio), from `content/now.json`.
 - **Contact:** an inverted section with the `type-hero` line "Pick one. I'll reply.", a Book a call button (white), a Send an email button (white outline), and social links.
 - **Phone:**
   - The layers become a 3×2 grid of 44px cells.
