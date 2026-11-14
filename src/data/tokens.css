@@ -75,14 +75,14 @@
 }
 
 :root[data-theme="dark"] {
+  /* The light system inverted: white rules on black, and emphasis still inverts (solid
+     follows ink). Muted and link are lifted so small text keeps 4.5:1 on black. */
   color-scheme: dark;
-  --ink: #c8c7c2;
-  --paper: #171717;
-  --surface: #242424;
-  --muted: #969696;
-  --link: #9bb9e8;
-  --solid: #2b2b2b;
-  --solid-text: #d6d5d0;
+  --ink: #ffffff;
+  --paper: #000000;
+  --surface: #141414;
+  --muted: #a3a3a3;
+  --link: #8fb0ff;
 }
 
 @media (max-width: 767px) {

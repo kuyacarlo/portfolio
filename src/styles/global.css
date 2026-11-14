@@ -24,13 +24,16 @@ h1, h2, h3, p { margin-top: 0; }
 
 /* ── Frame: one 1440 container, ruled left and right. Every region inside is a cell. */
 .frame { display: flex; flex-direction: column; min-height: 100vh; max-width: var(--container); margin-inline: auto; border-left: var(--rule); border-right: var(--rule); }
-.frame > main { display: block; flex: 1 0 auto; }
+.frame > main { display: flex; flex-direction: column; flex: 1 0 auto; }
+/* Short pages: the last cell runs down to the footer instead of leaving an empty cell. */
+.frame > main > :last-child { flex-grow: 1; }
 
 /* ── Header (desktop 64px) ────────────────────────────────────────────── */
 .site-header { display: flex; align-items: stretch; min-height: 64px; border-bottom: var(--rule); background: var(--paper); }
 .brand { display: flex; align-items: center; gap: 12px; padding: 0 var(--gutter); color: var(--ink); text-decoration: none; font: 900 20px/1 var(--font-display); letter-spacing: -.02em; }
 .brand:hover { color: var(--ink); }
 .brand-mark { display: block; flex: none; }
+.brand:focus-visible { outline-offset: -6px; }
 .main-nav { display: flex; flex: 999 1 420px; min-width: 0; overflow-x: auto; font: 400 14px/1 var(--font-mono); }
 .main-nav a { display: flex; align-items: center; min-height: 64px; padding: 0 20px; color: var(--ink); text-decoration: none; text-underline-offset: 4px; }
 .main-nav a:hover { background: transparent; color: var(--ink); text-decoration: underline; }
@@ -40,8 +43,13 @@ h1, h2, h3, p { margin-top: 0; }
 .talk-link { display: flex; align-items: center; justify-content: center; flex: 1 0 auto; max-width: 220px; margin-left: auto; padding: 0 28px; background: var(--solid); color: var(--solid-text); text-decoration: none; font: 800 15px/1 var(--font-display); text-transform: uppercase; }
 .talk-link:hover { color: var(--solid-text); text-decoration: underline; }
 .talk-link:focus-visible { outline-color: var(--solid-text); outline-offset: -6px; }
+/* Already inverted, so the current page flips back to paper and keeps a rule on its left. */
+.talk-link[aria-current="page"] { background: var(--paper); color: var(--ink); border-left: var(--rule); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.talk-link[aria-current="page"]:focus-visible { outline-color: var(--ink); }
 .theme-toggle { flex: none; min-width: 72px; padding: 0 14px; border: 0; background: var(--paper); color: var(--ink); font: 400 12px/1 var(--font-mono); text-transform: uppercase; }
 .theme-toggle[aria-pressed="true"] { background: var(--solid); color: var(--solid-text); }
+/* Pressed toggle and "Let's talk" are both solid; a rule keeps them two controls. */
+.theme-toggle[aria-pressed="true"] + .talk-link { border-left: var(--rule-on-ink); }
 .theme-toggle:hover { text-decoration: underline; text-underline-offset: 4px; }
 .theme-toggle:focus-visible { outline-offset: -5px; }
 .menu-toggle { display: none; }

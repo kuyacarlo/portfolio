@@ -48,7 +48,7 @@ Use the tokens in `tokens.css` (also `tokens.json`). Never hard-code the raw val
 | `type-page-title` | Display 900, `clamp(56px, 9vw, 136px)` / 0.85, −0.04em, caps | 56px | Notes, Certs, "andromeda" |
 | `type-hero` | Display 900, `clamp(44px, 7vw, 104px)` / 0.9, −0.035em | 46px | Home hero, contact, resume name, 404 |
 | `type-article-title` | Display 900, `clamp(40px, 6vw, 88px)` / 0.92 | 36px | Note page |
-| `type-section` | Display 900, 40px, −0.02em, caps | 28px | "01 Selected work", "What runs" |
+| `type-section` | Display 900, 40px, −0.02em, caps | 28px | "Selected work", "What runs" |
 | `type-card` | Display 800, 22–34px | 18–20px | Project, note and incident titles |
 | `type-lead` | Text 400, 19–22px / 1.5 | 16px | Intro paragraphs |
 | `type-body` | Text 400, 16–17px / 1.6 | 15–16px / 1.55 | |
@@ -108,13 +108,13 @@ The original page reference markup is not included in this repository. Treat the
 
 ### `/` Home
 - **Hero:** an availability badge (outlined, mono caps: "Available — hackathon teams, data and DevOps roles"), the `type-hero` headline **"Solder, servers, and the people in between."**, a bio paragraph, and two buttons (See the work / Resume). The right column is the six layers as rows, each a `LayerBadge` + name. That column has no heading.
-- **01 Selected work:** a table with a column-heading row (project / what it is / 01–06 / links). Rows come from `content/projects.json`.
-- **02 Hackathons:** the result list with podiums first and inverted, plus a `StatPair` on the right. Rows come from `content/hackathons.json`.
-- **03 Now:** four cells (Building / Learning / Exploring / Open for), from `content/now.json`.
-- **04 Contact:** an inverted section with the `type-hero` line "Pick one. I'll reply.", a Book a call button (white), a Send an email button (white outline), and social links.
+- **Selected work** (no section numbers; numbers mean layers only): a table with a column-heading row (project / what it is / 01–06 / links). Rows come from `content/projects.json`.
+- **Hackathons:** the result list with podiums first and inverted, plus a `StatPair` on the right. Rows come from `content/hackathons.json`.
+- **Now:** three cells (Building / Learning / Exploring; "Open for" sits in the hero under the bio), from `content/now.json`.
+- **Contact:** an inverted section with the `type-hero` line "Pick one. I'll reply.", a Book a call button (white), a Send an email button (white outline), and social links.
 - **Phone:**
   - The layers become a 3×2 grid of 44px cells.
-  - **Show only the projects marked `featuredOnPhone` (4) and the 2 podiums.** Under each list is a full-width toggle: "SHOW ALL 10 PROJECTS" / "SHOW ALL 8 COMPETITIONS", which switches to "SHOW FEWER" when open. Lists expand in place, with `aria-expanded` on the toggle.
+  - **Show only the projects marked `featured` (4) and the 2 podiums.** Under each list is a full-width toggle: "SHOW ALL 10 PROJECTS" / "SHOW ALL 8 COMPETITIONS", which switches to "SHOW FEWER" when open. Lists expand in place, with `aria-expanded` on the toggle.
   - Now becomes a 2×2 grid. Contact buttons go full width.
 
 ### `/homelab`
@@ -176,7 +176,7 @@ The content files are in `content/`. Treat them as the source of truth and rende
 | File | Shape |
 |---|---|
 | `layers.json` | `[{n, name}]` for 01–06 |
-| `projects.json` | `name, description, layers[], links{source?, live?, internal?}, featuredOnPhone` |
+| `projects.json` | `name, description, layers[], links{source?, live?, internal?}, featured` |
 | `hackathons.json` | `result, project, event, podium` |
 | `now.json` | `building, learning, exploring, openFor` |
 | `homelab.json` | `spec[]`, `services{layer: [{name, note}]}`, `incidents[{title, summary, slug}]` |

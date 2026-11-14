@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { coverageLabel, featuredOnPhone, filterByLayer } from '../../src/lib/layers';
+import { coverageLabel, featuredProjects, filterByLayer } from '../../src/lib/layers';
 import projectContent from '../../src/data/projects.json';
 
 const notes = [
@@ -35,10 +35,10 @@ describe('coverageLabel', () => {
   });
 });
 
-describe('featuredOnPhone', () => {
+describe('featuredProjects', () => {
   it('keeps exactly the featured projects, in order', () => {
-    const featured = featuredOnPhone(projectContent.projects);
-    const expected = projectContent.projects.filter((p) => p.featuredOnPhone).map((p) => p.name);
+    const featured = featuredProjects(projectContent.projects);
+    const expected = projectContent.projects.filter((p) => p.featured).map((p) => p.name);
     expect(featured.map((p) => p.name)).toEqual(expected);
     expect(featured).toHaveLength(4);
   });

@@ -2,108 +2,86 @@
 import Layout from '../layouts/Layout.astro';
 import CoverageStrip from '../components/CoverageStrip.astro';
 import { site } from '../lib/site';
-import { featuredOnPhone, layers } from '../lib/layers';
+import { featuredProjects, layers } from '../lib/layers';
 import projectContent from '../data/projects.json';
 import hackathons from '../data/hackathons.json';
 import now from '../data/now.json';
 import { getPosts } from '../lib/cms';
+import { projectLinks, type ProjectLinks } from '../lib/project-links';
 
-type Links = { source?: string; live?: string; internal?: string };
-
-const projects = projectContent.projects.map((project) => ({ ...project, links: project.links as Links }));
-const selectedWorkNames = new Set([
-  'git-profile + ssh-profile',
-  'freestack',
-  'v4l2loopback-fedora',
-]);
-const selectedWork = projects.filter((project) => selectedWorkNames.has(project.name));
-const featured = new Set(featuredOnPhone(projects).map((project) => project.name));
+const projects = projectContent.projects.map((project) => ({ ...project, ...projectLinks(project.links as ProjectLinks) }));
+// One `featured` flag in projects.json drives the desktop table and the phone list.
+const selectedWork = featuredProjects(projects);
+const featured = new Set(selectedWork.map((project) => project.name));
 const pad = (n: number) => String(n).padStart(2, '0');
-
-/** The one link a phone card shows: homelab, else source, else live. */
-const phoneLink = (links: Links) =>
-  links.source ? { label: 'source', href: links.source, external: true }
-  : links.internal ? { label: 'homelab', href: links.internal, external: false }
-  : links.live ? { label: 'live', href: links.live, external: true }
-  : null;
-
-const primaryProjectLink = (links: Links) =>
-  links.source ? { label: 'source', href: links.source, external: true }
-  : links.internal ? { label: 'homelab', href: links.internal, external: false }
-  : links.live ? { label: 'live', href: links.live, external: true }
-  : null;
 
 const podiums = hackathons.filter((item) => item.podium);
 const results = [...podiums, ...hackathons.filter((item) => !item.podium)];
-const featuredResults = results.filter((item) => item.podium || item.project === 'Kasigla');
-const phoneFeaturedResults = new Set(podiums);
-const featuredNotes = (await getPosts()).slice(0, 3);
-const phoneTitleLink = (links: Links) =>
-  links.live ? { href: links.live, external: true }
-  : links.internal ? { href: links.internal, external: false }
-  : links.source ? { href: links.source, external: true }
-  : null;
+// The two podiums lead; with no podium yet, the first two results stand in.
+const shownResults = podiums.length > 0 ? podiums : results.slice(0, 2);
+const shownSet = new Set(shownResults);
+// Notes about the notes system (tagged `meta`) stay on /notes, not the home page.
+const featuredNotes = (await getPosts()).filter((note) => !note.tags.includes('meta')).slice(0, 3);
 
 const nowCells = [
   { label: 'Building', text: now.building },
   { label: 'Learning', text: now.learning },
   { label: 'Exploring', text: now.exploring },
-  { label: 'Open for', text: now.openFor },
 ];
 ---
 
 <Layout active="home">
   <main id="main">
-    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a 3×2 grid. -->
+    <!-- Hero: copy on the left, the layer column on the right. Phone: layers become a strip of six numbered cells. -->
     <section class="region hero" aria-labelledby="home-title">
       <div class="hero-main">
         <h1 id="home-title">Solder, servers, and the people in between.</h1>
-        <p class="hero-bio desk">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
-        <p class="hero-bio phone">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <p class="hero-bio">Hey, I'm John Carlo Santos. I lead tech at Seekers Guild and study computer engineering at BulSU, class of 2028. I build ETL pipelines, DevSecOps guardrails, and agent harnesses.</p>
+        <p class="hero-open"><span class="hero-open-label">Open for</span> {now.openFor}</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#work"><span class="desk">See the work</span><span class="phone">The work</span></a>
           <a class="button button-secondary" href="/resume">Resume</a>
         </div>
       </div>
-      <ul class="side layer-col desk">
+      <ul class="side layer-col desk" aria-label="Layers">
         {[...layers].reverse().map((layer) => (
           <li><span class="layer-badge">{pad(layer.n)}</span><span class="layer-name">{layer.name}</span></li>
         ))}
       </ul>
-      <ul class="layer-cells phone">
-        {[...layers].reverse().map((layer) => (
+      <ul class="layer-cells phone" aria-label="Layers">
+        {layers.map((layer) => (
           <li><b>{pad(layer.n)}</b><span>{layer.name}</span></li>
         ))}
       </ul>
     </section>
 
-    <!-- 01 Selected work -->
+    <!-- Selected work -->
     <section id="work" class="region" aria-labelledby="work-title">
       <div class="region-head">
-        <h2 id="work-title">01 <span class="desk">Selected </span>work</h2>
-        <a class="notes-all" href="/projects">all</a>
+        <h2 id="work-title"><span class="desk">Selected work</span><span class="phone">Work</span></h2>
+        <a class="region-all" href="/projects">all projects →</a>
       </div>
 
       <div class="work-table desk" role="table" aria-labelledby="work-title">
         <div class="work-row work-head" role="row">
           <span class="c-name" role="columnheader">project</span>
           <span class="c-desc" role="columnheader">what it is</span>
-          <span class="c-strip c-nums" role="columnheader">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
+          <span class="c-strip c-nums" role="columnheader" aria-label="layers 01 to 06">{layers.map((layer) => <span>{pad(layer.n)}</span>)}</span>
           <span class="c-links" role="columnheader">links</span>
         </div>
         {selectedWork.map((project) => (
           <div class="work-row" role="row">
             <span class="c-name" role="cell">
-              {primaryProjectLink(project.links) ? (
-                <a class="project-primary-link" href={primaryProjectLink(project.links)!.href} target={primaryProjectLink(project.links)!.external ? '_blank' : undefined} rel={primaryProjectLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
+              {project.primary ? (
+                <a class="project-primary-link" href={project.primary.href} target={project.primary.external ? '_blank' : undefined} rel={project.primary.external ? 'noopener noreferrer' : undefined}>{project.name}</a>
               ) : project.name}
             </span>
             <span class="c-desc" role="cell">{project.description}</span>
             <span class="c-strip" role="cell"><CoverageStrip layers={project.layers} /></span>
             <span class="c-links" role="cell">
-              {project.links.source && primaryProjectLink(project.links)?.label !== 'source' && <a href={project.links.source} target="_blank" rel="noopener noreferrer" aria-label={`source for ${project.name}`}>source</a>}
-              {project.links.internal && primaryProjectLink(project.links)?.label !== 'homelab' && <a href={project.links.internal}>{'homelab'}</a>}
-              {project.links.live && primaryProjectLink(project.links)?.label !== 'live' && <a href={project.links.live} target="_blank" rel="noopener noreferrer" aria-label={`live ${project.name}`}>live</a>}
+              {project.rest.map((link) => link.external
+                ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
+                : <a href={link.href} aria-label={`${link.label} for ${project.name}`}>{link.label}</a>)}
             </span>
           </div>
         ))}
@@ -111,37 +89,34 @@ const nowCells = [
 
       <div class="phone">
         <div id="phone-projects">
-          {projects.map((project) => {
-            const link = phoneLink(project.links);
-            return (
+          {projects.map((project) => (
               <article class:list={['phone-project-card', { 'phone-project-extra': !featured.has(project.name) }]} hidden={!featured.has(project.name)}>
                 <div class="card-body">
                   <div class="card-title">
-                    <h3>{phoneTitleLink(project.links) ? <a href={phoneTitleLink(project.links)!.href} target={phoneTitleLink(project.links)!.external ? '_blank' : undefined} rel={phoneTitleLink(project.links)!.external ? 'noopener noreferrer' : undefined}>{project.name}</a> : project.name}</h3>
-                    {link && (link.external
+                    <h3>{project.primary ? <a href={project.primary.href} target={project.primary.external ? '_blank' : undefined} rel={project.primary.external ? 'noopener noreferrer' : undefined}>{project.name}</a> : project.name}</h3>
+                    {project.rest.map((link) => link.external
                       ? <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${link.label} for ${project.name}`}>{link.label}</a>
-                      : <a href={link.href}>{link.label}</a>)}
+                      : <a href={link.href} aria-label={`${link.label} for ${project.name}`}>{link.label}</a>)}
                   </div>
                   <p>{project.description}</p>
                 </div>
                 <CoverageStrip layers={project.layers} />
               </article>
-            );
-          })}
+          ))}
         </div>
         <button class="show-all" type="button" data-expand-projects data-count={projects.length} aria-expanded="false" aria-controls="phone-projects">SHOW ALL {projects.length} PROJECTS</button>
       </div>
     </section>
 
-    <!-- 02 Hackathons: podiums first and inverted, the stat pair on the right (phone: above the list). -->
-    <section class="region hacks" aria-labelledby="hacks-title">
+    <!-- Hackathons: the two podiums, inverted. Desktop: the stats share the head and podium rows. Phone: stats above the list. -->
+    {hackathons.length > 0 && <section class="region hacks" aria-labelledby="hacks-title">
       <div class="hacks-main">
         <div class="region-head">
-          <h2 id="hacks-title">02 Hackathons</h2>
-          <a class="notes-all" href="/hackathons">all</a>
+          <h2 id="hacks-title">Hackathons</h2>
+          <a class="region-all" href="/hackathons">all hackathons →</a>
         </div>
         <ul class="results desk">
-          {featuredResults.map((item) => (
+          {shownResults.map((item) => (
             <li class:list={['result', { podium: item.podium }]}>
               <span class="r-place">{item.result}</span>
               <span class="r-project-copy">
@@ -155,7 +130,7 @@ const nowCells = [
         <div class="phone hacks-phone">
           <ul id="phone-results">
             {results.map((item) => (
-              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !phoneFeaturedResults.has(item) }]} hidden={!phoneFeaturedResults.has(item)}>
+              <li class:list={['phone-result-card', { podium: item.podium, 'phone-result-extra': !shownSet.has(item) }]} hidden={!shownSet.has(item)}>
                 <span class="r-place">{item.result}</span>
                 <span>{item.source ? <a href={item.source} target="_blank" rel="noopener noreferrer"><b>{item.project}</b></a> : <b>{item.project}</b>} · {item.event}</span>
                 {item.description && <span class="phone-result-writeup">{item.description}</span>}
@@ -166,16 +141,16 @@ const nowCells = [
         </div>
       </div>
       <div class="side stats">
-        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">competitions</span></p>
-        <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">podiums</span></p>
+        <p class="stat"><span class="stat-n">{hackathons.length}</span> <span class="stat-label">{hackathons.length === 1 ? 'competition' : 'competitions'}</span></p>
+        {podiums.length > 0 && <p class="stat on-ink"><span class="stat-n">{podiums.length}</span> <span class="stat-label">{podiums.length === 1 ? 'podium' : 'podiums'}</span></p>}
       </div>
-    </section>
+    </section>}
 
-    <!-- 03 Featured notes -->
-    <section class="region" aria-labelledby="featured-notes-title">
+    <!-- Featured notes: the section only renders when there is a note to show. -->
+    {featuredNotes.length > 0 && <section class="region" aria-labelledby="featured-notes-title">
       <div class="region-head">
-        <h2 id="featured-notes-title">03 Featured notes</h2>
-        <a class="notes-all" href="/notes">all</a>
+        <h2 id="featured-notes-title">Featured notes</h2>
+        <a class="region-all" href="/notes">all notes →</a>
       </div>
       <div class="featured-notes">
         {featuredNotes.map((note) => (
@@ -189,13 +164,13 @@ const nowCells = [
           </a>
         ))}
       </div>
-    </section>
+    </section>}
 
-    <!-- 04 Now: one heading cell beside a 2×2 grid of updates. -->
+    <!-- Now: one heading cell beside three updates. -->
     <section class="region now-region" aria-labelledby="now-title">
       <div class="now-clip">
         <div class="now-grid">
-          <div class="region-head now-heading"><h2 id="now-title">04 Now</h2></div>
+          <div class="region-head now-heading"><h2 id="now-title">Now</h2></div>
           {nowCells.map((cell) => (
             <div class="now-cell"><span class="now-label">{cell.label}</span><span class="now-text">{cell.text}</span></div>
           ))}
@@ -203,9 +178,8 @@ const nowCells = [
       </div>
     </section>
 
-    <!-- 04 Contact -->
+    <!-- Contact -->
     <section id="contact" class="contact on-ink" aria-labelledby="contact-title">
-      <span class="contact-label">05 Contact</span>
       <h2 id="contact-title">Say hi.</h2>
       <div class="contact-actions">
         <a class="button button-on-ink" href="/book">Book a call</a>
@@ -230,6 +204,8 @@ const nowCells = [
       items.forEach((item) => { item.hidden = expanded; });
       button.setAttribute('aria-expanded', String(!expanded));
       button.textContent = expanded ? `SHOW ALL ${count} ${label}` : 'SHOW FEWER';
+      // Collapsing pulls the list up past the reader; bring the toggle back into view.
+      if (expanded) button.scrollIntoView({ block: 'nearest' });
     });
   };
 
@@ -255,13 +231,16 @@ const nowCells = [
   /* ── Hero ── */
   .hero { display: flex; flex-wrap: wrap; }
   .hero-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--gutter); }
-  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
+  .hero h1 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); overflow-wrap: break-word; }
   .hero-bio { max-width: 680px; margin: 0; font: var(--type-lead); }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-open { max-width: 680px; margin: calc(-1 * var(--space-2)) 0 0; font: var(--type-body); }
+  .hero-open-label { margin-right: 6px; font: 700 13px/1.4 var(--font-mono); text-transform: uppercase; }
 
   .layer-col { display: flex; flex-direction: column; font: 400 14px/1.2 var(--font-mono); }
-  .layer-col li { display: flex; min-height: 56px; border-bottom: var(--rule); }
-  .layer-col li:last-child { flex-grow: 1; border-bottom: 0; }
+  /* Equal steps: the column fills the hero height without one layer swallowing the slack. */
+  .layer-col li { display: flex; flex: 1 1 0; min-height: 56px; border-bottom: var(--rule); }
+  .layer-col li:last-child { border-bottom: 0; }
   .layer-col .layer-badge { height: auto; align-self: stretch; font: inherit; }
   .layer-name { display: flex; align-items: center; padding: 0 var(--space-2); }
 
@@ -270,29 +249,30 @@ const nowCells = [
   .featured-note img { flex: 0 0 180px; width: 180px; aspect-ratio: 16 / 9; object-fit: cover; filter: grayscale(1); }
   .featured-note-copy { display: flex; flex-direction: column; justify-content: center; gap: var(--space-1); }
   .featured-note time { color: var(--muted); font: 400 12px/1.4 var(--font-mono); }
-  .featured-note strong { font: var(--type-card); }
-  .featured-note-copy > span:last-child { font: var(--type-body); }
+  .featured-note strong { font: var(--type-card); line-height: 1.3; }
+  .featured-note-copy > span:last-child { max-width: 70ch; font: var(--type-body); }
 
-  /* ── 01 Selected work ── */
+  /* ── Selected work ── */
   .work-row { display: flex; flex-wrap: wrap; align-items: stretch; border-bottom: var(--rule); }
   .work-row:last-child { border-bottom: 0; }
   .work-head { color: var(--muted); font: 400 12px/1.4 var(--font-mono); text-transform: uppercase; }
   .c-name { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; padding: var(--space-3) var(--gutter); }
-  .c-desc { flex: 2 1 320px; min-width: 0; padding: var(--space-3) var(--gutter); }
+  .c-desc { flex: 2 1 320px; min-width: 0; overflow-wrap: anywhere; padding: var(--space-3) var(--gutter); }
   .c-strip { flex: 0 0 216px; display: flex; }
   .c-links { flex: 0 0 160px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 14px; padding: 20px var(--gutter); font: 400 14px/1.4 var(--font-mono); }
   .work-head > * { padding-block: 10px; font-size: 12px; }
   .c-nums { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); text-align: center; }
   .work-row:not(.work-head) .c-name { font: var(--type-card); letter-spacing: -0.01em; }
-  .project-primary-link { color: inherit; text-decoration: none; }
-  .project-primary-link:hover, .project-primary-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .notes-all { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 14px; border: var(--rule); background: var(--solid); color: var(--solid-text); font: 800 15px/1 var(--font-display); text-decoration: none; text-transform: uppercase; }
-  .notes-all:hover { background: var(--paper); color: var(--ink); }
-  .notes-all:focus-visible { outline-color: var(--link); }
+  .project-primary-link { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .project-primary-link:hover { text-decoration-thickness: 2px; }
+  /* A plain link, not a black box: inversion stays for podiums, the current page and contact. */
+  .region-all { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
   .work-row:not(.work-head) .c-desc { font: var(--type-body); line-height: 1.5; }
-  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; border-left: var(--rule); border-right: var(--rule); }
+  /* The cell carries the rules, so a project with no layers still reads as an empty strip. */
+  .work-row:not(.work-head) .c-strip { min-height: 48px; border-left: var(--rule); border-right: var(--rule); }
+  .c-strip :global(.coverage) { width: 100%; height: auto; min-height: 48px; border: 0; }
 
-  /* ── 02 Hackathons ── */
+  /* ── Hackathons ── */
   .hacks { display: flex; flex-wrap: wrap; }
   .hacks-main { flex: 999 1 560px; min-width: 0; }
   .result { display: flex; flex-wrap: wrap; border-bottom: var(--rule); }
@@ -300,9 +280,11 @@ const nowCells = [
   .result > * { min-width: 0; padding: var(--space-3) var(--gutter); }
   .result .r-place { flex: 0 0 200px; font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
   .result .r-project-copy { flex: 1.5 1 300px; display: flex; flex-direction: column; gap: 3px; }
-  .result .r-project { width: fit-content; color: inherit; font: 800 18px/1.3 var(--font-display); text-decoration: none; }
-  .result a.r-project:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .result a.r-project:focus-visible { outline-color: var(--ink); }
+  .result .r-project { width: fit-content; font: 800 18px/1.3 var(--font-display); }
+  .result a.r-project { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .result a.r-project:hover { text-decoration-thickness: 2px; }
+  /* Blue fails on black, so podium names stay paper-on-ink and keep the underline. */
+  .result.podium a.r-project, .result.podium a.r-project:hover { color: var(--solid-text); }
   .result.podium a.r-project:focus-visible { outline-color: var(--solid-text); }
   .result .r-writeup { font: 400 14px/1.4 var(--font-text); }
   .result .r-event { flex: 1 1 180px; font: 400 15px/1.4 var(--font-text); }
@@ -311,22 +293,38 @@ const nowCells = [
   .result.podium + .result.podium { border-top: var(--rule-on-ink); }
 
   .side.stats { flex-basis: 320px; display: flex; flex-direction: column; }
-  .stat { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-1); margin: 0; padding: var(--space-4) var(--gutter); user-select: none; -webkit-user-select: none; }
+  .stat { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-1); margin: 0; padding: var(--space-4) var(--gutter); }
   .stat + .stat { border-top: var(--rule); }
   .stat-n { font: 900 120px/0.85 var(--font-display); letter-spacing: -0.04em; }
   .stat-label { font: 400 14px/1.2 var(--font-mono); text-transform: uppercase; }
 
-  /* ── 03 Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
+  /* Desktop: a grid, so each stat sits on the rows it counts. "Competitions" shares the
+     head row; "podiums" shares the podium rows, split from them by a paper rule. */
+  @media (min-width: 768px) {
+    .hacks { display: grid; grid-template-columns: minmax(0, 1fr) 320px; grid-template-areas: "head s1" "list s2"; }
+    .hacks-main, .side.stats { display: contents; }
+    .hacks-main > .region-head { grid-area: head; }
+    .results { grid-area: list; }
+    .stat { flex-direction: row; justify-content: flex-start; align-items: flex-end; gap: 12px; padding: var(--space-2) var(--gutter); border-left: var(--rule); }
+    .stat + .stat { border-top: 0; }
+    .stat:first-child { grid-area: s1; border-bottom: var(--rule); }
+    .stat.on-ink { grid-area: s2; border-left: var(--rule-on-ink); }
+    .stat-n { font-size: 72px; }
+    .stat-label { padding-bottom: 4px; }
+    /* No podium yet: the one stat holds the whole side column. */
+    .stat:only-child { grid-area: 1 / 2 / 3 / 3; border-bottom: 0; }
+  }
+
+  /* ── Now: auto-fit cells. The clip trims the outer right and bottom rules. ── */
   .now-clip { overflow: hidden; }
-  .now-grid { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(0, 1.25fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
-  .now-heading { grid-row: span 2; align-items: flex-start; justify-content: flex-start; border-right: var(--rule); }
+  .now-grid { display: grid; grid-template-columns: minmax(200px, 1fr) repeat(3, minmax(0, 1fr)); margin: 0 calc(-1 * var(--rule-w)) calc(-1 * var(--rule-w)) 0; }
+  .now-heading { align-items: flex-start; justify-content: flex-start; border-right: var(--rule); }
   .now-cell { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3) var(--gutter); border-right: var(--rule); border-bottom: var(--rule); }
   .now-label { font: 700 12px/1.4 var(--font-mono); text-transform: uppercase; }
   .now-text { font: 400 17px/1.5 var(--font-text); }
 
-  /* ── 04 Contact ── */
+  /* ── Contact ── */
   .contact { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6) var(--gutter); }
-  .contact-label { font: 400 13px/1.4 var(--font-mono); text-transform: uppercase; }
   .contact h2 { margin: 0; font: var(--type-hero); letter-spacing: var(--track-tight); }
   .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; }
   .contact-actions .button { min-height: 52px; padding-inline: var(--space-3); font-size: 16px; }
@@ -344,6 +342,12 @@ const nowCells = [
     .c-links { flex-basis: 120px; padding-inline: var(--space-2); }
     .work-row:not(.work-head) .c-name { font-size: 18px; }
     .result .r-place { flex-basis: 160px; }
+    /* Too narrow for a side column: the stat pair runs under the list. */
+    .hacks { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "head head" "list list" "s1 s2"; }
+    .stat, .stat.on-ink { border-left: 0; }
+    .stat:first-child { border-top: var(--rule); border-bottom: 0; }
+    .stat + .stat.on-ink { border-top: var(--rule-on-ink); border-left: var(--rule); }
+    .stat:only-child { grid-area: 3 / 1 / 4 / 3; }
   }
 
   /* ── Phone (<768): its own layout, from the phone board ── */
@@ -356,9 +360,9 @@ const nowCells = [
     .hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
     .hero-actions .button { font-size: 14px; }
 
-    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 10px/1 var(--font-mono); }
+    .layer-cells { display: grid; flex: 1 1 100%; grid-auto-flow: column; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: 36px 44px; border-top: var(--rule); font: 400 12px/1 var(--font-mono); letter-spacing: -0.04em; }
     .layer-cells li { display: contents; }
-    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 2px; text-align: center; overflow-wrap: anywhere; }
+    .layer-cells li > b, .layer-cells li > span { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 1px; text-align: center; overflow-wrap: anywhere; }
     .layer-cells li > b { border-bottom: var(--rule); background: var(--solid); color: var(--solid-text); font-weight: 700; }
     .layer-cells li > span { border-bottom: var(--rule); }
     .layer-cells li:not(:last-child) > * { border-right: var(--rule); }
@@ -366,10 +370,11 @@ const nowCells = [
     .phone-project-card { border-bottom: var(--rule); }
     .card-body { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
     .card-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .card-title h3 { margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
-    .card-title h3 a { display: inline; min-height: 0; margin: 0; color: inherit; font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .card-title h3 { min-width: 0; overflow-wrap: anywhere; margin: 0; font: 800 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
+    /* Inline padding grows the tap area to 44px without moving the line. */
+    .card-title h3 a { display: inline; min-height: 0; margin: 0; padding-block: 10px; font: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .card-title a { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; margin-block: -10px; font: 400 13px/1 var(--font-mono); }
-    .phone-project-card p { margin: 0; font: 400 15px/1.45 var(--font-text); }
+    .phone-project-card p { overflow-wrap: anywhere; margin: 0; font: 400 15px/1.45 var(--font-text); }
     .featured-note { flex-direction: column; gap: var(--space-2); padding-block: var(--space-3); }
     .featured-note img { flex: none; width: 100%; }
     .featured-note-copy > span:last-child { font-size: 15px; line-height: 1.55; }
@@ -387,21 +392,27 @@ const nowCells = [
     .stat { justify-content: flex-start; gap: var(--space-1); padding: var(--space-3) var(--gutter); }
     .stat + .stat { border-top: 0; border-left: var(--rule); }
     .stat-n { font-size: 64px; }
+    /* Ink meets ink below the podium stat and between podium cards: a paper rule keeps them apart. */
+    .side.stats { border-bottom: 0; }
+    .stat { border-bottom: var(--rule); }
+    .stat + .stat.on-ink { border-bottom: var(--rule-on-ink); }
+    .phone-result-card.podium { border-bottom-color: var(--solid-text); }
     .stat-label { font-size: 12px; }
     .phone-result-card { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--gutter); border-bottom: var(--rule); font: 400 15px/1.5 var(--font-text); }
     .phone-result-card .r-place { font: 700 11px/1.3 var(--font-mono); text-transform: uppercase; }
     .phone-result-card b { font: 800 17px/1.3 var(--font-display); }
-    .phone-result-card a { color: inherit; }
+    .phone-result-card a { padding-block: 12px; }
+    .phone-result-card.podium a { color: var(--solid-text); }
     .phone-result-writeup { font: 400 14px/1.5 var(--font-text); }
 
     .now-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
     .now-heading { grid-column: 1 / -1; grid-row: auto; }
+    .now-cell:last-child:nth-child(even) { grid-column: 1 / -1; }
     .now-cell { gap: var(--space-2); }
     .now-label { font-size: 11px; }
     .now-text { font-size: 15px; line-height: 1.4; }
 
     .contact { gap: 20px; padding: 40px var(--gutter); }
-    .contact-label { font-size: 12px; }
     .contact-actions { flex-direction: column; gap: 20px; }
     .socials { gap: 20px; font-size: 14px; }
   }

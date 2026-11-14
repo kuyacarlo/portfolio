@@ -15,6 +15,8 @@ const verifiedCerts = (certData.certs as Cert[]).filter((cert) => Boolean(cert.v
   <main id="main">
     <section class="certs-hero region">
       <h1>Certs</h1>
+      <p class="certs-lead">Each one links to the issuer, so you don't have to take my word for it.</p>
+      {verifiedCerts.length === 0 && <p class="certs-empty">None verified yet.</p>}
     </section>
 
     {verifiedCerts.length > 0 && (
@@ -27,6 +29,8 @@ const verifiedCerts = (certData.certs as Cert[]).filter((cert) => Boolean(cert.v
 
 <style>
   .certs-hero { display: flex; flex-direction: column; gap: 20px; padding: var(--space-5) var(--gutter); }
+  .certs-lead { max-width: 640px; margin: 0; font: var(--type-lead); }
+  .certs-empty { margin: 0; color: var(--muted); font: 400 14px/1.4 var(--font-mono); text-transform: uppercase; }
   .certs-hero h1 { margin: 0; font: var(--type-page-title); letter-spacing: -.04em; text-transform: uppercase; }
   /* Cards overlap by one rule (-2px) so neighbours share a single border; overflow clips the outer edge. */
   .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); overflow: hidden; }

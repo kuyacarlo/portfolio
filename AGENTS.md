@@ -17,7 +17,8 @@ src/
   components/                # Mark, CoverageStrip, Footer, Note*, ResumeEntry, CertCard
   data/*.json                # Handoff page content; data/tokens.css holds the tokens
   content/notes/*.md         # Notes collection
-  lib/layers.ts              # Layer names, strip labels, note filter, phone-featured list
+  lib/layers.ts              # Layer names, strip labels, note filter, featured projects
+  lib/project-links.ts       # One link rule for project names and side links
   lib/site.ts                # PUBLIC_* links and booking URL
   lib/cms.ts                 # Notes collection adapter
   plugins/                   # remark-tikz, remark-note-features (asset flags), rehype-note-a11y
@@ -39,7 +40,7 @@ The staircase mark and layer numbers carry the “stack” idea. Do not explain 
 
 Keep `/`, `/homelab`, `/notes`, `/notes/[slug]`, `/certs`, `/resume`, and `/book`, plus the 404 page. The desktop header is 64px; the phone header is 56px with a push-down menu that closes on Escape and returns focus to its button. Every page has one `<main id="main">`, a skip link target, one `<h1>`, and `aria-current="page"` on its active navigation item.
 
-The phone homepage shows only `featuredOnPhone` projects and the two podium results until expanded. Notes filter by layer and reflect the selection in `?layer=`. `/book` keeps the existing `site.bookingUrl` Cal.com embed; never invent availability or slot data. The resume PDF action may use the existing print-to-PDF fallback while no PDF file is present. Certifications without a verification URL are not rendered.
+The homepage features only `featured` projects (desktop table and phone list) and the two podium results until expanded. Notes filter by layer and reflect the selection in `?layer=`. `/book` keeps the existing `site.bookingUrl` Cal.com embed; never invent availability or slot data. The resume PDF action may use the existing print-to-PDF fallback while no PDF file is present. Certifications without a verification URL are not rendered.
 
 ## Content rules
 
